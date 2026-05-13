@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useSyncExternalStore } from "react";
-import type { MenuItem } from "@/data/menu";
+import type { MenuCategory, MenuItem } from "@/data/menu";
 
 export type CartModifier = {
   name: string;
@@ -12,8 +12,7 @@ export type CartItem = {
   cartId: string;
   id: string;
   name: string;
-  price: number;
-  priceLabel?: string;
+  category?: MenuCategory;
   image: string;
   quantity: number;
   modifiers: CartModifier[];
@@ -86,10 +85,6 @@ export function useCart() {
 
   const addItem = useCallback(
     (menuItem: MenuItem, modifiers: CartModifier[] = [], quantity = 1) => {
-      if (menuItem.price === null) {
-        return;
-      }
-
       const cartId = makeCartId(menuItem, modifiers);
       const current = readCart();
       const existing = current.find((item) => item.cartId === cartId);
@@ -102,8 +97,7 @@ export function useCart() {
               cartId,
               id: menuItem.id,
               name: menuItem.name,
-              price: menuItem.price,
-              priceLabel: menuItem.priceLabel,
+              category: menuItem.category,
               image: menuItem.image,
               quantity,
               modifiers
@@ -136,8 +130,7 @@ export function useCart() {
 
   const summary = useMemo(() => {
     const quantity = items.reduce((total, item) => total + item.quantity, 0);
-    const subtotal = items.reduce((total, item) => total + item.price * item.quantity, 0);
-    return { quantity, subtotal };
+    return { quantity };
   }, [items]);
 
   return {

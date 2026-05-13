@@ -28,7 +28,6 @@ export const siteConfig = {
   ],
   logo: "/goldenbagels/logo.png",
   fallbackLogo: "/logo.png",
-  priceRange: "$10-20",
   googleRating: 4.1,
   googleReviewCount: 205,
   orderEnabled: process.env.NEXT_PUBLIC_ENABLE_ORDERING !== "false",

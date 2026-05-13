@@ -12,7 +12,7 @@ const cartItemSchema = z.object({
   cartId: z.string().min(1),
   id: z.string().min(1),
   name: z.string().min(1),
-  price: z.number().nonnegative(),
+  price: z.number().nonnegative().optional(),
   quantity: z.number().int().positive(),
   modifiers: z.array(z.object({ name: z.string(), option: z.string() })).default([]),
   notes: z.string().optional()

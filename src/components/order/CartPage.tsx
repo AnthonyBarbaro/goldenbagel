@@ -10,7 +10,7 @@ import type { OrderResponse } from "@/lib/api";
 import { useCart } from "@/lib/cart";
 
 export function CartPage() {
-  const { items, subtotal, clearCart } = useCart();
+  const { items, clearCart } = useCart();
   const [confirmation, setConfirmation] = useState<OrderResponse | null>(null);
 
   function handleComplete(order: OrderResponse) {
@@ -40,11 +40,10 @@ export function CartPage() {
 
         {items.length > 0 && (
           <div className="rounded-[1.5rem] bg-charcoal p-5 text-white shadow-soft">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-bold uppercase tracking-[0.18em] text-white/62">Subtotal</span>
-              <span className="text-3xl font-black">${subtotal.toFixed(2)}</span>
-            </div>
-            <p className="mt-2 text-sm text-white/62">Taxes, tips, payment, and Clover live checkout will be finalized later.</p>
+            <p className="text-sm font-bold uppercase tracking-[0.18em] text-white/62">Ready for pickup details</p>
+            <p className="mt-2 text-sm text-white/72">
+              The current order flow is a mock checkout. The cafe can confirm current menu details when Clover live checkout is connected.
+            </p>
           </div>
         )}
       </div>

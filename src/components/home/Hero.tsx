@@ -39,7 +39,7 @@ export function Hero() {
             {[
               ["4.1", "Google rating"],
               ["205", "reviews"],
-              ["$10-20", "price range"]
+              ["Daily", "fresh bagels"]
             ].map(([value, label]) => (
               <div key={label} className="rounded-2xl bg-white/74 p-4 shadow-soft ring-1 ring-charcoal/5">
                 <div className="text-2xl font-black text-charcoal">{value}</div>
@@ -70,7 +70,7 @@ export function Hero() {
           <div className="absolute bottom-20 right-2 rounded-[1.5rem] bg-white p-5 shadow-lift ring-1 ring-charcoal/10">
             <p className="text-sm font-black text-charcoal">Golden Works</p>
             <p className="mt-1 text-xs text-espresso/70">Eggs, cheese, bacon, ham, sausage</p>
-            <p className="mt-3 text-lg font-black text-toast">$10.99</p>
+            <p className="mt-3 text-xs font-black uppercase tracking-[0.18em] text-toast">Breakfast favorite</p>
           </div>
         </div>
       </div>

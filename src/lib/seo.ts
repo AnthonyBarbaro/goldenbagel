@@ -63,7 +63,6 @@ export function restaurantSchema() {
     telephone: siteConfig.phone,
     image: [absoluteUrl("/goldenbagels/gallery/storefront.jpg"), absoluteUrl("/goldenbagels/hero/bagel-counter.jpg")],
     logo: absoluteUrl(siteConfig.logo),
-    priceRange: siteConfig.priceRange,
     servesCuisine: ["Bagels", "Breakfast", "Cafe", "Sandwiches", "Smoothies"],
     address: {
       "@type": "PostalAddress",
@@ -108,15 +107,7 @@ export function menuSchema() {
         .map((item) => ({
           "@type": "MenuItem",
           name: item.name,
-          description: item.description,
-          offers:
-            item.price === null
-              ? undefined
-              : {
-                  "@type": "Offer",
-                  price: item.price.toFixed(2),
-                  priceCurrency: "USD"
-                }
+          description: item.description
         }))
     }))
   };

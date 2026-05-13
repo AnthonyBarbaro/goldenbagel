@@ -5,7 +5,7 @@ import { ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart";
 
 export function CartDrawer() {
-  const { quantity, subtotal } = useCart();
+  const { quantity } = useCart();
 
   if (quantity === 0) {
     return null;
@@ -21,7 +21,7 @@ export function CartDrawer() {
         <ShoppingBag aria-hidden="true" size={18} />
         {quantity} item{quantity === 1 ? "" : "s"}
       </span>
-      <span className="font-black">${subtotal.toFixed(2)}</span>
+      <span className="font-black">View cart</span>
     </Link>
   );
 }

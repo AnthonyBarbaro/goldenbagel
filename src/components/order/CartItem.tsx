@@ -1,7 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { Minus, Plus, Trash2 } from "lucide-react";
+import { MenuVisual } from "@/components/menu/MenuVisual";
 import { Button } from "@/components/ui/Button";
 import type { CartItem as CartItemType } from "@/lib/cart";
 import { useCart } from "@/lib/cart";
@@ -16,7 +16,7 @@ export function CartItem({ item }: CartItemProps) {
   return (
     <div className="grid grid-cols-[84px_1fr] gap-4 rounded-[1.25rem] border border-charcoal/10 bg-white p-3 shadow-soft">
       <div className="relative h-24 overflow-hidden rounded-2xl bg-cream">
-        <Image src={item.image} alt="" fill sizes="84px" className="object-cover" />
+        <MenuVisual category={item.category} name={item.name} compact />
       </div>
       <div>
         <div className="flex items-start justify-between gap-3">
@@ -28,7 +28,6 @@ export function CartItem({ item }: CartItemProps) {
               </p>
             )}
           </div>
-          <p className="font-black text-espresso">${(item.price * item.quantity).toFixed(2)}</p>
         </div>
 
         <div className="mt-4 flex items-center justify-between">
