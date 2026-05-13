@@ -1,7 +1,7 @@
-import { ShoppingBag, Utensils } from "lucide-react";
+import { MapPin, ShoppingBag, Utensils } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { onlineOrderUrl, siteConfig } from "@/config/site";
+import { businessAddress, directionsUrl, onlineOrderUrl, siteConfig } from "@/config/site";
 
 export function Hero() {
   const hasHostedOrdering = Boolean(siteConfig.cloverOnlineOrderingUrl);
@@ -47,11 +47,18 @@ export function Hero() {
               </Button>
             )}
           </div>
+          <a
+            href={directionsUrl}
+            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-full bg-white/14 px-4 py-3 text-sm font-black text-white ring-1 ring-white/18 backdrop-blur transition hover:bg-white/22 sm:w-auto"
+          >
+            <MapPin aria-hidden="true" size={18} />
+            <span className="min-w-0 text-center leading-5">{businessAddress}</span>
+          </a>
           <div className="mt-6 grid max-w-xl grid-cols-3 gap-2 text-center sm:mt-8 sm:gap-3">
             {[
               ["Best Bagels", "El Cajon favorite"],
               ["Fresh Daily", "bagels & coffee"],
-              ["Easy Pickup", "order online"]
+              ["2744 Fletcher", "easy directions"]
             ].map(([value, label]) => (
               <div key={label} className="rounded-2xl bg-white/14 p-3 shadow-soft ring-1 ring-white/16 backdrop-blur sm:p-4">
                 <div className="text-xl font-black sm:text-2xl">{value}</div>

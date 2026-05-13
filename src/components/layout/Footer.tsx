@@ -31,7 +31,10 @@ export function Footer() {
         <div className="space-y-4 text-sm text-white/78">
           <a href={directionsUrl} className="flex gap-3 transition hover:text-white">
             <MapPin aria-hidden="true" className="mt-1 shrink-0" size={18} />
-            <span>{businessAddress}</span>
+            <span>
+              <span className="block font-black text-white">Easy directions</span>
+              <span className="block">{businessAddress}</span>
+            </span>
           </a>
           <a href={siteConfig.phoneHref} className="flex gap-3 transition hover:text-white">
             <Phone aria-hidden="true" className="mt-1 shrink-0" size={18} />

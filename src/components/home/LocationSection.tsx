@@ -1,4 +1,4 @@
-import { Clock, MapPin, Phone } from "lucide-react";
+import { Clock, Compass, MapPin, Phone } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { businessAddress, directionsUrl, siteConfig } from "@/config/site";
@@ -12,13 +12,23 @@ export function LocationSection() {
   return (
     <Section
       id="visit"
-      eyebrow="Visit us"
-      title="Fresh bagels on Fletcher Parkway."
-      intro="Stop by for breakfast, lunch, coffee, smoothies, or pickup in El Cajon."
+      eyebrow="Easy directions"
+      title="Find us fast at 2744 Fletcher Pkwy."
+      intro="Tap for Google Maps directions, call ahead, or swing by for pickup in El Cajon."
       className="bg-cream"
     >
       <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr]">
         <div className="rounded-[2rem] bg-white p-5 shadow-soft sm:p-6">
+          <div className="mb-5 rounded-[1.5rem] bg-honey/22 p-4">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-toast">Pickup address</p>
+            <a href={directionsUrl} className="mt-2 flex items-start gap-3 text-charcoal transition hover:text-toast">
+              <Compass aria-hidden="true" className="mt-1 shrink-0" size={22} />
+              <span>
+                <span className="block text-2xl font-black">2744 Fletcher Pkwy</span>
+                <span className="mt-1 block text-sm font-bold text-espresso/72">El Cajon, CA 92020 - tap for turn-by-turn directions</span>
+              </span>
+            </a>
+          </div>
           <div className="space-y-5 text-espresso/78">
             <div className="flex gap-4">
               <MapPin aria-hidden="true" className="mt-1 text-toast" />
@@ -42,8 +52,9 @@ export function LocationSection() {
               </div>
             </a>
           </div>
-          <div className="mt-8">
-            <Button href={directionsUrl} className="w-full sm:w-auto">Get Directions</Button>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Button href={directionsUrl} className="w-full sm:w-auto">Open Directions</Button>
+            <Button href={siteConfig.phoneHref} variant="secondary" className="w-full sm:w-auto">Call Before You Go</Button>
           </div>
         </div>
 

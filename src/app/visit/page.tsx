@@ -5,7 +5,7 @@ import { createPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createPageMetadata(
   "Visit Us",
-  "Find Golden Bagel Cafe at 2744 Fletcher Pkwy in El Cajon, view hours, directions, and contact the cafe.",
+  "Get easy directions to Golden Bagel Cafe at 2744 Fletcher Pkwy in El Cajon, view hours, call the cafe, and contact us.",
   "/visit/"
 );
 
@@ -18,7 +18,7 @@ export default function VisitPage() {
           <div>
             <p className="text-sm font-black uppercase tracking-[0.26em] text-toast">Contact</p>
             <h1 className="mt-4 font-serif text-4xl font-black tracking-tight text-charcoal sm:text-6xl">Questions, comments or order help?</h1>
-            <p className="mt-5 text-lg leading-8 text-espresso/74">Send a note and the cafe can follow up when the serverless email helper is configured.</p>
+            <p className="mt-5 text-lg leading-8 text-espresso/74">Need help finding us at 2744 Fletcher Pkwy or planning pickup? Send a note and the cafe can follow up.</p>
           </div>
           <ContactForm />
         </div>

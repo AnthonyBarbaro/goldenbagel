@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CalendarHeart, MapPin, ShoppingBag, Utensils } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { ThreeDCard } from "@/components/ui/ThreeDCard";
-import { onlineOrderUrl } from "@/config/site";
+import { directionsUrl, onlineOrderUrl } from "@/config/site";
 
 const actions = [
   {
@@ -27,11 +27,11 @@ const actions = [
     label: "Open catering ordering"
   },
   {
-    title: "Visit Us",
-    text: "Find us on Fletcher Parkway in El Cajon, open daily until 3 PM.",
-    href: "/visit",
+    title: "Directions",
+    text: "Open maps to 2744 Fletcher Parkway for quick pickup or a cafe stop.",
+    href: directionsUrl,
     icon: MapPin,
-    label: "Open visit information"
+    label: "Open directions to Golden Bagel Cafe"
   }
 ];
 
