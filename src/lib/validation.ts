@@ -17,8 +17,16 @@ export const cateringSchema = z.object({
   eventDate: z.string().min(1, "Choose an event date."),
   eventTime: z.string().min(1, "Choose an event time."),
   guestCount: z.coerce.number().min(1, "Enter a guest count."),
-  cateringType: z.string().min(2, "Tell us what you need."),
-  message: z.string().min(10, "Share a few details."),
+  fulfillment: z.enum(["pickup", "delivery-inquiry"]),
+  bagelTraySize: z.string().min(2, "Choose a tray size."),
+  bagelFlavors: z.array(z.string()).min(1, "Choose at least one bagel flavor."),
+  bagelStyle: z.string().min(2, "Choose a bagel style."),
+  creamCheeseFlavors: z.array(z.string()).min(1, "Choose at least one cream cheese flavor."),
+  creamCheeseStyle: z.string().min(2, "Choose a cream cheese style."),
+  extras: z.array(z.string()).default([]),
+  dietaryNotes: z.string().max(500).optional(),
+  message: z.string().max(1000).optional(),
+  cloverTicketSummary: z.string().max(2000).optional(),
   honeypot
 });
 

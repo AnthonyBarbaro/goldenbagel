@@ -6,6 +6,55 @@ import { badRequest, serverError, success } from "../shared/response.js";
 import { safeLog } from "../shared/security.js";
 import { cateringSchema, validateBody } from "../shared/validate.js";
 
+function joinList(value: string[] | undefined) {
+  return value && value.length > 0 ? value.join(", ") : "None selected";
+}
+
+function formatCloverCateringTicket(payload: {
+  name: string;
+  email: string;
+  phone: string;
+  eventDate: string;
+  eventTime: string;
+  guestCount: number;
+  fulfillment: string;
+  bagelTraySize: string;
+  bagelFlavors: string[];
+  bagelStyle: string;
+  creamCheeseFlavors: string[];
+  creamCheeseStyle: string;
+  extras?: string[];
+  dietaryNotes?: string;
+  message?: string;
+}) {
+  return [
+    "CLOVER CATERING TICKET",
+    "----------------------",
+    `Customer: ${payload.name}`,
+    `Phone: ${payload.phone}`,
+    `Email: ${payload.email}`,
+    `Date/time: ${payload.eventDate} at ${payload.eventTime}`,
+    `Guests: ${payload.guestCount}`,
+    `Fulfillment: ${payload.fulfillment}`,
+    "",
+    "BAGELS",
+    `Tray size: ${payload.bagelTraySize}`,
+    `Flavors: ${joinList(payload.bagelFlavors)}`,
+    `Style: ${payload.bagelStyle}`,
+    "",
+    "CREAM CHEESE",
+    `Flavors: ${joinList(payload.creamCheeseFlavors)}`,
+    `Style: ${payload.creamCheeseStyle}`,
+    "",
+    "EXTRAS",
+    joinList(payload.extras),
+    "",
+    "NOTES",
+    payload.dietaryNotes ? `Dietary: ${payload.dietaryNotes}` : "Dietary: none",
+    payload.message ? `Customer notes: ${payload.message}` : "Customer notes: none"
+  ].join("\n");
+}
+
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   if (event.requestContext.http.method === "OPTIONS") {
     return optionsResponse(event);
@@ -23,12 +72,12 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     }
 
     await sendOwnerNotification({
-      subject: "Golden Bagel catering request",
-      text: formatSubmission("Catering request", result.data),
+      subject: "Golden Bagel Clover catering ticket",
+      text: `${formatCloverCateringTicket(result.data)}\n\nRAW REQUEST\n-----------\n${formatSubmission("Catering request", result.data)}`,
       replyTo: result.data.email
     });
 
-    return success(event, { message: "Thanks. We received your catering request." });
+    return success(event, { message: "Thanks. We received your catering ticket." });
   } catch (error) {
     safeLog("catering:error", { message: error instanceof Error ? error.message : "unknown" });
     return serverError(event);

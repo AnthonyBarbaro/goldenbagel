@@ -47,8 +47,16 @@ export const cateringSchema = z.object({
   eventDate: z.string().min(1),
   eventTime: z.string().min(1),
   guestCount: z.number().or(z.string()).transform(Number),
-  cateringType: z.string().min(2),
-  message: z.string().min(10),
+  fulfillment: z.enum(["pickup", "delivery-inquiry"]),
+  bagelTraySize: z.string().min(2),
+  bagelFlavors: z.array(z.string()).min(1),
+  bagelStyle: z.string().min(2),
+  creamCheeseFlavors: z.array(z.string()).min(1),
+  creamCheeseStyle: z.string().min(2),
+  extras: z.array(z.string()).default([]),
+  dietaryNotes: z.string().optional(),
+  message: z.string().optional(),
+  cloverTicketSummary: z.string().optional(),
   honeypot: z.string().optional()
 });
 

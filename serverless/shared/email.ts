@@ -32,7 +32,7 @@ export async function sendOwnerNotification(message: EmailMessage) {
 export function formatSubmission(title: string, payload: Record<string, unknown>) {
   const lines = Object.entries(payload)
     .filter(([key]) => key !== "honeypot")
-    .map(([key, value]) => `${key}: ${String(value)}`);
+    .map(([key, value]) => `${key}: ${Array.isArray(value) ? value.join(", ") : String(value)}`);
 
   return `${title}\n\n${lines.join("\n")}`;
 }
