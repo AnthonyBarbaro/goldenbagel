@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { CartPage } from "@/components/order/CartPage";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Order Pickup",
-  description: "Build a mock pickup order for Golden Bagel Cafe before Clover live checkout is connected."
-};
+export const metadata: Metadata = createPageMetadata(
+  "Order Pickup",
+  "Build a mock pickup order for Golden Bagel Cafe before Clover live checkout is connected.",
+  "/order/"
+);
 
 export default function OrderPage() {
   return (

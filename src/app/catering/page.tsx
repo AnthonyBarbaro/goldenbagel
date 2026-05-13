@@ -3,11 +3,13 @@ import Image from "next/image";
 import { CateringForm } from "@/components/forms/CateringForm";
 import { Button } from "@/components/ui/Button";
 import { siteConfig } from "@/config/site";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Catering",
-  description: "Request Golden Bagel Cafe catering for bagel trays, sandwiches, salads, meetings, and events in El Cajon."
-};
+export const metadata: Metadata = createPageMetadata(
+  "Catering",
+  "Request Golden Bagel Cafe catering for bagel trays, sandwiches, salads, meetings, and events in El Cajon.",
+  "/catering/"
+);
 
 export default function CateringPage() {
   return (

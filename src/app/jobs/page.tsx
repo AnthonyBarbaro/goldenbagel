@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { JobApplicationForm } from "@/components/forms/JobApplicationForm";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Jobs",
-  description: "Apply online to join the Golden Bagel Cafe team in El Cajon."
-};
+export const metadata: Metadata = createPageMetadata("Jobs", "Apply online to join the Golden Bagel Cafe team in El Cajon.", "/jobs/");
 
 export default function JobsPage() {
   return (

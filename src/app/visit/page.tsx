@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { LocationSection } from "@/components/home/LocationSection";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Visit Us",
-  description: "Find Golden Bagel Cafe at 2744 Fletcher Pkwy in El Cajon, view hours, directions, and contact the cafe."
-};
+export const metadata: Metadata = createPageMetadata(
+  "Visit Us",
+  "Find Golden Bagel Cafe at 2744 Fletcher Pkwy in El Cajon, view hours, directions, and contact the cafe.",
+  "/visit/"
+);
 
 export default function VisitPage() {
   return (

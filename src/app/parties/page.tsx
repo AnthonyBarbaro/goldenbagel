@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { PartyRequestForm } from "@/components/forms/PartyRequestForm";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Parties",
-  description: "Request group reservations and private parties at Golden Bagel Cafe in El Cajon."
-};
+export const metadata: Metadata = createPageMetadata(
+  "Parties",
+  "Request group reservations and private parties at Golden Bagel Cafe in El Cajon.",
+  "/parties/"
+);
 
 export default function PartiesPage() {
   return (

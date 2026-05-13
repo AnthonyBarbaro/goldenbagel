@@ -9,6 +9,8 @@ import { QuickActions } from "@/components/home/QuickActions";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
 import { Button } from "@/components/ui/Button";
 import { directionsUrl } from "@/config/site";
+import { JsonLd } from "@/components/seo/JsonLd";
+import { breadcrumbSchema, homepageMenuPreviewSchema } from "@/lib/seo";
 
 function AnnouncementBar() {
   return (
@@ -33,6 +35,8 @@ function AnnouncementBar() {
 export default function Home() {
   return (
     <main>
+      <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }])} />
+      <JsonLd data={homepageMenuPreviewSchema()} />
       <AnnouncementBar />
       <Hero />
       <QuickActions />

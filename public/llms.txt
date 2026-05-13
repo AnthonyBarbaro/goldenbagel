@@ -1,0 +1,18 @@
+# Golden Bagel Cafe
+
+Golden Bagel Cafe is a bagel shop and cafe at 2744 Fletcher Pkwy, El Cajon, CA 92020.
+
+Open daily 6:30 AM to 3:00 PM. Phone: (619) 464-2243.
+
+Primary pages:
+- /menu/ - editable static menu with bagels, breakfast bagels, wraps, sandwiches, salads, smoothies, flavors, and toppings.
+- /order/ - mock pickup ordering flow prepared for API Gateway, Lambda, and Clover hosted checkout.
+- /catering/ - catering request form for bagel trays, sandwiches, salads, meetings, and events.
+- /parties/ - group and private event request form.
+- /jobs/ - job application form.
+- /visit/ - address, hours, map fallback, directions, phone, and contact form.
+
+Technical notes:
+- Static frontend: Next.js App Router static export.
+- Dynamic actions: API Gateway and Lambda through NEXT_PUBLIC_API_BASE_URL.
+- Clover mode: mock by default. Secrets must stay server-side.
