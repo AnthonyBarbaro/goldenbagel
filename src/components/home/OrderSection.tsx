@@ -1,7 +1,7 @@
 import { Clock3, PackageCheck, Truck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
-import { siteConfig } from "@/config/site";
+import { onlineOrderUrl, siteConfig } from "@/config/site";
 import { formatHour } from "@/lib/format";
 
 export function OrderSection() {
@@ -12,19 +12,19 @@ export function OrderSection() {
       <div className="grid gap-10 lg:grid-cols-[1fr_0.85fr] lg:items-center">
         <div>
           <p className="mb-3 text-sm font-black uppercase tracking-[0.24em] text-honey">Order ahead</p>
-          <h2 className="font-serif text-4xl font-black tracking-tight sm:text-6xl">Menu is where you order.</h2>
+          <h2 className="font-serif text-4xl font-black tracking-tight sm:text-6xl">Order online with Clover.</h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-white/74">
-            Choose favorites on the Menu tab, add notes, and send the cart through the API Gateway and Lambda flow. Clover API live checkout plugs in server-side when credentials are connected.
+            Use the hosted Clover ordering page for pickup ordering, payment, and order routing. The local menu stays here for browsing and SEO.
           </p>
           <div className="mt-8">
-            <Button href="/menu">Order From Menu</Button>
+            <Button href={onlineOrderUrl}>Order Online</Button>
           </div>
         </div>
         <div className="grid gap-4">
           {[
             { icon: Clock3, title: "Open daily", text: hours },
-            { icon: PackageCheck, title: "Clover API ready", text: "Submit item details now; route to hosted Clover checkout later." },
-            { icon: Truck, title: "Delivery", text: "Delivery can be enabled as a future Clover/order-provider option." }
+            { icon: PackageCheck, title: "Hosted checkout", text: "Customers can complete the order in Clover once the hosted link is added." },
+            { icon: Truck, title: "Pickup first", text: "Delivery can stay a future Clover or third-party provider option." }
           ].map(({ icon: Icon, title, text }) => (
             <div key={title} className="rounded-[1.5rem] border border-white/12 bg-white/8 p-5">
               <div className="flex items-center gap-4">

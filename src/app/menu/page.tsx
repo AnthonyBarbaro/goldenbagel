@@ -18,9 +18,9 @@ export default function MenuPage() {
       <div className="mx-auto max-w-7xl">
         <div className="max-w-3xl">
           <p className="text-sm font-black uppercase tracking-[0.26em] text-toast">Menu & ordering</p>
-          <h1 className="mt-4 font-serif text-5xl font-black tracking-tight text-charcoal sm:text-7xl">Pick your favorites. Add them to the Clover cart.</h1>
+          <h1 className="mt-4 font-serif text-5xl font-black tracking-tight text-charcoal sm:text-7xl">Browse the menu. Order online in Clover.</h1>
           <p className="mt-5 text-lg leading-8 text-espresso/74">
-            This is the everyday ordering page. Search, filter, and add cafe favorites to your pickup cart. Menu data is local now and ready for Clover item IDs when the live API is connected.
+            Search and filter cafe favorites here, then use the hosted Clover ordering link for live pickup orders when it is configured.
           </p>
         </div>
 

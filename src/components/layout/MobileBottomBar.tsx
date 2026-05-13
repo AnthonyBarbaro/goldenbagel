@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { Briefcase, CalendarHeart, MapPin, Menu, Phone } from "lucide-react";
-import { siteConfig } from "@/config/site";
+import { CalendarHeart, MapPin, Menu, Phone, ShoppingBag } from "lucide-react";
+import { onlineOrderUrl, siteConfig } from "@/config/site";
 
 const actions = [
   { href: "/menu", label: "Menu", icon: Menu },
+  { href: onlineOrderUrl, label: "Order", icon: ShoppingBag },
   { href: "/catering", label: "Catering", icon: CalendarHeart },
   { href: siteConfig.phoneHref, label: "Call", icon: Phone },
-  { href: "/visit", label: "Visit", icon: MapPin },
-  { href: "/jobs", label: "Jobs", icon: Briefcase }
+  { href: "/visit", label: "Visit", icon: MapPin }
 ];
 
 export function MobileBottomBar() {

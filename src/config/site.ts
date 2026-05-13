@@ -1,3 +1,5 @@
+const cloverOnlineOrderingUrl = process.env.NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL?.trim() || "";
+
 export const siteConfig = {
   name: "Golden Bagel Cafe",
   description:
@@ -28,6 +30,7 @@ export const siteConfig = {
   ],
   logo: "/goldenbagels/logo.png",
   fallbackLogo: "/logo.png",
+  cloverOnlineOrderingUrl,
   googleRating: 4.1,
   googleReviewCount: 205,
   orderEnabled: process.env.NEXT_PUBLIC_ENABLE_ORDERING !== "false",
@@ -39,6 +42,8 @@ export const businessAddress = `${siteConfig.address.street}, ${siteConfig.addre
 export const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
   `${siteConfig.name}, ${businessAddress}`
 )}`;
+
+export const onlineOrderUrl = siteConfig.cloverOnlineOrderingUrl || "/menu";
 
 export const navItems = [
   { href: "/menu", label: "Menu" },

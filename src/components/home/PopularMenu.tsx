@@ -2,6 +2,7 @@ import { MenuVisual } from "@/components/menu/MenuVisual";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { featuredMenuItemIds, menuItems, type MenuItem } from "@/data/menu";
+import { onlineOrderUrl } from "@/config/site";
 
 const popularItems = featuredMenuItemIds
   .map((id) => menuItems.find((item) => item.id === id))
@@ -13,7 +14,7 @@ export function PopularMenu() {
     <Section
       eyebrow="Popular picks"
       title="Made fresh for breakfast, lunch, and coffee runs."
-      intro="Start with a cafe favorite, then add it to the Clover API-ready cart from the Menu page."
+      intro="Browse a few favorites here, then use Clover hosted ordering when you are ready to place a pickup order."
       className="bg-cream"
     >
       <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
@@ -33,7 +34,7 @@ export function PopularMenu() {
         </div>
       </div>
       <div className="mt-8">
-        <Button href="/menu">Order From Menu</Button>
+        <Button href={onlineOrderUrl}>Order Online</Button>
       </div>
     </Section>
   );

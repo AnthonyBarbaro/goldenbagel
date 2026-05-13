@@ -13,8 +13,8 @@ function AnnouncementBar() {
   return (
     <div className="bg-charcoal px-4 py-2 text-sm font-bold text-white sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 sm:flex-row">
-        <p>Open daily 6:30 AM - 3:00 PM - order from the Menu tab or stop by in El Cajon</p>
-        <p className="text-honey">Clover API ordering runs in mock mode until live credentials are connected.</p>
+        <p>Open daily 6:30 AM - 3:00 PM - order online or stop by in El Cajon</p>
+        <p className="text-honey">Fresh bagels, breakfast sandwiches, smoothies, and catering.</p>
       </div>
     </div>
   );

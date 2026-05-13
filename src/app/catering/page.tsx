@@ -18,7 +18,7 @@ export default function CateringPage() {
           <h1 className="mt-4 font-serif text-5xl font-black tracking-tight text-charcoal sm:text-7xl">Build your catering board.</h1>
           <p className="mt-5 text-lg leading-8 text-espresso/74">
             Choose a date, tap a pickup time, pick a guest range, then stack bagels, cream cheese, and add-ons. The selections
-            turn into a Clover API-ready kitchen ticket for review and printing.
+            turn into a kitchen-ready ticket for review and printing.
           </p>
           <Image
             src="/goldenbagels/gallery/catering.png"

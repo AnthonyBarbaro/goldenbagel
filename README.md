@@ -12,7 +12,7 @@ The backend foundation includes TypeScript Lambda handlers, shared CORS/validati
 
 - Mobile-first homepage
 - Menu browsing and everyday ordering
-- Mock Clover API-ready ordering
+- Hosted Clover online ordering link support
 - Cart with localStorage persistence
 - Catering and big-party ordering survey
 - Job applications
@@ -76,9 +76,12 @@ Frontend `.env.example`:
 NEXT_PUBLIC_SITE_URL=https://goldenbagelcafe.com
 NEXT_PUBLIC_API_BASE_URL=
 NEXT_PUBLIC_GOOGLE_MAPS_EMBED_API_KEY=
+NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL=
 NEXT_PUBLIC_ENABLE_ORDERING=true
 NEXT_PUBLIC_MOCK_ORDERING=true
 ```
+
+`NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL` should be the hosted Clover Online Ordering page URL from the Clover Dashboard. When this is set, customer-facing order buttons open Clover directly. When it is empty, the site falls back to the local mock cart flow.
 
 Serverless `serverless/.env.example`:
 
@@ -132,6 +135,7 @@ Required secrets:
 - `NEXT_PUBLIC_SITE_URL`
 - `NEXT_PUBLIC_API_BASE_URL`
 - `NEXT_PUBLIC_GOOGLE_MAPS_EMBED_API_KEY`
+- `NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL`
 
 Optional serverless secrets:
 
@@ -201,6 +205,16 @@ API Gateway notes:
 - Enable CloudWatch logs
 
 ## 11. Clover Integration
+
+Recommended hosted ordering path:
+
+- Enable Clover Online Ordering in Clover Dashboard
+- Copy the restaurant's hosted online ordering URL
+- Add it as `NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL`
+- Add the same value as a GitHub Actions secret
+- Deploy the frontend
+
+With that value set, the website's order buttons open Clover's hosted ordering flow directly. The local mock cart remains available as a fallback when the hosted URL is blank.
 
 Current mode:
 

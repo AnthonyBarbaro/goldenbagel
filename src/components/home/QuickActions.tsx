@@ -1,15 +1,23 @@
 import Link from "next/link";
-import { Briefcase, CalendarHeart, MapPin, ShoppingBag } from "lucide-react";
+import { CalendarHeart, MapPin, ShoppingBag, Utensils } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { ThreeDCard } from "@/components/ui/ThreeDCard";
+import { onlineOrderUrl } from "@/config/site";
 
 const actions = [
   {
-    title: "Menu",
-    text: "Browse and order bagels, sandwiches, wraps, salads, smoothies, and cafe favorites.",
-    href: "/menu",
+    title: "Order Online",
+    text: "Open the hosted Clover online ordering page for pickup, payment, and order details.",
+    href: onlineOrderUrl,
     icon: ShoppingBag,
-    label: "Open menu ordering"
+    label: "Open online ordering"
+  },
+  {
+    title: "Menu",
+    text: "Browse bagels, sandwiches, wraps, salads, smoothies, and cafe favorites.",
+    href: "/menu",
+    icon: Utensils,
+    label: "Open menu"
   },
   {
     title: "Catering",
@@ -24,13 +32,6 @@ const actions = [
     href: "/visit",
     icon: MapPin,
     label: "Open visit information"
-  },
-  {
-    title: "Jobs",
-    text: "Apply online for cafe roles and share your availability.",
-    href: "/jobs",
-    icon: Briefcase,
-    label: "Open job application"
   }
 ];
 

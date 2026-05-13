@@ -19,7 +19,7 @@ export default function PartiesPage() {
           <h1 className="mt-4 font-serif text-5xl font-black tracking-tight text-charcoal sm:text-7xl">Use Catering for parties and big orders.</h1>
           <p className="mt-5 text-lg leading-8 text-espresso/74">
             Birthday parties, baby showers, office functions, and weekend brunches all start in the Catering flow. Pick your
-            date, bagels, cream cheese, and add-ons so the request can be formatted for Clover API order notes.
+            date, bagels, cream cheese, and add-ons so the request can be formatted into clear kitchen notes.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button href="/catering">Open Catering</Button>

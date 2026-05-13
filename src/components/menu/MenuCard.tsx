@@ -3,6 +3,7 @@
 import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { onlineOrderUrl, siteConfig } from "@/config/site";
 import type { MenuItem } from "@/data/menu";
 import { useCart } from "@/lib/cart";
 import { MenuVisual } from "./MenuVisual";
@@ -14,6 +15,7 @@ type MenuCardProps = {
 export function MenuCard({ item }: MenuCardProps) {
   const { addItem } = useCart();
   const canAddToCart = item.available && item.category !== "Flavors & Toppings";
+  const useHostedOrdering = Boolean(siteConfig.cloverOnlineOrderingUrl);
 
   function handleAdd() {
     addItem(item);
@@ -44,10 +46,17 @@ export function MenuCard({ item }: MenuCardProps) {
         )}
 
         <div className="mt-5">
-          <Button type="button" onClick={handleAdd} disabled={!canAddToCart}>
-            <Plus aria-hidden="true" size={18} />
-            {canAddToCart ? "Add to Clover Cart" : "Info Only"}
-          </Button>
+          {useHostedOrdering && canAddToCart ? (
+            <Button href={onlineOrderUrl}>
+              <Plus aria-hidden="true" size={18} />
+              Order Online
+            </Button>
+          ) : (
+            <Button type="button" onClick={handleAdd} disabled={!canAddToCart}>
+              <Plus aria-hidden="true" size={18} />
+              {canAddToCart ? "Add to Cart" : "Info Only"}
+            </Button>
+          )}
         </div>
       </div>
     </article>

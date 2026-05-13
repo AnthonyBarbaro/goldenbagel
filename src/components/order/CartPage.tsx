@@ -6,6 +6,7 @@ import { CartItem } from "@/components/order/CartItem";
 import { CheckoutForm } from "@/components/order/CheckoutForm";
 import { OrderConfirmation } from "@/components/order/OrderConfirmation";
 import { Button } from "@/components/ui/Button";
+import { onlineOrderUrl, siteConfig } from "@/config/site";
 import type { OrderResponse } from "@/lib/api";
 import { useCart } from "@/lib/cart";
 
@@ -20,6 +21,21 @@ export function CartPage() {
 
   if (confirmation) {
     return <OrderConfirmation order={confirmation} />;
+  }
+
+  if (siteConfig.cloverOnlineOrderingUrl) {
+    return (
+      <div className="rounded-[2rem] bg-white p-8 text-center shadow-soft">
+        <ShoppingBag aria-hidden="true" className="mx-auto text-toast" size={44} />
+        <h2 className="mt-4 text-2xl font-black text-charcoal">Online ordering is hosted by Clover</h2>
+        <p className="mx-auto mt-2 max-w-xl text-espresso/72">
+          Use the hosted Clover ordering page for pickup ordering, payment, and order status. The local cart stays available as a fallback when the hosted link is not configured.
+        </p>
+        <Button href={onlineOrderUrl} className="mt-6">
+          Open Clover Ordering
+        </Button>
+      </div>
+    );
   }
 
   return (

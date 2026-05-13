@@ -21,13 +21,13 @@ export function CateringPartySection() {
           <p className="text-sm font-black uppercase tracking-[0.22em] text-toast">Catering order</p>
           <h2 className="mt-3 font-serif text-4xl font-black text-charcoal sm:text-5xl">Big-party bagels, built like a Clover ticket.</h2>
           <p className="mt-5 max-w-2xl text-base leading-7 text-espresso/74">
-            Pick the date, guest count, bagel tray, cream cheese style, and add-ons. The catering survey turns your details into clear Clover API order notes for review and printing.
+            Pick the date, guest count, bagel tray, cream cheese style, and add-ons. The catering survey turns your details into clear kitchen notes for review and printing.
           </p>
           <div className="mt-6 flex flex-wrap gap-2 text-xs font-black uppercase tracking-[0.14em] text-espresso/70">
             <span className="rounded-full bg-white px-3 py-2">Bagel trays</span>
             <span className="rounded-full bg-white px-3 py-2">Cream cheese</span>
             <span className="rounded-full bg-white px-3 py-2">Event notes</span>
-            <span className="rounded-full bg-white px-3 py-2">Clover API ready</span>
+            <span className="rounded-full bg-white px-3 py-2">Kitchen ready</span>
           </div>
         </div>
       </Link>
