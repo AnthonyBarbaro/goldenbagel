@@ -54,6 +54,8 @@ export function websiteSchema() {
 }
 
 export function restaurantSchema() {
+  const hasGeo = siteConfig.geo.latitude !== null && siteConfig.geo.longitude !== null;
+
   return {
     "@context": "https://schema.org",
     "@type": ["Restaurant", "Bakery", "LocalBusiness"],
@@ -72,11 +74,15 @@ export function restaurantSchema() {
       postalCode: siteConfig.address.zip,
       addressCountry: siteConfig.address.country
     },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: siteConfig.geo.latitude,
-      longitude: siteConfig.geo.longitude
-    },
+    ...(hasGeo
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: siteConfig.geo.latitude,
+            longitude: siteConfig.geo.longitude
+          }
+        }
+      : {}),
     openingHoursSpecification: siteConfig.hours.map((hour) => ({
       "@type": "OpeningHoursSpecification",
       dayOfWeek: hour.day,

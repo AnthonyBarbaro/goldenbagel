@@ -16,8 +16,8 @@ export const siteConfig = {
     country: "US"
   },
   geo: {
-    latitude: 32.8016,
-    longitude: -116.9939
+    latitude: null as number | null,
+    longitude: null as number | null
   },
   hours: [
     { day: "Monday", open: "06:30", close: "15:00" },
@@ -31,6 +31,13 @@ export const siteConfig = {
   logo: "/goldenbagels/logo.png",
   fallbackLogo: "/logo.png",
   cloverOnlineOrderingUrl,
+  visitInfo: {
+    parking: "Parking information coming soon.",
+    pickup: "Order ahead and pick up at the cafe.",
+    dineIn: "Dine-in information coming soon.",
+    nearby: "Located on Fletcher Parkway in El Cajon.",
+    accessibility: "Accessibility information coming soon."
+  },
   orderEnabled: process.env.NEXT_PUBLIC_ENABLE_ORDERING !== "false",
   mockOrdering: process.env.NEXT_PUBLIC_MOCK_ORDERING !== "false"
 } as const;
