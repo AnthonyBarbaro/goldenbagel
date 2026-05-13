@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
+import { Footer } from "@/components/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
+import { siteConfig } from "@/config/site";
 import "./globals.css";
 
 const inter = Inter({
@@ -15,8 +19,12 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Golden Bagel Cafe",
-  description: "Fresh bagels, breakfast sandwiches, wraps, salads, smoothies, catering, and cafe favorites in El Cajon."
+  metadataBase: new URL(siteConfig.siteUrl),
+  title: {
+    default: "Golden Bagel Cafe | Bagels, Breakfast & Catering in El Cajon",
+    template: "%s | Golden Bagel Cafe"
+  },
+  description: siteConfig.description
 };
 
 export default function RootLayout({
@@ -26,7 +34,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
-      <body>{children}</body>
+      <body>
+        <Header />
+        {children}
+        <Footer />
+        <MobileBottomBar />
+      </body>
     </html>
   );
 }
