@@ -14,6 +14,7 @@ coverage/
 .cache/
 serverless/.env
 serverless/.env.*
+!serverless/.env.example
 *.pem
 *.key
 *.crt
