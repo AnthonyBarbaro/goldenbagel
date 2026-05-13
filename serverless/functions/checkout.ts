@@ -1,3 +1,4 @@
+import { createCheckoutSession } from "../shared/clover.js";
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { optionsResponse } from "../shared/cors.js";
 import { rateLimit } from "../shared/rateLimit.js";
@@ -21,12 +22,8 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       return badRequest(event, "Invalid checkout request.", "error" in result ? result.error : undefined);
     }
 
-    const orderReference = `GB-${Date.now().toString().slice(-6)}`;
-    return success(event, {
-      checkoutUrl: "",
-      orderReference,
-      mock: true
-    });
+    const checkout = await createCheckoutSession(result.data);
+    return success(event, checkout);
   } catch (error) {
     safeLog("order:checkout:error", { message: error instanceof Error ? error.message : "unknown" });
     return serverError(event);

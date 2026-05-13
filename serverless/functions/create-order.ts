@@ -1,5 +1,5 @@
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { createMockOrder } from "../shared/clover.js";
+import { createCloverOrder } from "../shared/clover.js";
 import { optionsResponse } from "../shared/cors.js";
 import { sendOwnerNotification } from "../shared/email.js";
 import { rateLimit } from "../shared/rateLimit.js";
@@ -23,7 +23,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       return badRequest(event, result.honeypot ? "Invalid submission." : "Invalid order request.", "error" in result ? result.error : undefined);
     }
 
-    const order = await createMockOrder();
+    const order = await createCloverOrder(result.data);
     await sendOwnerNotification({
       subject: `New mock order ${order.orderReference}`,
       text: JSON.stringify(result.data, null, 2),
