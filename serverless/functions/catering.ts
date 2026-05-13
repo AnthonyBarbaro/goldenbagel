@@ -15,10 +15,9 @@ function formatCloverCateringTicket(payload: {
   name: string;
   email: string;
   phone: string;
-  eventType: string;
   eventDate: string;
   eventTime: string;
-  guestCount: number;
+  guestCount: string;
   fulfillment: string;
   bagelTraySize: string;
   bagelFlavors: string[];
@@ -35,7 +34,6 @@ function formatCloverCateringTicket(payload: {
     `Customer: ${payload.name}`,
     `Phone: ${payload.phone}`,
     `Email: ${payload.email}`,
-    `Event: ${payload.eventType}`,
     `Date/time: ${payload.eventDate} at ${payload.eventTime}`,
     `Guests: ${payload.guestCount}`,
     `Fulfillment: ${payload.fulfillment}`,
