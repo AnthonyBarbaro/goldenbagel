@@ -83,11 +83,6 @@ export function restaurantSchema() {
       opens: hour.open,
       closes: hour.close
     })),
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: siteConfig.googleRating,
-      reviewCount: siteConfig.googleReviewCount
-    },
     hasMap: directionsUrl,
     menu: absoluteUrl("/menu/")
   };

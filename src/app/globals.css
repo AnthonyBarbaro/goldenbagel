@@ -6,6 +6,8 @@
   color-scheme: light;
   --background: #fff8ec;
   --foreground: #201814;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
 }
 
 * {

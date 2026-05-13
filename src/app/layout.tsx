@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display } from "next/font/google";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
@@ -7,18 +6,6 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/config/site";
 import { absoluteUrl, restaurantSchema, websiteSchema } from "@/lib/seo";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-sans",
-  display: "swap"
-});
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-serif",
-  display: "swap"
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.siteUrl),
@@ -64,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfair.variable}`}>
+    <html lang="en">
       <body>
         <JsonLd data={restaurantSchema()} />
         <JsonLd data={websiteSchema()} />

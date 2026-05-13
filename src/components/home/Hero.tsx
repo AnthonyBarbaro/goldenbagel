@@ -49,9 +49,9 @@ export function Hero() {
           </div>
           <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 text-center">
             {[
-              ["4.1", "Google rating"],
-              ["205", "reviews"],
-              ["Daily", "fresh bagels"]
+              ["5-star", "flavor goal"],
+              ["Daily", "fresh bagels"],
+              ["Local", "El Cajon cafe"]
             ].map(([value, label]) => (
               <div key={label} className="rounded-2xl bg-white/14 p-4 shadow-soft ring-1 ring-white/16 backdrop-blur">
                 <div className="text-2xl font-black">{value}</div>

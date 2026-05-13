@@ -1,6 +1,5 @@
 import { Star } from "lucide-react";
 import { Section } from "@/components/ui/Section";
-import { siteConfig } from "@/config/site";
 
 const reviews = [
   "The bagels are super fresh and perfectly chewy.",
@@ -10,18 +9,17 @@ const reviews = [
 
 export function ReviewsSection() {
   return (
-    <Section className="bg-white" eyebrow="Local favorite" title="Simple, fresh, and easy to love.">
+    <Section className="bg-white" eyebrow="Local favorite" title="Fresh enough to earn the stars.">
       <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
         <div className="rounded-[2rem] bg-charcoal p-7 text-white shadow-soft">
-          <div className="flex gap-1 text-honey" aria-label={`${siteConfig.googleRating} star Google rating`}>
+          <div className="flex gap-1 text-honey" aria-label="Five-star flavor highlights">
             {Array.from({ length: 5 }).map((_, index) => (
               <Star key={index} aria-hidden="true" fill="currentColor" size={24} />
             ))}
           </div>
-          <p className="mt-5 text-5xl font-black">{siteConfig.googleRating}</p>
-          <p className="mt-2 text-sm font-bold uppercase tracking-[0.18em] text-white/62">
-            {siteConfig.googleReviewCount} Google reviews
-          </p>
+          <p className="mt-5 text-5xl font-black">5-star</p>
+          <p className="mt-2 text-sm font-bold uppercase tracking-[0.18em] text-white/62">Flavor, care, and fresh-baked energy</p>
+          <p className="mt-5 text-sm leading-6 text-white/72">Every order is a chance to earn the next favorite review.</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           {reviews.map((review) => (

@@ -9,6 +9,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-sans)"],
+        serif: ["var(--font-serif)"]
+      },
       colors: {
         charcoal: "#201814",
         cream: "#fff8ec",

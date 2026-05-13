@@ -31,8 +31,6 @@ export const siteConfig = {
   logo: "/goldenbagels/logo.png",
   fallbackLogo: "/logo.png",
   cloverOnlineOrderingUrl,
-  googleRating: 4.1,
-  googleReviewCount: 205,
   orderEnabled: process.env.NEXT_PUBLIC_ENABLE_ORDERING !== "false",
   mockOrdering: process.env.NEXT_PUBLIC_MOCK_ORDERING !== "false"
 } as const;
