@@ -9,17 +9,17 @@ const reviews = [
 
 export function ReviewsSection() {
   return (
-    <Section className="bg-white" eyebrow="Local favorite" title="Fresh enough to earn the stars.">
+    <Section className="bg-white" eyebrow="Local favorite" title="El Cajon bagel energy.">
       <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
         <div className="rounded-[2rem] bg-charcoal p-7 text-white shadow-soft">
-          <div className="flex gap-1 text-honey" aria-label="Five-star flavor highlights">
+          <div className="flex gap-1 text-honey" aria-label="Local favorite highlights">
             {Array.from({ length: 5 }).map((_, index) => (
               <Star key={index} aria-hidden="true" fill="currentColor" size={24} />
             ))}
           </div>
-          <p className="mt-5 text-5xl font-black">5-star</p>
-          <p className="mt-2 text-sm font-bold uppercase tracking-[0.18em] text-white/62">Flavor, care, and fresh-baked energy</p>
-          <p className="mt-5 text-sm leading-6 text-white/72">Every order is a chance to earn the next favorite review.</p>
+          <p className="mt-5 text-5xl font-black">Best Bagel Energy</p>
+          <p className="mt-2 text-sm font-bold uppercase tracking-[0.18em] text-white/62">Fresh daily, friendly, and local</p>
+          <p className="mt-5 text-sm leading-6 text-white/72">Built for quick mornings, easy pickup, and bagel trays people remember.</p>
         </div>
         <div className="grid gap-4 sm:grid-cols-3">
           {reviews.map((review) => (

@@ -15,11 +15,11 @@ export function CateringPartySection() {
           alt="Golden Bagel Cafe catering trays"
           width={900}
           height={600}
-          className="h-72 w-full object-cover lg:h-full"
+          className="h-56 w-full object-cover sm:h-72 lg:h-full"
         />
         <div className="p-6 sm:p-8 lg:p-10">
           <p className="text-sm font-black uppercase tracking-[0.22em] text-toast">Catering order</p>
-          <h2 className="mt-3 font-serif text-4xl font-black text-charcoal sm:text-5xl">Big-party bagels, built like a Clover ticket.</h2>
+          <h2 className="mt-3 font-serif text-3xl font-black text-charcoal sm:text-5xl">Big-party bagels, built like a Clover ticket.</h2>
           <p className="mt-5 max-w-2xl text-base leading-7 text-espresso/74">
             Pick the date, guest count, bagel tray, cream cheese style, and add-ons. The catering survey turns your details into clear kitchen notes for review and printing.
           </p>

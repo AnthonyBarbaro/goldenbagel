@@ -18,7 +18,7 @@ export function LocationSection() {
       className="bg-cream"
     >
       <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr]">
-        <div className="rounded-[2rem] bg-white p-6 shadow-soft">
+        <div className="rounded-[2rem] bg-white p-5 shadow-soft sm:p-6">
           <div className="space-y-5 text-espresso/78">
             <div className="flex gap-4">
               <MapPin aria-hidden="true" className="mt-1 text-toast" />
@@ -43,17 +43,17 @@ export function LocationSection() {
             </a>
           </div>
           <div className="mt-8">
-            <Button href={directionsUrl}>Get Directions</Button>
+            <Button href={directionsUrl} className="w-full sm:w-auto">Get Directions</Button>
           </div>
         </div>
 
-        <div className="min-h-[360px] overflow-hidden rounded-[2rem] bg-white shadow-soft">
+        <div className="min-h-[300px] overflow-hidden rounded-[2rem] bg-white shadow-soft sm:min-h-[360px]">
           {mapUrl ? (
             <iframe
               title="Map to Golden Bagel Cafe"
               src={mapUrl}
               loading="lazy"
-              className="h-full min-h-[360px] w-full border-0"
+              className="h-full min-h-[300px] w-full border-0 sm:min-h-[360px]"
               referrerPolicy="no-referrer-when-downgrade"
               allowFullScreen
             />

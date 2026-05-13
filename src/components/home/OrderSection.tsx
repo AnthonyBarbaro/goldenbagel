@@ -13,11 +13,11 @@ export function OrderSection() {
         <div>
           <p className="mb-3 text-sm font-black uppercase tracking-[0.24em] text-honey">Order ahead</p>
           <h2 className="font-serif text-4xl font-black tracking-tight sm:text-6xl">Order online with Clover.</h2>
-          <p className="mt-5 max-w-2xl text-lg leading-8 text-white/74">
+          <p className="mt-5 max-w-2xl text-base leading-7 text-white/74 sm:text-lg sm:leading-8">
             Use the hosted Clover ordering page for pickup ordering, payment, and order routing. The local menu stays here for browsing and SEO.
           </p>
           <div className="mt-8">
-            <Button href={onlineOrderUrl}>Order Online</Button>
+            <Button href={onlineOrderUrl} className="w-full sm:w-auto">Order Online</Button>
           </div>
         </div>
         <div className="grid gap-4">

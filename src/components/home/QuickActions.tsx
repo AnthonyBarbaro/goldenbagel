@@ -38,7 +38,7 @@ const actions = [
 export function QuickActions() {
   return (
     <Section className="bg-white">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         {actions.map(({ title, text, href, icon: Icon, label }) => (
           <Link
             key={title}
@@ -46,12 +46,12 @@ export function QuickActions() {
             aria-label={label}
             className="group block rounded-[1.5rem] focus-visible:outline focus-visible:outline-4 focus-visible:outline-honey"
           >
-            <ThreeDCard className="h-full p-5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-honey text-charcoal">
-                <Icon aria-hidden="true" size={24} />
+            <ThreeDCard className="h-full p-4 sm:p-5">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-honey text-charcoal sm:h-12 sm:w-12">
+                <Icon aria-hidden="true" size={22} />
               </div>
-              <h2 className="mt-5 text-xl font-black text-charcoal">{title}</h2>
-              <p className="mt-3 min-h-[4.5rem] text-sm leading-6 text-espresso/72">{text}</p>
+              <h2 className="mt-4 text-lg font-black text-charcoal sm:mt-5 sm:text-xl">{title}</h2>
+              <p className="mt-2 text-[0.82rem] font-bold leading-5 text-espresso/72 sm:mt-3 sm:text-sm sm:leading-6">{text}</p>
             </ThreeDCard>
           </Link>
         ))}

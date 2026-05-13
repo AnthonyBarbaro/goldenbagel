@@ -34,7 +34,7 @@ export function PopularMenu() {
         </div>
       </div>
       <div className="mt-8">
-        <Button href={onlineOrderUrl}>Order Online</Button>
+        <Button href={onlineOrderUrl} className="w-full sm:w-auto">Order Online</Button>
       </div>
     </Section>
   );

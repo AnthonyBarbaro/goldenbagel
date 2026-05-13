@@ -11,7 +11,7 @@ type CategoryChipsProps = {
 
 export function CategoryChips({ categories, active, onChange }: CategoryChipsProps) {
   return (
-    <div className="sticky top-[73px] z-30 -mx-4 overflow-x-auto border-y border-charcoal/10 bg-cream/92 px-4 py-3 backdrop-blur-xl sm:-mx-6 sm:px-6 lg:top-[77px] lg:-mx-8 lg:px-8">
+    <div className="sticky top-[69px] z-30 -mx-4 overflow-x-auto border-y border-charcoal/10 bg-cream/92 px-4 py-3 backdrop-blur-xl [scrollbar-width:none] sm:top-[73px] sm:-mx-6 sm:px-6 lg:top-[77px] lg:-mx-8 lg:px-8 [&::-webkit-scrollbar]:hidden">
       <div className="flex min-w-max gap-2">
         {(["All", ...categories] as Array<MenuCategory | "All">).map((category) => {
           const selected = active === category;
