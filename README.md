@@ -313,6 +313,20 @@ AWS_REGION=us-west-2 \
 ./scripts/deploy-s3-cloudfront.sh
 ```
 
+## Final Verification Notes
+
+Verified during implementation:
+
+- `npm install`
+- `npm run lint`
+- `npm run build`
+- `npm run build --prefix serverless`
+- `npm audit --omit=dev`
+- Static export generates `out/`
+- No Next.js API routes or Server Actions are used
+- `.env` files and secrets are ignored while `.env.example` templates are committed
+- GitHub remote is connected to `https://github.com/AnthonyBarbaro/goldenbagel.git`
+
 ## Repository
 
 Remote:

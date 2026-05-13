@@ -42,6 +42,7 @@ export function Button({
   const buttonClassName = classNames(
     "inline-flex items-center justify-center gap-2 rounded-full font-extrabold transition duration-200",
     "focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-honey",
+    "disabled:cursor-not-allowed disabled:opacity-55",
     variants[variant],
     sizes[size],
     className

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useSyncExternalStore } from "react";
 import type { MenuItem } from "@/data/menu";
 
 export type CartModifier = {
@@ -22,6 +22,9 @@ export type CartItem = {
 
 const CART_KEY = "goldenbagel.cart.v1";
 const CART_EVENT = "goldenbagel-cart";
+const EMPTY_CART: CartItem[] = [];
+let cartCacheRaw = "";
+let cartCacheItems: CartItem[] = EMPTY_CART;
 
 function readCart(): CartItem[] {
   if (typeof window === "undefined") {
@@ -36,9 +39,38 @@ function readCart(): CartItem[] {
   }
 }
 
+function getCartSnapshot() {
+  if (typeof window === "undefined") {
+    return EMPTY_CART;
+  }
+
+  const raw = window.localStorage.getItem(CART_KEY) || "";
+
+  if (raw === cartCacheRaw) {
+    return cartCacheItems;
+  }
+
+  cartCacheRaw = raw;
+  cartCacheItems = raw ? readCart() : EMPTY_CART;
+  return cartCacheItems;
+}
+
 function writeCart(items: CartItem[]) {
-  window.localStorage.setItem(CART_KEY, JSON.stringify(items));
+  const raw = JSON.stringify(items);
+  cartCacheRaw = raw;
+  cartCacheItems = items;
+  window.localStorage.setItem(CART_KEY, raw);
   window.dispatchEvent(new CustomEvent(CART_EVENT));
+}
+
+function subscribeCart(callback: () => void) {
+  window.addEventListener("storage", callback);
+  window.addEventListener(CART_EVENT, callback);
+
+  return () => {
+    window.removeEventListener("storage", callback);
+    window.removeEventListener(CART_EVENT, callback);
+  };
 }
 
 function makeCartId(item: MenuItem, modifiers: CartModifier[]) {
@@ -46,23 +78,9 @@ function makeCartId(item: MenuItem, modifiers: CartModifier[]) {
 }
 
 export function useCart() {
-  const [items, setItems] = useState<CartItem[]>([]);
-
-  useEffect(() => {
-    setItems(readCart());
-
-    const sync = () => setItems(readCart());
-    window.addEventListener("storage", sync);
-    window.addEventListener(CART_EVENT, sync);
-
-    return () => {
-      window.removeEventListener("storage", sync);
-      window.removeEventListener(CART_EVENT, sync);
-    };
-  }, []);
+  const items = useSyncExternalStore(subscribeCart, getCartSnapshot, () => EMPTY_CART);
 
   const save = useCallback((nextItems: CartItem[]) => {
-    setItems(nextItems);
     writeCart(nextItems);
   }, []);
 
