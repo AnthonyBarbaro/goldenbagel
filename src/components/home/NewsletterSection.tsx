@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/Button";
+import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { Section } from "@/components/ui/Section";
 
 export function NewsletterSection() {
@@ -10,18 +10,9 @@ export function NewsletterSection() {
           <h2 className="mt-3 font-serif text-3xl font-black sm:text-5xl">Get fresh updates.</h2>
           <p className="mt-3 max-w-2xl text-white/70">Join the list for cafe updates, seasonal specials, and catering reminders.</p>
         </div>
-        <form className="mt-6 flex w-full max-w-md gap-2 lg:mt-0">
-          <label className="sr-only" htmlFor="newsletter-email">
-            Email address
-          </label>
-          <input
-            id="newsletter-email"
-            type="email"
-            placeholder="you@example.com"
-            className="min-h-12 flex-1 rounded-full border border-white/20 bg-white px-5 text-charcoal shadow-inner"
-          />
-          <Button type="submit">Join</Button>
-        </form>
+        <div className="mt-6 lg:mt-0">
+          <NewsletterForm />
+        </div>
       </div>
     </Section>
   );

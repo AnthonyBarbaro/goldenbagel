@@ -1,0 +1,28 @@
+import type { Metadata } from "next";
+import { JobApplicationForm } from "@/components/forms/JobApplicationForm";
+
+export const metadata: Metadata = {
+  title: "Jobs",
+  description: "Apply online to join the Golden Bagel Cafe team in El Cajon."
+};
+
+export default function JobsPage() {
+  return (
+    <main className="bg-cream px-4 py-14 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+        <div>
+          <p className="text-sm font-black uppercase tracking-[0.26em] text-toast">Jobs</p>
+          <h1 className="mt-4 font-serif text-5xl font-black tracking-tight text-charcoal sm:text-7xl">Join the Golden Bagel Cafe team.</h1>
+          <p className="mt-5 text-lg leading-8 text-espresso/74">
+            We are hiring friendly, dependable people who care about good food, clean service, and warm hospitality.
+          </p>
+          <div className="mt-8 rounded-[2rem] bg-white p-6 shadow-soft">
+            <h2 className="text-xl font-black text-charcoal">What to share</h2>
+            <p className="mt-3 text-espresso/72">Tell us the role you want, your weekly availability, and any cafe, kitchen, or customer service experience.</p>
+          </div>
+        </div>
+        <JobApplicationForm />
+      </div>
+    </main>
+  );
+}

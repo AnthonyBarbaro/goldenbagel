@@ -24,6 +24,12 @@ export type OrderResponse = {
   mock: boolean;
 };
 
+export type FormResponse = {
+  ok: boolean;
+  message: string;
+  mock?: boolean;
+};
+
 function getApiBaseUrl() {
   return process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") || "";
 }
@@ -63,4 +69,37 @@ export async function createOrder(input: CreateOrderInput): Promise<OrderRespons
   }
 
   return response.json() as Promise<OrderResponse>;
+}
+
+export async function submitPublicForm(endpoint: string, payload: Record<string, unknown>): Promise<FormResponse> {
+  const apiBase = getApiBaseUrl();
+
+  if (!apiBase) {
+    await new Promise((resolve) => setTimeout(resolve, 450));
+    return {
+      ok: true,
+      message: "Thanks. This mock submission was received locally.",
+      mock: true
+    };
+  }
+
+  const response = await fetch(`${apiBase}${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const data = (await response.json().catch(() => ({}))) as Partial<FormResponse>;
+
+  if (!response.ok) {
+    throw new Error(data.message || "Unable to submit this form right now.");
+  }
+
+  return {
+    ok: true,
+    message: data.message || "Thanks. We received your request.",
+    mock: data.mock
+  };
 }
