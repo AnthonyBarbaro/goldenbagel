@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Button } from "@/components/ui/Button";
+import Link from "next/link";
 import { Section } from "@/components/ui/Section";
 
 const cards = [
@@ -24,16 +24,18 @@ export function CateringPartySection() {
     <Section className="bg-white">
       <div className="grid gap-5 lg:grid-cols-2">
         {cards.map((card) => (
-          <article key={card.title} className="overflow-hidden rounded-[2rem] bg-cream shadow-soft">
+          <Link
+            key={card.title}
+            href={card.href}
+            className="group overflow-hidden rounded-[2rem] bg-cream shadow-soft transition hover:-translate-y-1 hover:shadow-lift focus-visible:outline focus-visible:outline-4 focus-visible:outline-honey"
+          >
             <Image src={card.image} alt={`${card.title} at Golden Bagel Cafe`} width={900} height={600} className="h-64 w-full object-cover" />
             <div className="p-6 sm:p-8">
               <h2 className="font-serif text-3xl font-black text-charcoal">{card.title}</h2>
               <p className="mt-4 text-base leading-7 text-espresso/74">{card.text}</p>
-              <Button href={card.href} className="mt-6">
-                {card.cta}
-              </Button>
+              <span className="mt-6 inline-flex text-sm font-black text-toast transition group-hover:text-charcoal">{card.cta}</span>
             </div>
-          </article>
+          </Link>
         ))}
       </div>
     </Section>

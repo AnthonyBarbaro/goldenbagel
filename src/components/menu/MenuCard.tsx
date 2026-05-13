@@ -1,7 +1,6 @@
 "use client";
 
-import { Plus, SlidersHorizontal } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Plus } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import type { MenuItem } from "@/data/menu";
@@ -14,21 +13,10 @@ type MenuCardProps = {
 
 export function MenuCard({ item }: MenuCardProps) {
   const { addItem } = useCart();
-  const [customizing, setCustomizing] = useState(false);
-  const [selectedModifiers, setSelectedModifiers] = useState<Record<string, string>>({});
-  const modifiers = item.modifiers;
   const canAddToCart = item.available && item.category !== "Flavors & Toppings";
 
-  const cartModifiers = useMemo(
-    () =>
-      Object.entries(selectedModifiers)
-        .filter(([, option]) => Boolean(option))
-        .map(([name, option]) => ({ name, option })),
-    [selectedModifiers]
-  );
-
   function handleAdd() {
-    addItem(item, cartModifiers);
+    addItem(item);
   }
 
   return (
@@ -55,50 +43,11 @@ export function MenuCard({ item }: MenuCardProps) {
           </div>
         )}
 
-        {customizing && modifiers.length > 0 && (
-          <div className="mt-4 space-y-3 rounded-2xl bg-cream p-4">
-            {modifiers.map((modifier) => (
-              <label key={modifier.name} className="block text-sm font-bold text-charcoal">
-                {modifier.name}
-                <select
-                  value={selectedModifiers[modifier.name] || ""}
-                  onChange={(event) =>
-                    setSelectedModifiers((current) => ({
-                      ...current,
-                      [modifier.name]: event.target.value
-                    }))
-                  }
-                  className="mt-2 min-h-11 w-full rounded-xl border border-charcoal/10 bg-white px-3 text-sm"
-                >
-                  <option value="">No preference</option>
-                  {modifier.options.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ))}
-          </div>
-        )}
-
-        <div className="mt-5 grid grid-cols-[1fr_auto] gap-2">
+        <div className="mt-5">
           <Button type="button" onClick={handleAdd} disabled={!canAddToCart}>
             <Plus aria-hidden="true" size={18} />
-            {canAddToCart ? "Add" : "Info Only"}
+            {canAddToCart ? "Add to Clover Cart" : "Info Only"}
           </Button>
-          {modifiers.length > 0 && (
-            <Button
-              type="button"
-              variant="secondary"
-              aria-expanded={customizing}
-              aria-label={`Customize ${item.name}`}
-              onClick={() => setCustomizing((value) => !value)}
-            >
-              <SlidersHorizontal aria-hidden="true" size={18} />
-              <span className="sr-only">Customize</span>
-            </Button>
-          )}
         </div>
       </div>
     </article>

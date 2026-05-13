@@ -32,11 +32,8 @@ export function PopularMenu() {
           ))}
         </div>
       </div>
-      <div className="mt-8 flex flex-wrap gap-3">
-        <Button href="/menu">Browse Full Menu</Button>
-        <Button href="/order" variant="secondary">
-          Order Pickup
-        </Button>
+      <div className="mt-8">
+        <Button href="/order">Open Clover Order</Button>
       </div>
     </Section>
   );

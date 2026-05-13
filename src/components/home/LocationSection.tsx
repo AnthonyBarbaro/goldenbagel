@@ -42,11 +42,8 @@ export function LocationSection() {
               </div>
             </a>
           </div>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8">
             <Button href={directionsUrl}>Get Directions</Button>
-            <Button href={siteConfig.phoneHref} variant="secondary">
-              Call Cafe
-            </Button>
           </div>
         </div>
 

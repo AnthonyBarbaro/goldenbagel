@@ -116,7 +116,7 @@ export function CheckoutForm({ items, onComplete }: CheckoutFormProps) {
 
       <Button type="submit" disabled={isSubmitting || items.length === 0} className="w-full">
         {isSubmitting && <Loader2 aria-hidden="true" className="animate-spin" size={18} />}
-        Checkout
+        Send to Clover Checkout
       </Button>
     </form>
   );

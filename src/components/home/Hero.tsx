@@ -1,9 +1,9 @@
 import Image from "next/image";
-import { ArrowRight, MapPin, ShoppingBag } from "lucide-react";
+import { ShoppingBag } from "lucide-react";
 import { AnimatedBagel } from "@/components/ui/AnimatedBagel";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { directionsUrl, siteConfig } from "@/config/site";
+import { siteConfig } from "@/config/site";
 
 export function Hero() {
   return (
@@ -21,18 +21,10 @@ export function Hero() {
             Golden Bagel Cafe serves fresh bagels, breakfast sandwiches, wraps, salads, smoothies, and catering favorites in
             El Cajon.
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-8">
             <Button href="/order" size="lg">
               <ShoppingBag aria-hidden="true" size={20} />
-              Order Pickup
-            </Button>
-            <Button href="/menu" variant="secondary" size="lg">
-              View Menu
-              <ArrowRight aria-hidden="true" size={19} />
-            </Button>
-            <Button href={directionsUrl} variant="ghost" size="lg">
-              <MapPin aria-hidden="true" size={19} />
-              Get Directions
+              Start Clover Order
             </Button>
           </div>
           <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 text-center">

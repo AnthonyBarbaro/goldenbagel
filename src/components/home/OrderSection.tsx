@@ -14,20 +14,17 @@ export function OrderSection() {
           <p className="mb-3 text-sm font-black uppercase tracking-[0.24em] text-honey">Order ahead</p>
           <h2 className="font-serif text-4xl font-black tracking-tight sm:text-6xl">Order ahead. Pick up fresh.</h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-white/74">
-            Choose your favorites, add notes, and send a mock order while Clover live checkout is being prepared.
+            Choose your favorites, add notes, and send the order through the Clover-ready flow. Mock mode stays on until live credentials are connected.
           </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button href="/order">Start Pickup Order</Button>
-            <Button href="/menu" variant="secondary">
-              See Menu First
-            </Button>
+          <div className="mt-8">
+            <Button href="/order">Open Clover Order</Button>
           </div>
         </div>
         <div className="grid gap-4">
           {[
             { icon: Clock3, title: "Open daily", text: hours },
-            { icon: PackageCheck, title: "Pickup ready", text: "Submit your details and get a mock order reference." },
-            { icon: Truck, title: "Delivery", text: "Delivery links can be connected when the shop is ready." }
+            { icon: PackageCheck, title: "Clover-ready", text: "Submit item details now; route to hosted Clover checkout later." },
+            { icon: Truck, title: "Delivery", text: "Delivery can be enabled as a future Clover/order-provider option." }
           ].map(({ icon: Icon, title, text }) => (
             <div key={title} className="rounded-[1.5rem] border border-white/12 bg-white/8 p-5">
               <div className="flex items-center gap-4">
