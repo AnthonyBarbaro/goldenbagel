@@ -1,15 +1,12 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
+import { featuredMenuItemIds, menuItems, type MenuItem } from "@/data/menu";
 
-const popularItems = [
-  { name: "Bagel with Cream Cheese", price: "$4.99", category: "Golden Deals" },
-  { name: "Golden Scramble", price: "$7.99", category: "Breakfast Bagels" },
-  { name: "Golden Works", price: "$10.99", category: "Breakfast Bagels" },
-  { name: "Lox Bagel", price: "from $10.99", category: "Lunch Bagels" },
-  { name: "Thai Chicken Wrap", price: "$11.99", category: "Wraps" },
-  { name: "Traditional Cobb", price: "$12.99", category: "Salads" }
-];
+const popularItems = featuredMenuItemIds
+  .map((id) => menuItems.find((item) => item.id === id))
+  .filter((item): item is MenuItem => Boolean(item))
+  .slice(0, 6);
 
 export function PopularMenu() {
   return (
@@ -34,7 +31,9 @@ export function PopularMenu() {
             <div key={item.name} className="rounded-[1.25rem] bg-white p-5 shadow-soft ring-1 ring-charcoal/5">
               <p className="text-xs font-black uppercase tracking-[0.18em] text-toast">{item.category}</p>
               <h3 className="mt-3 text-lg font-black text-charcoal">{item.name}</h3>
-              <p className="mt-4 text-2xl font-black text-espresso">{item.price}</p>
+              <p className="mt-4 text-2xl font-black text-espresso">
+                {item.priceLabel || (item.price === null ? "Ask" : `$${item.price.toFixed(2)}`)}
+              </p>
             </div>
           ))}
         </div>
