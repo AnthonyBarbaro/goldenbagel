@@ -5,10 +5,8 @@ Golden Bagel Cafe is a bagel shop and cafe at 2744 Fletcher Pkwy, El Cajon, CA 9
 Open daily 6:30 AM to 3:00 PM. Phone: (619) 464-2243.
 
 Primary pages:
-- /menu/ - editable static menu with bagels, breakfast bagels, wraps, sandwiches, salads, smoothies, flavors, and toppings.
-- /order/ - mock pickup ordering flow prepared for API Gateway, Lambda, and Clover hosted checkout.
-- /catering/ - catering request form for bagel trays, sandwiches, salads, meetings, and events.
-- /parties/ - group and private event request form.
+- /menu/ - editable static menu and everyday ordering surface for bagels, breakfast bagels, wraps, sandwiches, salads, smoothies, flavors, and toppings.
+- /catering/ - large-order catering survey for bagel trays, cream cheese, event details, and Clover API-ready ticket notes.
 - /jobs/ - job application form.
 - /visit/ - address, hours, map fallback, directions, phone, and contact form.
 

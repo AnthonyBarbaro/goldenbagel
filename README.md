@@ -11,11 +11,10 @@ The backend foundation includes TypeScript Lambda handlers, shared CORS/validati
 ## 2. Features
 
 - Mobile-first homepage
-- Menu browsing
-- Mock online ordering
+- Menu browsing and everyday ordering
+- Mock Clover API-ready ordering
 - Cart with localStorage persistence
-- Catering requests
-- Group/private party requests
+- Catering and big-party ordering survey
 - Job applications
 - Contact form
 - Newsletter signup

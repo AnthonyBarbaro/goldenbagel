@@ -1,4 +1,5 @@
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
+import { createCateringCloverTicket } from "../shared/clover.js";
 import { optionsResponse } from "../shared/cors.js";
 import { formatSubmission, sendOwnerNotification } from "../shared/email.js";
 import { rateLimit } from "../shared/rateLimit.js";
@@ -14,6 +15,7 @@ function formatCloverCateringTicket(payload: {
   name: string;
   email: string;
   phone: string;
+  eventType: string;
   eventDate: string;
   eventTime: string;
   guestCount: number;
@@ -33,6 +35,7 @@ function formatCloverCateringTicket(payload: {
     `Customer: ${payload.name}`,
     `Phone: ${payload.phone}`,
     `Email: ${payload.email}`,
+    `Event: ${payload.eventType}`,
     `Date/time: ${payload.eventDate} at ${payload.eventTime}`,
     `Guests: ${payload.guestCount}`,
     `Fulfillment: ${payload.fulfillment}`,
@@ -71,13 +74,23 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       return badRequest(event, result.honeypot ? "Invalid submission." : "Invalid catering request.", "error" in result ? result.error : undefined);
     }
 
+    const cloverTicketSummary = formatCloverCateringTicket(result.data);
+    const cloverTicket = await createCateringCloverTicket({
+      ...result.data,
+      cloverTicketSummary
+    });
+
     await sendOwnerNotification({
-      subject: "Golden Bagel Clover catering ticket",
-      text: `${formatCloverCateringTicket(result.data)}\n\nRAW REQUEST\n-----------\n${formatSubmission("Catering request", result.data)}`,
+      subject: `Golden Bagel catering ticket ${cloverTicket.orderReference}`,
+      text: `${cloverTicketSummary}\n\nCLOVER API STATUS\n-----------------\n${JSON.stringify(cloverTicket, null, 2)}\n\nRAW REQUEST\n-----------\n${formatSubmission("Catering request", result.data)}`,
       replyTo: result.data.email
     });
 
-    return success(event, { message: "Thanks. We received your catering ticket." });
+    safeLog("catering:ticket", { orderReference: cloverTicket.orderReference, mock: cloverTicket.mock });
+    return success(event, {
+      message: `Thanks. We received your catering ticket ${cloverTicket.orderReference}.`,
+      cloverTicket
+    });
   } catch (error) {
     safeLog("catering:error", { message: error instanceof Error ? error.message : "unknown" });
     return serverError(event);

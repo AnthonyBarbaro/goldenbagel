@@ -134,6 +134,31 @@ export async function createCloverOrder(payload: unknown) {
   };
 }
 
+export async function createCateringCloverTicket(payload: unknown) {
+  const config = getCloverConfig();
+
+  if (config.mock) {
+    const orderReference = `GB-CAT-${randomUUID().slice(0, 8).toUpperCase()}`;
+
+    return {
+      ticketId: `mock_catering_${Date.now()}`,
+      orderReference,
+      status: "mock-catering-ticket",
+      mock: true
+    };
+  }
+
+  // The live implementation should create a Clover order or printable kitchen ticket
+  // with catering survey details stored in server-side order notes.
+  return {
+    ticketId: `clover_catering_placeholder_${Date.now()}`,
+    orderReference: `GB-CAT-${Date.now().toString().slice(-6)}`,
+    status: "live-catering-placeholder",
+    mock: false,
+    payloadReceived: Boolean(payload)
+  };
+}
+
 export async function createCheckoutSession(payload: unknown) {
   const config = getCloverConfig();
 

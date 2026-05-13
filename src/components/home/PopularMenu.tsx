@@ -13,7 +13,7 @@ export function PopularMenu() {
     <Section
       eyebrow="Popular picks"
       title="Made fresh for breakfast, lunch, and coffee runs."
-      intro="Start with a cafe favorite, then customize your bagel, spread, or notes during the mock ordering flow."
+      intro="Start with a cafe favorite, then add it to the Clover API-ready cart from the Menu page."
       className="bg-cream"
     >
       <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr]">
@@ -33,7 +33,7 @@ export function PopularMenu() {
         </div>
       </div>
       <div className="mt-8">
-        <Button href="/order">Open Clover Order</Button>
+        <Button href="/menu">Order From Menu</Button>
       </div>
     </Section>
   );

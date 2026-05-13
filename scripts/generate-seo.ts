@@ -1,7 +1,7 @@
 import { writeFileSync } from "node:fs";
 import { absoluteUrl } from "../src/lib/seo";
 
-const routes = ["/", "/menu/", "/order/", "/catering/", "/parties/", "/jobs/", "/visit/", "/reviews/", "/privacy/", "/terms/", "/accessibility/"];
+const routes = ["/", "/menu/", "/catering/", "/jobs/", "/visit/", "/reviews/", "/privacy/", "/terms/", "/accessibility/"];
 
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

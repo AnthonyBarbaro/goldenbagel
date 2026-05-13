@@ -44,6 +44,7 @@ export const cateringSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   phone: z.string().min(7),
+  eventType: z.string().min(2),
   eventDate: z.string().min(1),
   eventTime: z.string().min(1),
   guestCount: z.number().or(z.string()).transform(Number),

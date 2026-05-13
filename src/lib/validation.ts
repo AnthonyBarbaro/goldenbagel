@@ -14,6 +14,7 @@ export const cateringSchema = z.object({
   name: z.string().min(2, "Enter your name."),
   email: z.string().email("Enter a valid email."),
   phone: z.string().min(7, "Enter a phone number."),
+  eventType: z.string().min(2, "Choose an event type."),
   eventDate: z.string().min(1, "Choose an event date."),
   eventTime: z.string().min(1, "Choose an event time."),
   guestCount: z.coerce.number().min(1, "Enter a guest count."),

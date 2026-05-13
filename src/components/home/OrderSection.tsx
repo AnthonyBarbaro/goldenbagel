@@ -12,18 +12,18 @@ export function OrderSection() {
       <div className="grid gap-10 lg:grid-cols-[1fr_0.85fr] lg:items-center">
         <div>
           <p className="mb-3 text-sm font-black uppercase tracking-[0.24em] text-honey">Order ahead</p>
-          <h2 className="font-serif text-4xl font-black tracking-tight sm:text-6xl">Order ahead. Pick up fresh.</h2>
+          <h2 className="font-serif text-4xl font-black tracking-tight sm:text-6xl">Menu is where you order.</h2>
           <p className="mt-5 max-w-2xl text-lg leading-8 text-white/74">
-            Choose your favorites, add notes, and send the order through the Clover-ready flow. Mock mode stays on until live credentials are connected.
+            Choose favorites on the Menu tab, add notes, and send the cart through the API Gateway and Lambda flow. Clover API live checkout plugs in server-side when credentials are connected.
           </p>
           <div className="mt-8">
-            <Button href="/order">Open Clover Order</Button>
+            <Button href="/menu">Order From Menu</Button>
           </div>
         </div>
         <div className="grid gap-4">
           {[
             { icon: Clock3, title: "Open daily", text: hours },
-            { icon: PackageCheck, title: "Clover-ready", text: "Submit item details now; route to hosted Clover checkout later." },
+            { icon: PackageCheck, title: "Clover API ready", text: "Submit item details now; route to hosted Clover checkout later." },
             { icon: Truck, title: "Delivery", text: "Delivery can be enabled as a future Clover/order-provider option." }
           ].map(({ icon: Icon, title, text }) => (
             <div key={title} className="rounded-[1.5rem] border border-white/12 bg-white/8 p-5">

@@ -22,9 +22,9 @@ export function Hero() {
             El Cajon.
           </p>
           <div className="mt-8">
-            <Button href="/order" size="lg">
+            <Button href="/menu" size="lg">
               <ShoppingBag aria-hidden="true" size={20} />
-              Start Clover Order
+              Order From Menu
             </Button>
           </div>
           <div className="mt-8 grid max-w-xl grid-cols-3 gap-3 text-center">
@@ -54,7 +54,7 @@ export function Hero() {
           </div>
           <div className="absolute left-0 top-36 rounded-[2rem] bg-charcoal p-4 text-white shadow-lift">
             <p className="text-xs font-black uppercase tracking-[0.18em] text-honey">Start your morning golden</p>
-            <p className="mt-2 max-w-[13rem] text-sm leading-6 text-white/80">Bagels, coffee, smoothies, and a quick pickup flow.</p>
+            <p className="mt-2 max-w-[13rem] text-sm leading-6 text-white/80">Bagels, coffee, smoothies, and a Clover API-ready pickup flow.</p>
           </div>
           <div className="absolute bottom-5 left-10 rounded-full bg-white/88 p-4 shadow-soft backdrop-blur">
             <AnimatedBagel />

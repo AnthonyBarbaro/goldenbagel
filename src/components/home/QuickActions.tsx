@@ -1,37 +1,36 @@
 import Link from "next/link";
-import { CalendarHeart, MapPin, ShoppingBag, Utensils } from "lucide-react";
+import { Briefcase, CalendarHeart, MapPin, ShoppingBag } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { ThreeDCard } from "@/components/ui/ThreeDCard";
-import { directionsUrl } from "@/config/site";
 
 const actions = [
   {
-    title: "Order Pickup",
-    text: "Build a bagel, sandwich, wrap, salad, or smoothie order for pickup.",
-    href: "/order",
-    icon: ShoppingBag,
-    cta: "Open"
-  },
-  {
-    title: "View Menu",
-    text: "Browse bagels, cream cheese, breakfast, lunch, salads, and smoothies.",
+    title: "Menu",
+    text: "Browse and order bagels, sandwiches, wraps, salads, smoothies, and cafe favorites.",
     href: "/menu",
-    icon: Utensils,
-    cta: "Open"
+    icon: ShoppingBag,
+    label: "Open menu ordering"
   },
   {
     title: "Catering",
-    text: "Bagel trays, sandwiches, salads, and cafe favorites for groups.",
+    text: "Build a big-party catering ticket with date, guest count, bagels, spreads, and add-ons.",
     href: "/catering",
     icon: CalendarHeart,
-    cta: "Open"
+    label: "Open catering ordering"
   },
   {
     title: "Visit Us",
     text: "Find us on Fletcher Parkway in El Cajon, open daily until 3 PM.",
-    href: directionsUrl,
+    href: "/visit",
     icon: MapPin,
-    cta: "Open"
+    label: "Open visit information"
+  },
+  {
+    title: "Jobs",
+    text: "Apply online for cafe roles and share your availability.",
+    href: "/jobs",
+    icon: Briefcase,
+    label: "Open job application"
   }
 ];
 
@@ -39,15 +38,19 @@ export function QuickActions() {
   return (
     <Section className="bg-white">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {actions.map(({ title, text, href, icon: Icon, cta }) => (
-          <Link key={title} href={href} className="group block rounded-[1.5rem] focus-visible:outline focus-visible:outline-4 focus-visible:outline-honey">
+        {actions.map(({ title, text, href, icon: Icon, label }) => (
+          <Link
+            key={title}
+            href={href}
+            aria-label={label}
+            className="group block rounded-[1.5rem] focus-visible:outline focus-visible:outline-4 focus-visible:outline-honey"
+          >
             <ThreeDCard className="h-full p-5">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-honey text-charcoal">
                 <Icon aria-hidden="true" size={24} />
               </div>
               <h2 className="mt-5 text-xl font-black text-charcoal">{title}</h2>
               <p className="mt-3 min-h-[4.5rem] text-sm leading-6 text-espresso/72">{text}</p>
-              <span className="mt-4 inline-flex text-sm font-black text-toast transition group-hover:text-charcoal">{cta}</span>
             </ThreeDCard>
           </Link>
         ))}

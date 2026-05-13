@@ -2,9 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://goldenbagelcafe.com/</loc><priority>1.0</priority></url>
   <url><loc>https://goldenbagelcafe.com/menu/</loc><priority>0.9</priority></url>
-  <url><loc>https://goldenbagelcafe.com/order/</loc><priority>0.9</priority></url>
   <url><loc>https://goldenbagelcafe.com/catering/</loc><priority>0.8</priority></url>
-  <url><loc>https://goldenbagelcafe.com/parties/</loc><priority>0.7</priority></url>
   <url><loc>https://goldenbagelcafe.com/jobs/</loc><priority>0.6</priority></url>
   <url><loc>https://goldenbagelcafe.com/visit/</loc><priority>0.8</priority></url>
   <url><loc>https://goldenbagelcafe.com/reviews/</loc><priority>0.5</priority></url>

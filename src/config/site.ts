@@ -42,9 +42,7 @@ export const directionsUrl = `https://www.google.com/maps/search/?api=1&query=${
 
 export const navItems = [
   { href: "/menu", label: "Menu" },
-  { href: "/order", label: "Order" },
   { href: "/catering", label: "Catering" },
-  { href: "/parties", label: "Parties" },
   { href: "/visit", label: "Visit Us" },
   { href: "/jobs", label: "Jobs" }
 ] as const;

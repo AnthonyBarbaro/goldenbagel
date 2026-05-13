@@ -72,6 +72,7 @@ function CheckboxGroup({
 function buildCloverTicket(values: Partial<CateringFormValues>) {
   return [
     "CLOVER CATERING TICKET",
+    `Event: ${values.eventType || "event type needed"}`,
     `Date/time: ${values.eventDate || "date needed"} at ${values.eventTime || "time needed"}`,
     `Guests: ${values.guestCount || "guest count needed"}`,
     `Fulfillment: ${values.fulfillment || "pickup"}`,
@@ -144,6 +145,15 @@ export function CateringForm() {
           <Input label="Phone" error={errors.phone?.message} {...register("phone")} />
         </div>
         <Input label="Email" type="email" error={errors.email?.message} {...register("email")} />
+        <Select label="Event type" error={errors.eventType?.message} {...register("eventType")}>
+          <option value="">Choose one</option>
+          <option value="Office meeting">Office meeting</option>
+          <option value="Birthday party">Birthday party</option>
+          <option value="Baby shower">Baby shower</option>
+          <option value="School or team event">School or team event</option>
+          <option value="Weekend brunch">Weekend brunch</option>
+          <option value="Other large order">Other large order</option>
+        </Select>
         <div className="grid gap-4 sm:grid-cols-3">
           <Input label="Event date" type="date" error={errors.eventDate?.message} {...register("eventDate")} />
           <Input label="Ready time" type="time" error={errors.eventTime?.message} {...register("eventTime")} />
