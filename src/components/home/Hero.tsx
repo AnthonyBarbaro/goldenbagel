@@ -1,6 +1,6 @@
 import { MapPin, ShoppingBag, Utensils } from "lucide-react";
-import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { StoreStatusBadge } from "@/components/ui/StoreStatusBadge";
 import { businessAddress, directionsUrl, onlineOrderUrl, siteConfig } from "@/config/site";
 
 export function Hero() {
@@ -27,7 +27,7 @@ export function Hero() {
 
       <div className="relative mx-auto flex min-h-[calc(100svh-10rem)] max-w-7xl items-end pb-8 sm:min-h-[590px] sm:items-center sm:pb-0">
         <div className="max-w-3xl">
-          <Badge>Open daily 6:30 AM - 3:00 PM</Badge>
+          <StoreStatusBadge />
           <h1 className="mt-5 font-serif text-4xl font-black leading-[0.98] tracking-tight sm:mt-6 sm:text-6xl lg:text-7xl">
             Fresh Bagels, Breakfast Sandwiches & Cafe Favorites
           </h1>

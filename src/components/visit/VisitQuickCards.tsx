@@ -1,35 +1,12 @@
-"use client";
-
 import { Clock, MapPin, Phone } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { StoreStatusBadge } from "@/components/ui/StoreStatusBadge";
 import { businessAddress, siteConfig } from "@/config/site";
-import { formatTodayHours, getNextOpenMessage, isStoreOpenNow } from "@/lib/hours";
+import { formatTodayHours } from "@/lib/hours";
 import { getGoogleMapsDirectionsUrl } from "@/lib/maps";
-
-function getVisitStatus() {
-  return {
-    openNow: isStoreOpenNow(siteConfig.hours),
-    message: getNextOpenMessage(siteConfig.hours)
-  };
-}
 
 export function VisitQuickCards() {
   const todayHours = formatTodayHours(siteConfig.hours);
-  const [status, setStatus] = useState({
-    openNow: false,
-    message: "Open daily 6:30 AM - 3:00 PM"
-  });
-
-  useEffect(() => {
-    const timeout = window.setTimeout(() => setStatus(getVisitStatus()), 0);
-    const interval = window.setInterval(() => setStatus(getVisitStatus()), 60_000);
-
-    return () => {
-      window.clearTimeout(timeout);
-      window.clearInterval(interval);
-    };
-  }, []);
 
   return (
     <section className="bg-cream px-4 pb-8 sm:px-6 lg:px-8">
@@ -48,7 +25,7 @@ export function VisitQuickCards() {
           <h2 className="mt-4 text-xl font-black">Hours</h2>
           <p className="mt-2 font-bold text-white/74">Open daily</p>
           <p className="mt-1 text-2xl font-black">{todayHours}</p>
-          <p className={status.openNow ? "mt-3 text-sm font-black text-honey" : "mt-3 text-sm font-black text-white/70"}>{status.message}</p>
+          <StoreStatusBadge compact className="mt-3" />
         </div>
 
         <div className="rounded-[1.5rem] bg-white p-5 shadow-soft ring-1 ring-charcoal/8">

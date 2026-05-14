@@ -7,6 +7,7 @@ import { PopularMenu } from "@/components/home/PopularMenu";
 import { QuickActions } from "@/components/home/QuickActions";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { StoreStatusBadge } from "@/components/ui/StoreStatusBadge";
 import { businessAddress } from "@/config/site";
 import { breadcrumbSchema, homepageMenuPreviewSchema } from "@/lib/seo";
 
@@ -14,7 +15,10 @@ function AnnouncementBar() {
   return (
     <div className="bg-charcoal px-4 py-2 text-xs font-bold text-white sm:px-6 sm:text-sm lg:px-8">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 sm:flex-row">
-        <p className="text-center sm:text-left">Open daily 6:30 AM - 3:00 PM - easy pickup at {businessAddress}</p>
+        <div className="flex flex-col items-center gap-2 sm:flex-row">
+          <StoreStatusBadge compact />
+          <p className="text-center sm:text-left">Easy pickup at {businessAddress}</p>
+        </div>
         <p className="hidden text-honey sm:block">Fresh bagels, breakfast sandwiches, smoothies, and catering.</p>
       </div>
     </div>

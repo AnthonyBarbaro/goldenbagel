@@ -1,12 +1,10 @@
 import { Clock3, PackageCheck, Truck } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
-import { onlineOrderUrl, siteConfig } from "@/config/site";
-import { formatHour } from "@/lib/format";
+import { StoreStatusBadge } from "@/components/ui/StoreStatusBadge";
+import { onlineOrderUrl } from "@/config/site";
 
 export function OrderSection() {
-  const hours = `${formatHour(siteConfig.hours[0].open)} - ${formatHour(siteConfig.hours[0].close)}`;
-
   return (
     <Section className="bg-charcoal text-white">
       <div className="grid gap-10 lg:grid-cols-[1fr_0.85fr] lg:items-center">
@@ -22,7 +20,7 @@ export function OrderSection() {
         </div>
         <div className="grid gap-4">
           {[
-            { icon: Clock3, title: "Open daily", text: hours },
+            { icon: Clock3, title: "Hours today", text: <StoreStatusBadge compact className="mt-1" /> },
             { icon: PackageCheck, title: "Hosted checkout", text: "Customers can complete the order in Clover once the hosted link is added." },
             { icon: Truck, title: "Pickup first", text: "Delivery can stay a future Clover or third-party provider option." }
           ].map(({ icon: Icon, title, text }) => (
@@ -33,7 +31,7 @@ export function OrderSection() {
                 </span>
                 <div>
                   <h3 className="font-black">{title}</h3>
-                  <p className="mt-1 text-sm text-white/70">{text}</p>
+                  {typeof text === "string" ? <p className="mt-1 text-sm text-white/70">{text}</p> : text}
                 </div>
               </div>
             </div>

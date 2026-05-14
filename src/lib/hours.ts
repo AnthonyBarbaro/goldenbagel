@@ -59,7 +59,7 @@ export function getNextOpenMessage(hours: readonly StoreHour[], timezone = "Amer
   }
 
   if (current.minutes < openMinutes) {
-    return `Closed - opens today at ${formatHour(todayHours.open)}`;
+    return `Closed now - opens today at ${formatHour(todayHours.open)}`;
   }
 
   const todayIndex = dayNames.indexOf(current.weekday);
@@ -70,7 +70,7 @@ export function getNextOpenMessage(hours: readonly StoreHour[], timezone = "Amer
 
     if (nextHours) {
       const label = offset === 1 ? "tomorrow" : day;
-      return `Closed - opens ${label} at ${formatHour(nextHours.open)}`;
+      return `Closed now - opens ${label} at ${formatHour(nextHours.open)}`;
     }
   }
 
