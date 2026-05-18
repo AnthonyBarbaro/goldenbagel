@@ -1,13 +1,4 @@
-export type MenuCategory =
-  | "Flavors & Toppings"
-  | "Golden Deals"
-  | "Breakfast Bagels"
-  | "Breakfast Wraps"
-  | "Lunch Bagels"
-  | "Gourmet Wraps"
-  | "Focaccia Sandwiches"
-  | "Salads"
-  | "Smoothies";
+export type MenuCategory = string;
 
 export type MenuTag = "vegetarian" | "dairy-free" | "gluten-free available" | "popular";
 
@@ -26,6 +17,10 @@ export type MenuItem = {
   tags: MenuTag[];
   modifiers: MenuModifier[];
   cloverItemId?: string;
+  priceCents?: number;
+  priceLabel?: string;
+  orderUrl?: string;
+  requiresOptions?: boolean;
   available: boolean;
 };
 

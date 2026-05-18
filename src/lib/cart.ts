@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useSyncExternalStore } from "react";
-import type { MenuCategory, MenuItem } from "@/data/menu";
+import type { MenuCategory, MenuItem } from "@/data/liveMenu";
 
 export type CartModifier = {
   name: string;
@@ -14,12 +14,14 @@ export type CartItem = {
   name: string;
   category?: MenuCategory;
   image: string;
+  priceCents?: number;
+  priceLabel?: string;
   quantity: number;
   modifiers: CartModifier[];
   notes?: string;
 };
 
-const CART_KEY = "goldenbagel.cart.v1";
+const CART_KEY = "goldenbagel.cart.v2";
 const CART_EVENT = "goldenbagel-cart";
 const EMPTY_CART: CartItem[] = [];
 let cartCacheRaw = "";
@@ -99,6 +101,8 @@ export function useCart() {
               name: menuItem.name,
               category: menuItem.category,
               image: menuItem.image,
+              priceCents: menuItem.priceCents,
+              priceLabel: menuItem.priceLabel,
               quantity,
               modifiers
             }
@@ -130,7 +134,8 @@ export function useCart() {
 
   const summary = useMemo(() => {
     const quantity = items.reduce((total, item) => total + item.quantity, 0);
-    return { quantity };
+    const subtotalCents = items.reduce((total, item) => total + (item.priceCents || 0) * item.quantity, 0);
+    return { quantity, subtotalCents };
   }, [items]);
 
   return {

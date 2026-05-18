@@ -1,6 +1,6 @@
 "use client";
 
-import type { MenuCategory } from "@/data/menu";
+import type { MenuCategory } from "@/data/liveMenu";
 import { classNames } from "@/lib/format";
 
 type CategoryChipsProps = {

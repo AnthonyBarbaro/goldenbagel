@@ -8,7 +8,7 @@ export function NewsletterSection() {
         <div>
           <p className="text-sm font-black uppercase tracking-[0.24em] text-honey">Newsletter</p>
           <h2 className="mt-3 font-serif text-3xl font-black sm:text-5xl">Get fresh updates.</h2>
-          <p className="mt-3 max-w-2xl text-white/70">Join the list for cafe updates, seasonal specials, and catering reminders.</p>
+          <p className="mt-3 max-w-2xl text-white/70">Join the list for cafe updates, seasonal specials, and fresh-baked news.</p>
         </div>
         <div className="mt-6 lg:mt-0">
           <NewsletterForm />

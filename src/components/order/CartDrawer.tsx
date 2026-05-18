@@ -2,13 +2,12 @@
 
 import Link from "next/link";
 import { ShoppingBag } from "lucide-react";
-import { siteConfig } from "@/config/site";
 import { useCart } from "@/lib/cart";
 
 export function CartDrawer() {
   const { quantity } = useCart();
 
-  if (siteConfig.cloverOnlineOrderingUrl || quantity === 0) {
+  if (quantity === 0) {
     return null;
   }
 

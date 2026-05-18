@@ -18,7 +18,11 @@ export type CloverConfig = {
 };
 
 export function isMockClover() {
-  return process.env.MOCK_CLOVER !== "false" || !process.env.CLOVER_MERCHANT_ID || !process.env.CLOVER_ACCESS_TOKEN;
+  return (
+    process.env.MOCK_CLOVER !== "false" ||
+    !process.env.CLOVER_MERCHANT_ID ||
+    (!process.env.CLOVER_ACCESS_TOKEN && !process.env.CLOVER_ECOMMERCE_PRIVATE_KEY)
+  );
 }
 
 export function getCloverConfig(): CloverConfig {
@@ -116,6 +120,106 @@ export async function calculateCloverOrder(payload: unknown) {
   };
 }
 
+type HostedCheckoutCartItem = {
+  name: string;
+  quantity: number;
+  priceCents?: number;
+  modifiers?: Array<{ name: string; option: string }>;
+  notes?: string;
+};
+
+type HostedCheckoutInput = {
+  cartItems: HostedCheckoutCartItem[];
+  customer: {
+    name: string;
+    phone: string;
+    email: string;
+  };
+  pickupTime?: string;
+  notes?: string;
+};
+
+function isCheckoutInput(payload: unknown): payload is HostedCheckoutInput {
+  if (!payload || typeof payload !== "object") {
+    return false;
+  }
+
+  const candidate = payload as Partial<HostedCheckoutInput>;
+  return Array.isArray(candidate.cartItems) && typeof candidate.customer === "object" && Boolean(candidate.customer);
+}
+
+function splitCustomerName(name: string) {
+  const parts = name.trim().split(/\s+/);
+  const firstName = parts.shift() || name.trim();
+  const lastName = parts.join(" ");
+
+  return {
+    firstName,
+    lastName: lastName || firstName
+  };
+}
+
+function buildLineItemNote(item: HostedCheckoutCartItem, payload: HostedCheckoutInput) {
+  const notes = [
+    item.modifiers?.length ? item.modifiers.map((modifier) => `${modifier.name}: ${modifier.option}`).join(", ") : "",
+    item.notes,
+    payload.pickupTime ? `Pickup: ${payload.pickupTime}` : "",
+    payload.notes ? `Order notes: ${payload.notes}` : ""
+  ].filter(Boolean);
+
+  return notes.join(" | ").slice(0, 500);
+}
+
+function buildHostedCheckoutPayload(payload: unknown) {
+  if (!isCheckoutInput(payload)) {
+    throw new Error("Invalid checkout payload.");
+  }
+
+  const { firstName, lastName } = splitCustomerName(payload.customer.name);
+  const taxRate = Number(getEnv("CLOVER_HOSTED_CHECKOUT_TAX_RATE"));
+  const taxName = getEnv("CLOVER_HOSTED_CHECKOUT_TAX_NAME", "Sales tax");
+  const lineItems = payload.cartItems.map((item) => {
+    if (!item.priceCents || item.priceCents <= 0) {
+      throw new Error(`Missing checkout price for ${item.name}.`);
+    }
+
+    return {
+      name: item.name,
+      price: item.priceCents,
+      unitQty: item.quantity,
+      note: buildLineItemNote(item, payload),
+      ...(Number.isInteger(taxRate) && taxRate > 0
+        ? {
+            taxRates: [
+              {
+                name: taxName,
+                rate: taxRate
+              }
+            ]
+          }
+        : {})
+    };
+  });
+
+  const pageConfigUuid = getEnv("CLOVER_HOSTED_CHECKOUT_PAGE_CONFIG_UUID");
+
+  return {
+    ...(pageConfigUuid ? { pageConfigUuid } : {}),
+    customer: {
+      firstName,
+      lastName,
+      email: payload.customer.email,
+      phoneNumber: payload.customer.phone
+    },
+    tips: {
+      enabled: true
+    },
+    shoppingCart: {
+      lineItems
+    }
+  };
+}
+
 export async function createCloverOrder(payload: unknown) {
   const config = getCloverConfig();
 
@@ -123,15 +227,7 @@ export async function createCloverOrder(payload: unknown) {
     return createMockOrder();
   }
 
-  // The live implementation should map cart item IDs/modifiers to Clover item IDs and create an order server-side.
-  return {
-    orderId: `clover_placeholder_${Date.now()}`,
-    orderReference: `GB-${Date.now().toString().slice(-6)}`,
-    status: "live-placeholder",
-    checkoutUrl: "",
-    mock: false,
-    payloadReceived: Boolean(payload)
-  };
+  return createCheckoutSession(payload);
 }
 
 export async function createCateringCloverTicket(payload: unknown) {
@@ -171,13 +267,43 @@ export async function createCheckoutSession(payload: unknown) {
     };
   }
 
-  // Use Clover Ecommerce hosted checkout/payment-link flow here. Never collect raw card data on this site.
+  const checkoutPayload = buildHostedCheckoutPayload(payload);
+  const ecommerceToken = config.ecommercePrivateKey || config.accessToken;
+
+  if (!ecommerceToken) {
+    throw new Error("Missing Clover Ecommerce private token.");
+  }
+
+  const response = await fetch(`${config.apiBaseUrl}/invoicingcheckoutservice/v1/checkouts`, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      authorization: `Bearer ${ecommerceToken}`,
+      "content-type": "application/json",
+      "X-Clover-Merchant-Id": config.merchantId
+    },
+    body: JSON.stringify(checkoutPayload)
+  });
+
+  if (!response.ok) {
+    const body = await response.text().catch(() => "");
+    safeLog("clover:checkout:error", { status: response.status, body: body.slice(0, 400) });
+    throw new Error(`Clover checkout request failed with ${response.status}`);
+  }
+
+  const checkout = (await response.json()) as {
+    href?: string;
+    checkoutSessionId?: string;
+    id?: string;
+  };
+  const orderReference = `GB-${Date.now().toString().slice(-6)}`;
+
   return {
-    checkoutUrl: "",
-    orderReference: `GB-${Date.now().toString().slice(-6)}`,
+    orderId: checkout.checkoutSessionId || checkout.id || orderReference,
+    checkoutUrl: checkout.href || "",
+    orderReference,
     mock: false,
-    payloadReceived: Boolean(payload),
-    status: "live-checkout-placeholder"
+    status: "checkout-created"
   };
 }
 

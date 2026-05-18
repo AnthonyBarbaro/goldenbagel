@@ -25,7 +25,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
     const order = await createCloverOrder(result.data);
     await sendOwnerNotification({
-      subject: `New mock order ${order.orderReference}`,
+      subject: `New Golden Bagel order ${order.orderReference}`,
       text: JSON.stringify(result.data, null, 2),
       replyTo: result.data.customer.email
     });

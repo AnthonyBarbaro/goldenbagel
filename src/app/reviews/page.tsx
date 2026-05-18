@@ -1,11 +1,14 @@
 import { Star } from "lucide-react";
 import type { Metadata } from "next";
 import { reviews } from "@/data/reviews";
+import { primaryLocation, siteConfig } from "@/config/site";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createPageMetadata(
   "Reviews",
-  "Read review highlights for Golden Bagel Cafe in El Cajon.",
+  siteConfig.locations.length > 1
+    ? "Read review highlights for Golden Bagel Cafe."
+    : `Read review highlights for Golden Bagel Cafe in ${primaryLocation.name}.`,
   "/reviews/"
 );
 

@@ -3,13 +3,18 @@
 import { useMemo, useState } from "react";
 import { MenuCard } from "@/components/menu/MenuCard";
 import { MenuFilters } from "@/components/menu/MenuFilters";
-import type { MenuCategory, MenuTag } from "@/data/menu";
-import { menuItems } from "@/data/menu";
+import type { MenuCategory, MenuTag } from "@/data/liveMenu";
+import { menuItems } from "@/data/liveMenu";
 
 export function MenuGrid() {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<MenuCategory | "All">("All");
   const [activeTags, setActiveTags] = useState<MenuTag[]>([]);
+
+  const tagOptions = useMemo(
+    () => Array.from(new Set(menuItems.flatMap((item) => item.tags))).sort() as MenuTag[],
+    []
+  );
 
   const visibleItems = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -36,6 +41,7 @@ export function MenuGrid() {
         onCategory={setActiveCategory}
         activeTags={activeTags}
         onTags={setActiveTags}
+        tagOptions={tagOptions}
       />
 
       <div aria-live="polite" className="text-sm font-bold text-espresso/70">
@@ -43,7 +49,7 @@ export function MenuGrid() {
       </div>
 
       {visibleItems.length > 0 ? (
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {visibleItems.map((item) => (
             <MenuCard key={item.id} item={item} />
           ))}

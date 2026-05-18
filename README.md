@@ -81,21 +81,18 @@ NEXT_PUBLIC_ENABLE_ORDERING=true
 NEXT_PUBLIC_MOCK_ORDERING=true
 ```
 
-`NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL` should be the hosted Clover Online Ordering page URL from the Clover Dashboard. When this is set, customer-facing order buttons open Clover directly. When it is empty, the site falls back to the local mock cart flow.
+`NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL` should be the hosted online ordering page URL from the Clover Dashboard. The menu sync uses this URL as its source of truth, and variable-price items can still link there until modifiers are fully mapped into the local cart.
 
 Serverless `serverless/.env.example`:
 
 ```env
 ALLOWED_ORIGIN=https://goldenbagelcafe.com
-MOCK_CLOVER=true
-CLOVER_ENV=sandbox
-CLOVER_MERCHANT_ID=
-CLOVER_ACCESS_TOKEN=
-CLOVER_ECOMMERCE_PUBLIC_KEY=
+MOCK_CLOVER=false
+CLOVER_ENV=production
+CLOVER_MERCHANT_ID=6EE1NRRRY8KS1
 CLOVER_ECOMMERCE_PRIVATE_KEY=
-CLOVER_API_BASE_URL=
-CLOVER_ECOMMERCE_API_BASE_URL=
-CLOVER_WEBHOOK_SECRET=
+CLOVER_HOSTED_CHECKOUT_TAX_NAME=Sales tax
+CLOVER_HOSTED_CHECKOUT_TAX_RATE=
 SMTP_HOST=
 SMTP_PORT=
 SMTP_SECURE=
@@ -141,10 +138,9 @@ Optional serverless secrets:
 
 - `CLOVER_ENV`
 - `CLOVER_MERCHANT_ID`
-- `CLOVER_ACCESS_TOKEN`
-- `CLOVER_ECOMMERCE_PUBLIC_KEY`
 - `CLOVER_ECOMMERCE_PRIVATE_KEY`
-- `CLOVER_WEBHOOK_SECRET`
+- `CLOVER_HOSTED_CHECKOUT_TAX_NAME`
+- `CLOVER_HOSTED_CHECKOUT_TAX_RATE`
 - `SMTP_HOST`
 - `SMTP_PORT`
 - `SMTP_SECURE`

@@ -3,7 +3,7 @@
 import { MapPin, Phone, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { businessAddress, onlineOrderUrl, siteConfig } from "@/config/site";
+import { businessAddress, onlineOrderUrl, primaryLocation, siteConfig } from "@/config/site";
 import { getGoogleMapsDirectionsUrl } from "@/lib/maps";
 
 const storefrontSources = ["/goldenbagels/visit/storefront.jpg", "/goldenbagels/gallery/storefront.jpg", "/goldenbagels/hero/storefront.jpg"] as const;
@@ -30,13 +30,13 @@ export function VisitHero() {
         <div>
           <p className="text-xs font-black uppercase tracking-[0.24em] text-toast">Visit us</p>
           <h1 className="mt-4 font-serif text-5xl font-black leading-[0.98] tracking-tight text-charcoal sm:text-6xl">
-            Fresh bagels on Fletcher Parkway.
+            Fresh bagels on {primaryLocation.shortName}.
           </h1>
           <p className="mt-5 max-w-2xl text-base font-bold leading-7 text-espresso/74 sm:text-lg sm:leading-8">
-            Stop by for fresh bagels, breakfast sandwiches, coffee, smoothies, and pickup in El Cajon.
+            Stop by for fresh bagels, breakfast sandwiches, coffee, smoothies, and pickup in {primaryLocation.name}.
           </p>
           <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <Button href={getGoogleMapsDirectionsUrl()} className="w-full sm:w-auto">
+            <Button href={getGoogleMapsDirectionsUrl(primaryLocation)} className="w-full sm:w-auto">
               <MapPin aria-hidden="true" size={18} />
               Get Directions
             </Button>
@@ -50,7 +50,7 @@ export function VisitHero() {
             </Button>
           </div>
           <a
-            href={getGoogleMapsDirectionsUrl()}
+            href={getGoogleMapsDirectionsUrl(primaryLocation)}
             className="mt-6 inline-flex items-start gap-3 rounded-[1.5rem] bg-white p-4 font-bold text-charcoal shadow-soft ring-1 ring-charcoal/8 transition hover:-translate-y-0.5 hover:text-toast"
           >
             <MapPin aria-hidden="true" className="mt-1 shrink-0 text-toast" size={21} />
@@ -67,7 +67,7 @@ export function VisitHero() {
             {!imageFailed ? (
               <img
                 src={imageSrc}
-                alt="Golden Bagel Cafe storefront on Fletcher Parkway"
+                alt={`Golden Bagel Cafe storefront on ${primaryLocation.shortName}`}
                 className="h-[320px] w-full object-cover sm:h-[420px]"
                 onError={handleImageError}
               />
@@ -81,7 +81,9 @@ export function VisitHero() {
             {!imageFailed ? (
               <div className="absolute bottom-4 left-4 right-4 rounded-[1.5rem] bg-charcoal/88 p-4 text-white shadow-soft backdrop-blur">
                 <p className="text-xs font-black uppercase tracking-[0.18em] text-honey">Easy pickup spot</p>
-                <p className="mt-1 text-sm font-bold text-white/82">Find us on Fletcher Parkway in El Cajon.</p>
+                <p className="mt-1 text-sm font-bold text-white/82">
+                  Find us on {primaryLocation.shortName} in {primaryLocation.name}.
+                </p>
               </div>
             ) : null}
           </div>

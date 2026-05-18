@@ -2,6 +2,15 @@ import { z } from "zod";
 
 const honeypot = z.string().max(0, "Invalid submission.").optional();
 
+const resumeSchema = z
+  .object({
+    fileName: z.string().min(1).max(200),
+    contentType: z.string().max(100),
+    size: z.number().max(2_000_000),
+    dataUrl: z.string().max(3_000_000)
+  })
+  .optional();
+
 export const contactSchema = z.object({
   name: z.string().min(2, "Enter your name."),
   email: z.string().email("Enter a valid email."),
@@ -46,9 +55,8 @@ export const jobApplicationSchema = z.object({
   name: z.string().min(2, "Enter your name."),
   email: z.string().email("Enter a valid email."),
   phone: z.string().min(7, "Enter a phone number."),
-  position: z.string().min(2, "Choose a position."),
-  availability: z.string().min(2, "Tell us your availability."),
-  experience: z.string().min(2, "Tell us about your experience."),
+  availability: z.array(z.string()).min(1, "Choose at least one day."),
+  resume: resumeSchema,
   message: z.string().max(1000).optional(),
   honeypot
 });

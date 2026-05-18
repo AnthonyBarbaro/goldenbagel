@@ -1,12 +1,12 @@
 import { Accessibility, Car, MapPin, ShoppingBag, Utensils } from "lucide-react";
-import { siteConfig } from "@/config/site";
+import { primaryLocation } from "@/config/site";
 
 const infoRows = [
-  { label: "Pickup", value: siteConfig.visitInfo.pickup, icon: ShoppingBag },
-  { label: "Parking", value: siteConfig.visitInfo.parking, icon: Car },
-  { label: "Dine-in", value: siteConfig.visitInfo.dineIn, icon: Utensils },
-  { label: "Nearby", value: siteConfig.visitInfo.nearby, icon: MapPin },
-  { label: "Accessibility", value: siteConfig.visitInfo.accessibility, icon: Accessibility }
+  { label: "Pickup", value: primaryLocation.visitInfo.pickup, icon: ShoppingBag },
+  { label: "Parking", value: primaryLocation.visitInfo.parking, icon: Car },
+  { label: "Dine-in", value: primaryLocation.visitInfo.dineIn, icon: Utensils },
+  { label: "Nearby", value: primaryLocation.visitInfo.nearby, icon: MapPin },
+  { label: "Accessibility", value: primaryLocation.visitInfo.accessibility, icon: Accessibility }
 ];
 
 export function ParkingPickupInfo() {

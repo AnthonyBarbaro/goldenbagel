@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Clock, MapPin, Phone } from "lucide-react";
 import { StoreStatusBadge } from "@/components/ui/StoreStatusBadge";
-import { businessAddress, directionsUrl, navItems, siteConfig } from "@/config/site";
+import { businessAddress, directionsUrl, navItems, primaryLocation, siteConfig } from "@/config/site";
 
 const footerLinks = [
   ...navItems,
@@ -30,7 +30,7 @@ export function Footer() {
           <a href={directionsUrl} className="flex gap-3 transition hover:text-white">
             <MapPin aria-hidden="true" className="mt-1 shrink-0" size={18} />
             <span>
-              <span className="block font-black text-white">Easy directions</span>
+              <span className="block font-black text-white">Easy directions to {primaryLocation.name}</span>
               <span className="block">{businessAddress}</span>
             </span>
           </a>

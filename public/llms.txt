@@ -1,16 +1,15 @@
 # Golden Bagel Cafe
 
-Golden Bagel Cafe is a bagel shop and cafe at 2744 Fletcher Pkwy, El Cajon, CA 92020.
+Golden Bagel Cafe is a bagel shop and cafe with a primary location at 2744 Fletcher Pkwy, El Cajon, CA 92020.
 
 Open daily 6:30 AM to 3:00 PM. Phone: (619) 464-2243.
 
 Primary pages:
 - /menu/ - editable static menu and everyday ordering surface for bagels, breakfast bagels, wraps, sandwiches, salads, smoothies, flavors, and toppings.
-- /catering/ - large-order catering survey for bagel trays, cream cheese, event details, and Clover API-ready ticket notes.
 - /jobs/ - job application form.
 - /visit/ - address, hours, map fallback, directions, phone, and contact form.
 
 Technical notes:
 - Static frontend: Next.js App Router static export.
 - Dynamic actions: API Gateway and Lambda through NEXT_PUBLIC_API_BASE_URL.
-- Clover mode: mock by default. Secrets must stay server-side.
+- Online ordering secrets must stay server-side.

@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import { JobApplicationForm } from "@/components/forms/JobApplicationForm";
+import { primaryLocation, siteConfig } from "@/config/site";
 import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = createPageMetadata("Jobs", "Apply online to join the Golden Bagel Cafe team in El Cajon.", "/jobs/");
+export const metadata: Metadata = createPageMetadata(
+  "Jobs",
+  siteConfig.locations.length > 1
+    ? "Apply online to join the Golden Bagel Cafe team."
+    : `Apply online to join the Golden Bagel Cafe team in ${primaryLocation.name}.`,
+  "/jobs/"
+);
 
 export default function JobsPage() {
   return (
@@ -15,8 +22,10 @@ export default function JobsPage() {
             We are hiring friendly, dependable people who care about good food, clean service, and warm hospitality.
           </p>
           <div className="mt-8 rounded-[2rem] bg-white p-6 shadow-soft">
-            <h2 className="text-xl font-black text-charcoal">What to share</h2>
-            <p className="mt-3 text-espresso/72">Tell us the role you want, your weekly availability, and any cafe, kitchen, or customer service experience.</p>
+            <h2 className="text-xl font-black text-charcoal">Quick interview form</h2>
+            <p className="mt-3 text-espresso/72">
+              Share your contact info, the days you can work between 7 AM and 3 PM, and a short note. We will reach out to schedule an interview when there is a fit.
+            </p>
           </div>
         </div>
         <JobApplicationForm />

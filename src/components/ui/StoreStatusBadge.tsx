@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { siteConfig } from "@/config/site";
+import { primaryLocation, type StoreLocation } from "@/config/site";
 import { classNames } from "@/lib/format";
 import { getNextOpenMessage, isStoreOpenNow } from "@/lib/hours";
 
@@ -13,22 +13,23 @@ type StoreStatus = {
 type StoreStatusBadgeProps = {
   className?: string;
   compact?: boolean;
+  location?: StoreLocation;
 };
 
-function getStoreStatus(): StoreStatus {
+function getStoreStatus(location: StoreLocation): StoreStatus {
   return {
-    openNow: isStoreOpenNow(siteConfig.hours),
-    message: getNextOpenMessage(siteConfig.hours)
+    openNow: isStoreOpenNow(location.hours, location.timezone),
+    message: getNextOpenMessage(location.hours, location.timezone)
   };
 }
 
-export function StoreStatusBadge({ className, compact = false }: StoreStatusBadgeProps) {
-  const [status, setStatus] = useState<StoreStatus>(() => getStoreStatus());
+export function StoreStatusBadge({ className, compact = false, location = primaryLocation }: StoreStatusBadgeProps) {
+  const [status, setStatus] = useState<StoreStatus>(() => getStoreStatus(location));
 
   useEffect(() => {
-    const interval = window.setInterval(() => setStatus(getStoreStatus()), 60_000);
+    const interval = window.setInterval(() => setStatus(getStoreStatus(location)), 60_000);
     return () => window.clearInterval(interval);
-  }, []);
+  }, [location]);
 
   return (
     <span

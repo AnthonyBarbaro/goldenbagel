@@ -12,6 +12,10 @@ type CartItemProps = {
 
 export function CartItem({ item }: CartItemProps) {
   const { updateQuantity, removeItem } = useCart();
+  const lineTotal =
+    item.priceCents !== undefined
+      ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format((item.priceCents * item.quantity) / 100)
+      : item.priceLabel;
 
   return (
     <div className="grid grid-cols-[84px_1fr] gap-4 rounded-[1.25rem] border border-charcoal/10 bg-white p-3 shadow-soft">
@@ -22,12 +26,14 @@ export function CartItem({ item }: CartItemProps) {
         <div className="flex items-start justify-between gap-3">
           <div>
             <h3 className="font-black text-charcoal">{item.name}</h3>
+            {item.priceLabel && <p className="mt-1 text-sm font-black text-toast">{item.priceLabel}</p>}
             {item.modifiers.length > 0 && (
               <p className="mt-1 text-xs font-semibold text-espresso/64">
                 {item.modifiers.map((modifier) => `${modifier.name}: ${modifier.option}`).join(", ")}
               </p>
             )}
           </div>
+          {lineTotal && <p className="shrink-0 text-sm font-black text-charcoal">{lineTotal}</p>}
         </div>
 
         <div className="mt-4 flex items-center justify-between">

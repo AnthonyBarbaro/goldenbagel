@@ -1,13 +1,13 @@
 import Link from "next/link";
-import { CalendarHeart, MapPin, ShoppingBag, Utensils } from "lucide-react";
+import { MapPin, ShoppingBag, Utensils } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 import { ThreeDCard } from "@/components/ui/ThreeDCard";
-import { directionsUrl, onlineOrderUrl } from "@/config/site";
+import { directionsUrl, onlineOrderUrl, primaryLocation } from "@/config/site";
 
 const actions = [
   {
     title: "Order Online",
-    text: "Open the hosted Clover online ordering page for pickup, payment, and order details.",
+    text: "Open Golden Bagel online ordering for pickup, payment, and order details.",
     href: onlineOrderUrl,
     icon: ShoppingBag,
     label: "Open online ordering"
@@ -20,15 +20,8 @@ const actions = [
     label: "Open menu"
   },
   {
-    title: "Catering",
-    text: "Build a big-party catering ticket with date, guest count, bagels, spreads, and add-ons.",
-    href: "/catering",
-    icon: CalendarHeart,
-    label: "Open catering ordering"
-  },
-  {
     title: "Directions",
-    text: "Open maps to 2744 Fletcher Parkway for quick pickup or a cafe stop.",
+    text: `Open maps to our ${primaryLocation.shortName} cafe for quick pickup or a cafe stop.`,
     href: directionsUrl,
     icon: MapPin,
     label: "Open directions to Golden Bagel Cafe"
@@ -38,7 +31,7 @@ const actions = [
 export function QuickActions() {
   return (
     <Section className="bg-white">
-      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         {actions.map(({ title, text, href, icon: Icon, label }) => (
           <Link
             key={title}

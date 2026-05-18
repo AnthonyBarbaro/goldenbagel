@@ -1,6 +1,6 @@
 import { Clock3, HelpCircle, MapPinned, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { onlineOrderUrl, siteConfig } from "@/config/site";
+import { onlineOrderUrl, primaryLocation, siteConfig } from "@/config/site";
 import { getGoogleMapsDirectionsUrl } from "@/lib/maps";
 
 const planCards = [
@@ -16,7 +16,7 @@ const planCards = [
   },
   {
     title: "Easy pickup",
-    text: "Use the map above to get directions to Fletcher Parkway.",
+    text: `Use the map above to get directions to ${primaryLocation.shortName}.`,
     icon: MapPinned
   },
   {
@@ -47,7 +47,7 @@ export function PlanYourVisit() {
           <Button href={onlineOrderUrl} className="w-full sm:w-auto">Order Pickup</Button>
           <Button href="/menu" variant="secondary" className="w-full sm:w-auto">View Menu</Button>
           <Button href={siteConfig.phoneHref} variant="secondary" className="w-full sm:w-auto">Call Now</Button>
-          <Button href={getGoogleMapsDirectionsUrl()} variant="secondary" className="w-full sm:w-auto">Directions</Button>
+          <Button href={getGoogleMapsDirectionsUrl(primaryLocation)} variant="secondary" className="w-full sm:w-auto">Directions</Button>
         </div>
       </div>
     </section>

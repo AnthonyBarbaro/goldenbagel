@@ -22,13 +22,22 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       return badRequest(event, result.honeypot ? "Invalid submission." : "Invalid job application.", "error" in result ? result.error : undefined);
     }
 
+    const { resume, ...application } = result.data;
+    const resumeSummary = resume
+      ? {
+          resumeFile: resume.fileName,
+          resumeType: resume.contentType || "unknown",
+          resumeSize: `${Math.ceil(resume.size / 1024)} KB`
+        }
+      : { resumeFile: "No resume attached" };
+
     await sendOwnerNotification({
       subject: "Golden Bagel job application",
-      text: formatSubmission("Job application", result.data),
+      text: formatSubmission("Job application", { ...application, ...resumeSummary }),
       replyTo: result.data.email
     });
 
-    return success(event, { message: "Thanks. We received your application." });
+    return success(event, { message: "Thanks. We received your info. We will reach out if we want to schedule an interview." });
   } catch (error) {
     safeLog("jobs:error", { message: error instanceof Error ? error.message : "unknown" });
     return serverError(event);

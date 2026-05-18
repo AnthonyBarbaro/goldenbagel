@@ -1,5 +1,5 @@
 import { Coffee, Croissant, CupSoda, Salad, Sandwich, Sparkles, Utensils, type LucideIcon } from "lucide-react";
-import type { MenuCategory } from "@/data/menu";
+import type { MenuCategory } from "@/data/liveMenu";
 import { classNames } from "@/lib/format";
 
 type MenuVisualProps = {
@@ -14,7 +14,7 @@ type VisualConfig = {
   className: string;
 };
 
-const visualByCategory: Record<MenuCategory, VisualConfig> = {
+const visualByCategory: Record<string, VisualConfig> = {
   "Flavors & Toppings": {
     Icon: Sparkles,
     label: "Bagels & spreads",
@@ -59,6 +59,41 @@ const visualByCategory: Record<MenuCategory, VisualConfig> = {
     Icon: CupSoda,
     label: "Smoothies",
     className: "from-[#fff0f4] via-[#f4a6b4] to-[#d9794f]"
+  },
+  "Coffee & Tea": {
+    Icon: Coffee,
+    label: "Coffee & tea",
+    className: "from-[#fff8ec] via-[#d8a76a] to-[#6f4a2f]"
+  },
+  Beverages: {
+    Icon: CupSoda,
+    label: "Cold drinks",
+    className: "from-[#edf7ff] via-[#8bc6d9] to-[#3f6f83]"
+  },
+  Donuts: {
+    Icon: Croissant,
+    label: "Donuts",
+    className: "from-[#fff0f4] via-[#f4a6b4] to-[#b86575]"
+  },
+  "Off Menu": {
+    Icon: Utensils,
+    label: "Cafe extras",
+    className: "from-[#f7f1dd] via-[#d9b56f] to-[#6f7f5f]"
+  },
+  "Secret Menu": {
+    Icon: Sparkles,
+    label: "Secret menu",
+    className: "from-[#fff7dd] via-[#f8df9f] to-[#d48738]"
+  },
+  Rewards: {
+    Icon: Sparkles,
+    label: "Rewards",
+    className: "from-[#f0f7e2] via-[#afc779] to-[#637d4d]"
+  },
+  "Other items": {
+    Icon: Utensils,
+    label: "More favorites",
+    className: "from-[#f8efe0] via-[#f0a96e] to-[#8b5a2d]"
   }
 };
 

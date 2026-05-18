@@ -3,14 +3,19 @@ import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { siteConfig } from "@/config/site";
+import { primaryLocation, siteConfig } from "@/config/site";
 import { absoluteUrl, restaurantSchema, websiteSchema } from "@/lib/seo";
 import "./globals.css";
+
+const defaultTitle =
+  siteConfig.locations.length > 1
+    ? "Golden Bagel Cafe | Bagels & Breakfast"
+    : `Golden Bagel Cafe | Bagels & Breakfast in ${primaryLocation.name}`;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.siteUrl),
   title: {
-    default: "Golden Bagel Cafe | Bagels, Breakfast & Catering in El Cajon",
+    default: defaultTitle,
     template: "%s | Golden Bagel Cafe"
   },
   description: siteConfig.description,
@@ -18,7 +23,7 @@ export const metadata: Metadata = {
     canonical: siteConfig.siteUrl
   },
   openGraph: {
-    title: "Golden Bagel Cafe | Bagels, Breakfast & Catering in El Cajon",
+    title: defaultTitle,
     description: siteConfig.description,
     url: siteConfig.siteUrl,
     siteName: siteConfig.name,
@@ -35,7 +40,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Golden Bagel Cafe | Bagels, Breakfast & Catering in El Cajon",
+    title: defaultTitle,
     description: siteConfig.description,
     images: [absoluteUrl("/goldenbagels/gallery/storefront.jpg")]
   },

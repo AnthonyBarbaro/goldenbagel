@@ -10,7 +10,7 @@ export default function PrivacyPage() {
       <article className="mx-auto max-w-3xl rounded-[2rem] bg-white p-6 leading-8 text-espresso/78 shadow-soft sm:p-10">
         <h1 className="font-serif text-4xl font-black text-charcoal">Privacy Policy</h1>
         <p className="mt-5">
-          {siteConfig.name} uses this website to share menu, location, ordering, catering, party, job, contact, and newsletter
+          {siteConfig.name} uses this website to share menu, location, ordering, party, job, contact, and newsletter
           information. Form submissions may include your name, email, phone number, order details, event details, and message.
         </p>
         <p className="mt-4">

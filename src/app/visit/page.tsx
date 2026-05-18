@@ -9,11 +9,16 @@ import { VisitPhotoGallery } from "@/components/visit/VisitPhotoGallery";
 import { VisitQuickCards } from "@/components/visit/VisitQuickCards";
 import { VisitSeoSection } from "@/components/visit/VisitSeoSection";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { formatLocationAddress, primaryLocation, siteConfig } from "@/config/site";
 import { breadcrumbSchema, createPageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createPageMetadata(
-  "Visit Golden Bagel Cafe in El Cajon | Hours, Directions & Pickup",
-  "Find Golden Bagel Cafe at 2744 Fletcher Pkwy in El Cajon. View hours, get directions, call the cafe, and order pickup.",
+  siteConfig.locations.length > 1
+    ? "Visit Golden Bagel Cafe | Locations, Hours & Pickup"
+    : `Visit Golden Bagel Cafe in ${primaryLocation.name} | Hours, Directions & Pickup`,
+  siteConfig.locations.length > 1
+    ? "Find Golden Bagel Cafe locations, hours, directions, phone numbers, and pickup details."
+    : `Find Golden Bagel Cafe at ${formatLocationAddress(primaryLocation)}. View hours, get directions, call the cafe, and order pickup.`,
   "/visit/"
 );
 

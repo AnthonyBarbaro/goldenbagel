@@ -12,7 +12,10 @@ const cartItemSchema = z.object({
   cartId: z.string().min(1),
   id: z.string().min(1),
   name: z.string().min(1),
-  price: z.number().nonnegative().optional(),
+  priceCents: z.number().int().nonnegative().optional(),
+  priceLabel: z.string().optional(),
+  category: z.string().optional(),
+  image: z.string().optional(),
   quantity: z.number().int().positive(),
   modifiers: z.array(z.object({ name: z.string(), option: z.string() })).default([]),
   notes: z.string().optional()
@@ -72,13 +75,21 @@ export const partyRequestSchema = z.object({
   honeypot: z.string().optional()
 });
 
+const resumeSchema = z
+  .object({
+    fileName: z.string().min(1).max(200),
+    contentType: z.string().max(100),
+    size: z.number().max(2_000_000),
+    dataUrl: z.string().max(3_000_000)
+  })
+  .optional();
+
 export const jobApplicationSchema = z.object({
   name: z.string().min(2),
   email: z.string().email(),
   phone: z.string().min(7),
-  position: z.string().min(2),
-  availability: z.string().min(2),
-  experience: z.string().min(2),
+  availability: z.array(z.string()).min(1),
+  resume: resumeSchema,
   message: z.string().optional(),
   honeypot: z.string().optional()
 });

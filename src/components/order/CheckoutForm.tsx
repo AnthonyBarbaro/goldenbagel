@@ -62,17 +62,13 @@ export function CheckoutForm({ items, onComplete }: CheckoutFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5 rounded-[2rem] bg-white p-5 shadow-soft sm:p-6">
+      <input type="hidden" value="pickup" {...register("fulfillmentType")} />
+
       <fieldset>
         <legend className="mb-3 text-sm font-black uppercase tracking-[0.16em] text-toast">Fulfillment</legend>
-        <div className="grid grid-cols-2 gap-2 rounded-full bg-cream p-1">
-          {(["pickup", "delivery"] as const).map((type) => (
-            <label key={type} className="cursor-pointer">
-              <input type="radio" value={type} className="peer sr-only" {...register("fulfillmentType")} />
-              <span className="flex min-h-11 items-center justify-center rounded-full text-sm font-black capitalize text-charcoal peer-checked:bg-honey peer-checked:shadow-sm">
-                {type}
-              </span>
-            </label>
-          ))}
+        <div className="rounded-2xl bg-cream px-4 py-3">
+          <p className="text-sm font-black text-charcoal">Pickup at Golden Bagel</p>
+          <p className="mt-1 text-xs font-bold text-espresso/64">Payment opens on the secure checkout page after this step.</p>
         </div>
       </fieldset>
 
@@ -116,7 +112,7 @@ export function CheckoutForm({ items, onComplete }: CheckoutFormProps) {
 
       <Button type="submit" disabled={isSubmitting || items.length === 0} className="w-full">
         {isSubmitting && <Loader2 aria-hidden="true" className="animate-spin" size={18} />}
-        Send to Clover Checkout
+        Continue to Secure Payment
       </Button>
     </form>
   );

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { MapPin, Menu, Phone, ShoppingBag } from "lucide-react";
-import { directionsUrl, onlineOrderUrl, siteConfig } from "@/config/site";
+import { directionsUrl, siteConfig } from "@/config/site";
 
 const actions = [
-  { href: onlineOrderUrl, label: "Order", icon: ShoppingBag },
+  { href: "/order", label: "Cart", icon: ShoppingBag },
   { href: siteConfig.phoneHref, label: "Call", icon: Phone },
   { href: directionsUrl, label: "Directions", icon: MapPin },
   { href: "/menu", label: "Menu", icon: Menu }

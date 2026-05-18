@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { MenuVisual } from "@/components/menu/MenuVisual";
-import { menuItems, type MenuItem } from "@/data/menu";
+import { menuItems, type MenuItem } from "@/data/liveMenu";
 import { onlineOrderUrl } from "@/config/site";
 
 const visitorItemIds = ["bagel-cream-cheese", "golden-scramble", "golden-works", "lox-bagel", "golden-club", "smoothie-24"];

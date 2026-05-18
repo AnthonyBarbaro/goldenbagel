@@ -1,11 +1,9 @@
 import { MapPin, ShoppingBag, Utensils } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { StoreStatusBadge } from "@/components/ui/StoreStatusBadge";
-import { businessAddress, directionsUrl, onlineOrderUrl, siteConfig } from "@/config/site";
+import { businessAddress, directionsUrl, hasHostedOnlineOrdering, onlineOrderUrl, primaryLocation } from "@/config/site";
 
 export function Hero() {
-  const hasHostedOrdering = Boolean(siteConfig.cloverOnlineOrderingUrl);
-
   return (
     <section className="relative min-h-[calc(100svh-4rem)] overflow-hidden bg-charcoal px-4 pb-10 pt-20 text-white sm:min-h-[720px] sm:px-6 sm:py-16 lg:px-8">
       <video
@@ -32,15 +30,14 @@ export function Hero() {
             Fresh Bagels, Breakfast Sandwiches & Cafe Favorites
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-7 text-white/84 sm:mt-6 sm:text-lg sm:leading-8">
-            Golden Bagel Cafe serves fresh bagels, breakfast sandwiches, wraps, salads, smoothies, and catering favorites in
-            El Cajon.
+            Golden Bagel Cafe serves fresh bagels, breakfast sandwiches, wraps, salads, smoothies, and cafe favorites in {primaryLocation.name}.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button href={onlineOrderUrl} size="lg" className="w-full sm:w-auto">
               <ShoppingBag aria-hidden="true" size={20} />
               Order Online
             </Button>
-            {hasHostedOrdering && (
+            {hasHostedOnlineOrdering && (
               <Button href="/menu" size="lg" variant="secondary" className="w-full sm:w-auto">
                 <Utensils aria-hidden="true" size={20} />
                 View Menu
@@ -56,9 +53,9 @@ export function Hero() {
           </a>
           <div className="mt-6 grid max-w-xl grid-cols-3 gap-2 text-center sm:mt-8 sm:gap-3">
             {[
-              ["Best Bagels", "El Cajon favorite"],
+              ["Best Bagels", `${primaryLocation.name} favorite`],
               ["Fresh Daily", "bagels & coffee"],
-              ["2744 Fletcher", "easy directions"]
+              [primaryLocation.shortName, "easy directions"]
             ].map(([value, label]) => (
               <div key={label} className="rounded-2xl bg-white/14 p-3 shadow-soft ring-1 ring-white/16 backdrop-blur sm:p-4">
                 <div className="text-xl font-black sm:text-2xl">{value}</div>

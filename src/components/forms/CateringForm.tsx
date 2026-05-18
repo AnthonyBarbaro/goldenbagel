@@ -220,9 +220,9 @@ function SummaryLine({ label, value }: { label: string; value?: string }) {
   );
 }
 
-function buildCloverTicket(values: Partial<CateringFormValues>) {
+function buildKitchenTicket(values: Partial<CateringFormValues>) {
   return [
-    "CLOVER CATERING TICKET",
+    "GOLDEN BAGEL KITCHEN TICKET",
     `Date/time: ${values.eventDate || "date needed"} at ${values.eventTime || "time needed"}`,
     `Guests: ${values.guestCount || "guest range needed"}`,
     `Fulfillment: ${values.fulfillment || "pickup"}`,
@@ -263,7 +263,7 @@ export function CateringForm() {
   const selectedBagelFlavors = watchedValues.bagelFlavors || [];
   const selectedCreamCheeseFlavors = watchedValues.creamCheeseFlavors || [];
   const selectedExtras = watchedValues.extras || [];
-  const cloverTicketSummary = buildCloverTicket(watchedValues);
+  const kitchenTicketSummary = buildKitchenTicket(watchedValues);
   const completedSteps = [
     watchedValues.eventDate && watchedValues.eventTime,
     watchedValues.guestCount,
@@ -314,7 +314,7 @@ export function CateringForm() {
     try {
       const response = await submitPublicForm("/catering", {
         ...values,
-        cloverTicketSummary: buildCloverTicket(values)
+        kitchenTicketSummary: buildKitchenTicket(values)
       });
       setToast({ type: "success", message: response.message });
       reset();
@@ -361,7 +361,7 @@ export function CateringForm() {
           <Printer aria-hidden="true" className="shrink-0 text-honey" size={25} />
           <div>
             <h2 className="text-2xl font-black">Build your catering run</h2>
-            <p className="mt-1 text-sm text-white/70">Tap the cards. Your Clover ticket fills itself in.</p>
+            <p className="mt-1 text-sm text-white/70">Tap the cards. Your kitchen ticket fills itself in.</p>
           </div>
         </div>
         <div className="relative mt-5">
@@ -552,7 +552,7 @@ export function CateringForm() {
           )}
 
           {activeStage === 4 && (
-            <StagePanel eyebrow="Final level" title="Send the Clover-ready ticket." text="Add contact details and final notes so the cafe can review the build.">
+            <StagePanel eyebrow="Final level" title="Send the kitchen-ready ticket." text="Add contact details and final notes so the cafe can review the build.">
               <div className="grid gap-4 sm:grid-cols-3">
                 <Input label="Name" error={errors.name?.message} {...register("name")} />
                 <Input label="Phone" error={errors.phone?.message} {...register("phone")} />
@@ -627,9 +627,9 @@ export function CateringForm() {
           <div className="rounded-[1.5rem] border border-charcoal/10 bg-charcoal p-5 text-white shadow-soft">
             <h3 className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.16em] text-honey">
               <Printer aria-hidden="true" size={17} />
-              Clover print preview
+              Kitchen print preview
             </h3>
-            <pre className="mt-3 whitespace-pre-wrap font-sans text-sm leading-6 text-white/78">{cloverTicketSummary}</pre>
+            <pre className="mt-3 whitespace-pre-wrap font-sans text-sm leading-6 text-white/78">{kitchenTicketSummary}</pre>
           </div>
         </aside>
       </div>

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { businessAddress, directionsUrl, siteConfig } from "@/config/site";
-import { featuredMenuItemIds, menuCategories, menuItems } from "@/data/menu";
+import { formatLocationAddress, getLocationDirectionsUrl, primaryLocation, siteConfig, type StoreLocation } from "@/config/site";
+import { featuredMenuItemIds, menuCategories, menuItems } from "@/data/liveMenu";
 
 export function absoluteUrl(path = "/") {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
@@ -54,43 +54,70 @@ export function websiteSchema() {
 }
 
 export function restaurantSchema() {
-  const hasGeo = siteConfig.geo.latitude !== null && siteConfig.geo.longitude !== null;
+  function locationSchema(location: StoreLocation) {
+    const hasGeo = location.geo.latitude !== null && location.geo.longitude !== null;
+
+    return {
+      "@type": ["Restaurant", "Bakery", "LocalBusiness"],
+      "@id": absoluteUrl(`/#${location.id}`),
+      name: `${siteConfig.name} - ${location.name}`,
+      description: siteConfig.description,
+      url: siteConfig.siteUrl,
+      telephone: location.phone,
+      image: [absoluteUrl("/goldenbagels/gallery/storefront.jpg"), absoluteUrl("/goldenbagels/hero/bagel-counter.jpg")],
+      logo: absoluteUrl(siteConfig.logo),
+      servesCuisine: ["Bagels", "Breakfast", "Cafe", "Sandwiches", "Smoothies"],
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: location.address.street,
+        addressLocality: location.address.city,
+        addressRegion: location.address.state,
+        postalCode: location.address.zip,
+        addressCountry: location.address.country
+      },
+      ...(hasGeo
+        ? {
+            geo: {
+              "@type": "GeoCoordinates",
+              latitude: location.geo.latitude,
+              longitude: location.geo.longitude
+            }
+          }
+        : {}),
+      openingHoursSpecification: location.hours.map((hour) => ({
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: hour.day,
+        opens: hour.open,
+        closes: hour.close
+      })),
+      hasMap: getLocationDirectionsUrl(location),
+      menu: absoluteUrl("/menu/")
+    };
+  }
+
+  const primarySchema = locationSchema(primaryLocation);
+
+  if (siteConfig.locations.length === 1) {
+    return {
+      "@context": "https://schema.org",
+      ...primarySchema,
+      name: siteConfig.name
+    };
+  }
 
   return {
     "@context": "https://schema.org",
-    "@type": ["Restaurant", "Bakery", "LocalBusiness"],
-    name: siteConfig.name,
-    description: siteConfig.description,
-    url: siteConfig.siteUrl,
-    telephone: siteConfig.phone,
-    image: [absoluteUrl("/goldenbagels/gallery/storefront.jpg"), absoluteUrl("/goldenbagels/hero/bagel-counter.jpg")],
-    logo: absoluteUrl(siteConfig.logo),
-    servesCuisine: ["Bagels", "Breakfast", "Cafe", "Sandwiches", "Smoothies"],
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: siteConfig.address.street,
-      addressLocality: siteConfig.address.city,
-      addressRegion: siteConfig.address.state,
-      postalCode: siteConfig.address.zip,
-      addressCountry: siteConfig.address.country
-    },
-    ...(hasGeo
-      ? {
-          geo: {
-            "@type": "GeoCoordinates",
-            latitude: siteConfig.geo.latitude,
-            longitude: siteConfig.geo.longitude
-          }
-        }
-      : {}),
-    openingHoursSpecification: siteConfig.hours.map((hour) => ({
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: hour.day,
-      opens: hour.open,
-      closes: hour.close
-    })),
-    hasMap: directionsUrl,
-    menu: absoluteUrl("/menu/")
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": absoluteUrl("/#organization"),
+        name: siteConfig.name,
+        url: siteConfig.siteUrl,
+        logo: absoluteUrl(siteConfig.logo),
+        address: formatLocationAddress(primaryLocation)
+      },
+      ...siteConfig.locations.map(locationSchema)
+    ]
   };
 }
 

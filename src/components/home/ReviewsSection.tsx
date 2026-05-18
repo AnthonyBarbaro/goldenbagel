@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import { Section } from "@/components/ui/Section";
+import { primaryLocation, siteConfig } from "@/config/site";
 
 const reviews = [
   "The bagels are super fresh and perfectly chewy.",
@@ -8,8 +9,10 @@ const reviews = [
 ];
 
 export function ReviewsSection() {
+  const title = siteConfig.locations.length > 1 ? "Local bagel energy." : `${primaryLocation.name} bagel energy.`;
+
   return (
-    <Section className="bg-white" eyebrow="Local favorite" title="El Cajon bagel energy.">
+    <Section className="bg-white" eyebrow="Local favorite" title={title}>
       <div className="grid gap-5 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
         <div className="rounded-[2rem] bg-charcoal p-7 text-white shadow-soft">
           <div className="flex gap-1 text-honey" aria-label="Local favorite highlights">
