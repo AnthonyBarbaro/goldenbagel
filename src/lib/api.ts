@@ -31,15 +31,21 @@ export type FormResponse = {
 };
 
 function getApiBaseUrl() {
-  return process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") || "";
+  return process.env.NEXT_PUBLIC_API_BASE_URL?.trim().replace(/\/$/, "") || "/api";
 }
 
 function shouldUseMock() {
-  return process.env.NEXT_PUBLIC_MOCK_ORDERING !== "false" || !getApiBaseUrl();
+  return process.env.NEXT_PUBLIC_MOCK_ORDERING !== "false";
 }
 
 function mockReference() {
   return `GB-${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+}
+
+function apiUrl(path: string) {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  const pathWithSlash = normalizedPath.endsWith("/") ? normalizedPath : `${normalizedPath}/`;
+  return `${getApiBaseUrl()}${pathWithSlash}`;
 }
 
 export async function createOrder(input: CreateOrderInput): Promise<OrderResponse> {
@@ -56,7 +62,7 @@ export async function createOrder(input: CreateOrderInput): Promise<OrderRespons
     };
   }
 
-  const response = await fetch(`${getApiBaseUrl()}/orders/create`, {
+  const response = await fetch(apiUrl("/orders/create"), {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -83,7 +89,7 @@ export async function submitPublicForm(endpoint: string, payload: Record<string,
     };
   }
 
-  const response = await fetch(`${apiBase}${endpoint}`, {
+  const response = await fetch(`${apiBase}${endpoint.endsWith("/") ? endpoint : `${endpoint}/`}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

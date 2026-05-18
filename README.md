@@ -2,11 +2,11 @@
 
 ## 1. Project Overview
 
-Golden Bagel Cafe is a production-ready static website and serverless foundation for a bagel shop and cafe in El Cajon, California.
+Golden Bagel Cafe is a production-ready website and ordering foundation for a bagel shop and cafe in El Cajon, California.
 
-The frontend is built with Next.js static export and is intended to deploy to S3, serve through CloudFront, and call a separate API Gateway/Lambda backend through `NEXT_PUBLIC_API_BASE_URL`.
+The app is built for Vercel-style Next.js hosting: pages, API routes, hosted checkout creation, and form handlers live in one Next.js project.
 
-The backend foundation includes TypeScript Lambda handlers, shared CORS/validation/response/security/email helpers, mock ordering mode, and a Clover API adapter foundation for future live checkout.
+The backend foundation still keeps reusable handler logic under `serverless/`, but Vercel API routes call it directly through `/api/...`.
 
 ## 2. Features
 
@@ -20,7 +20,7 @@ The backend foundation includes TypeScript Lambda handlers, shared CORS/validati
 - Newsletter signup
 - Google Maps embed with fallback
 - Local SEO and structured data
-- Serverless API foundation
+- Next.js API route foundation
 - Clover adapter foundation
 
 ## 3. Tech Stack
@@ -29,18 +29,15 @@ Frontend:
 - Next.js
 - TypeScript
 - Tailwind CSS
-- Static export
+- Next.js App Router
 
 Backend:
-- AWS API Gateway
-- AWS Lambda
+- Vercel Functions / Next.js Route Handlers
 - Clover API
 - SMTP / SES-ready email helper
 
 Deployment:
-- S3
-- CloudFront
-- GitHub Actions
+- Vercel
 
 ## 4. Local Development
 
@@ -56,36 +53,29 @@ npm install --prefix serverless
 npm run build --prefix serverless
 ```
 
-## 5. Static Build
+## 5. Production Build
 
 ```bash
+npm run sync:menu
 npm run build
 ```
 
-The static site is exported to:
-
-```text
-out/
-```
+The app builds to `.next/` for Vercel. `vercel.json` runs menu sync before the build.
 
 ## 6. Environment Variables
 
-Frontend `.env.example`:
+Root `.env.example`:
 
 ```env
+# Public browser settings
 NEXT_PUBLIC_SITE_URL=https://goldenbagelcafe.com
 NEXT_PUBLIC_API_BASE_URL=
 NEXT_PUBLIC_GOOGLE_MAPS_EMBED_API_KEY=
-NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL=
+NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL=https://golden-bagel-el-cajon.cloveronline.com/
 NEXT_PUBLIC_ENABLE_ORDERING=true
-NEXT_PUBLIC_MOCK_ORDERING=true
-```
+NEXT_PUBLIC_MOCK_ORDERING=false
 
-`NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL` should be the hosted online ordering page URL from the Clover Dashboard. The menu sync uses this URL as its source of truth, and variable-price items can still link there until modifiers are fully mapped into the local cart.
-
-Serverless `serverless/.env.example`:
-
-```env
+# Server-only settings for Vercel API routes. Do not prefix these with NEXT_PUBLIC.
 ALLOWED_ORIGIN=https://goldenbagelcafe.com
 MOCK_CLOVER=false
 CLOVER_ENV=production
@@ -104,6 +94,8 @@ USE_SES=false
 AWS_REGION=us-west-2
 ```
 
+`NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL` should be the hosted online ordering page URL from the Clover Dashboard. The menu sync uses this URL as its source of truth, and variable-price items can still link there until modifiers are fully mapped into the local cart.
+
 ## 7. GitHub Setup
 
 ```bash
@@ -121,21 +113,16 @@ Safe origin reset:
 git remote set-url origin https://github.com/AnthonyBarbaro/goldenbagel.git
 ```
 
-## 8. GitHub Actions Secrets
+## 8. Vercel Environment Variables
 
-Required secrets:
+Configure these in Vercel Project Settings. Do not commit real secret values.
 
-- `AWS_ROLE_ARN`
-- `AWS_REGION`
-- `S3_BUCKET_NAME`
-- `CLOUDFRONT_DISTRIBUTION_ID`
 - `NEXT_PUBLIC_SITE_URL`
-- `NEXT_PUBLIC_API_BASE_URL`
 - `NEXT_PUBLIC_GOOGLE_MAPS_EMBED_API_KEY`
 - `NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL`
-
-Optional serverless secrets:
-
+- `NEXT_PUBLIC_MOCK_ORDERING`
+- `ALLOWED_ORIGIN`
+- `MOCK_CLOVER`
 - `CLOVER_ENV`
 - `CLOVER_MERCHANT_ID`
 - `CLOVER_ECOMMERCE_PRIVATE_KEY`
@@ -149,84 +136,50 @@ Optional serverless secrets:
 - `SMTP_FROM`
 - `NOTIFY_TO`
 
-Use GitHub Actions secrets. Do not commit credentials.
+Leave `NEXT_PUBLIC_API_BASE_URL` blank on Vercel so the frontend uses same-origin `/api`.
 
-## 9. AWS Frontend Deployment
+## 9. Vercel Deployment
 
-The frontend build creates a static export in `out/`. Upload that folder to S3 and serve it through CloudFront.
+Connect the GitHub repo to Vercel and use the default Next.js settings. The included `vercel.json` runs:
 
-```bash
-npm run build
-
-aws s3 sync out/ s3://YOUR_BUCKET_NAME/ --delete
-
-aws cloudfront create-invalidation \
-  --distribution-id YOUR_DISTRIBUTION_ID \
-  --paths "/*"
+```text
+npm run sync:menu && npm run build
 ```
 
-Recommended AWS setup:
+The app uses Next.js API routes:
 
-- Private S3 bucket
-- CloudFront Origin Access Control
-- HTTPS redirect
-- Compression enabled
-- Default root object `index.html`
-- Custom error response strategy for static export
-- Long cache for immutable assets
-- Short cache for HTML
-
-## 10. AWS Serverless Deployment
-
-API Gateway routes requests to Lambda. Lambda handles forms, mock orders, future Clover order creation, and future Clover checkout. Clover secrets live server-side only. The frontend calls `NEXT_PUBLIC_API_BASE_URL`.
-
-Lambda functions:
-
-- `create-order`
-- `checkout`
-- `contact`
-- `catering`
-- `party-request`
-- `job-application`
-- `newsletter`
-- `clover-webhook`
-
-API Gateway notes:
-
-- Use HTTP API or REST API
-- Use Lambda proxy integration
-- Enable preflight
-- Use strict CORS with `ALLOWED_ORIGIN`
-- Store secrets in environment variables or AWS Secrets Manager
-- Enable CloudWatch logs
+- `/api/orders/create`
+- `/api/contact`
+- `/api/newsletter`
+- `/api/party-request`
+- `/api/job-application`
+- `/api/catering`
+- `/api/clover-webhook`
 
 ## 11. Clover Integration
 
-Recommended hosted ordering path:
+Recommended hosted checkout path:
 
-- Enable Clover Online Ordering in Clover Dashboard
-- Copy the restaurant's hosted online ordering URL
-- Add it as `NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL`
-- Add the same value as a GitHub Actions secret
-- Deploy the frontend
+- Keep `NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL` set so menu sync can mirror the live online menu
+- Create a Clover Hosted Checkout ecommerce token
+- Add the private token as `CLOVER_ECOMMERCE_PRIVATE_KEY` in Vercel
+- Set `NEXT_PUBLIC_MOCK_ORDERING=false` and `MOCK_CLOVER=false`
+- Add the active sales tax as `CLOVER_HOSTED_CHECKOUT_TAX_RATE`
 
-With that value set, the website's order buttons open Clover's hosted ordering flow directly. The local mock cart remains available as a fallback when the hosted URL is blank.
+The Golden Bagel site owns the cart, then `/api/orders/create` creates a Clover Hosted Checkout session and redirects customers to Clover's secure payment page.
 
 Current mode:
 
 ```env
-MOCK_CLOVER=true
+NEXT_PUBLIC_MOCK_ORDERING=false
+MOCK_CLOVER=false
 ```
 
-Future live mode:
+Before first live payment test:
 
-- Get Clover API access
-- Add merchant ID
-- Add access token
-- Configure sandbox first
-- Connect order and checkout functions
-- Use Clover Ecommerce API for hosted checkout/payment flows
-- Use Clover Orders/Platform API for POS order creation where needed
+- Confirm `CLOVER_MERCHANT_ID`
+- Confirm `CLOVER_ECOMMERCE_PRIVATE_KEY`
+- Confirm `CLOVER_HOSTED_CHECKOUT_TAX_RATE`
 - Never expose Clover secrets in the frontend
 
 ## 12. Content Editing
@@ -271,13 +224,11 @@ public/goldenbagels/logo.png
 ## 13. Deployment Checklist
 
 - `npm install` works
+- `npm run sync:menu` works
 - `npm run build` works
-- `out/` generated
-- S3 bucket exists
-- CloudFront distribution exists
-- GitHub Actions secrets added
-- API Gateway endpoint created
-- Lambda endpoints deployed
+- Vercel project connected to GitHub
+- Vercel environment variables added
+- `/api/orders/create` responds
 - Clover mock mode works
 - Forms work
 - No secrets committed
@@ -294,32 +245,26 @@ public/goldenbagels/logo.png
 - Server-side validation
 - Rate limiting
 - Sanitized logs and email payloads
-- Secrets Manager preferred
-- GitHub Secrets required for CI/CD
+- Vercel server-side environment variables for secrets
 
 ## 15. Manual Setup Steps
 
 1. Clone repo
 2. Install dependencies
-3. Add `.env.local`
+3. Add `.env`
 4. Run local dev
-5. Build static export
-6. Create S3 bucket
-7. Create CloudFront distribution
-8. Create API Gateway
-9. Deploy Lambda functions
-10. Add GitHub Actions secrets
-11. Push to main
-12. Verify live site
+5. Run menu sync
+6. Build
+7. Connect repo to Vercel
+8. Add Vercel environment variables
+9. Deploy
+10. Verify live site and `/api/orders/create`
 
 ## Build and Deploy Commands
 
 ```bash
+npm run sync:menu
 npm run build
-S3_BUCKET_NAME=YOUR_BUCKET_NAME \
-CLOUDFRONT_DISTRIBUTION_ID=YOUR_DISTRIBUTION_ID \
-AWS_REGION=us-west-2 \
-./scripts/deploy-s3-cloudfront.sh
 ```
 
 ## Final Verification Notes
@@ -328,11 +273,11 @@ Verified during implementation:
 
 - `npm install`
 - `npm run lint`
+- `npm run sync:menu`
 - `npm run build`
 - `npm run build --prefix serverless`
 - `npm audit --omit=dev`
-- Static export generates `out/`
-- No Next.js API routes or Server Actions are used
+- Next.js API routes are used for forms and checkout
 - `.env` files and secrets are ignored while `.env.example` templates are committed
 - GitHub remote is connected to `https://github.com/AnthonyBarbaro/goldenbagel.git`
 

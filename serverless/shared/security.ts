@@ -17,7 +17,18 @@ export function hasHoneypot(payload: Record<string, unknown>) {
 }
 
 export function safeLog(label: string, payload: Record<string, unknown>) {
-  const redactedKeys = new Set(["password", "token", "secret", "accessToken", "CLOVER_ACCESS_TOKEN"]);
+  const redactedKeys = new Set([
+    "password",
+    "token",
+    "secret",
+    "accessToken",
+    "authorization",
+    "ecommercePrivateKey",
+    "webhookSecret",
+    "CLOVER_ACCESS_TOKEN",
+    "CLOVER_ECOMMERCE_PRIVATE_KEY",
+    "CLOVER_WEBHOOK_SECRET"
+  ]);
   const redacted = Object.fromEntries(
     Object.entries(payload).map(([key, value]) => [key, redactedKeys.has(key) ? "[redacted]" : value])
   );
