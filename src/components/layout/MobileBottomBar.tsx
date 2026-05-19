@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { MapPin, Menu, Phone, ShoppingBag } from "lucide-react";
+import { CookingPot, MapPin, Phone, ShoppingBag } from "lucide-react";
 import { directionsUrl, siteConfig } from "@/config/site";
 import { useCart } from "@/lib/cart";
 
 const actions = [
-  { href: "/menu", label: "Menu", icon: Menu },
+  { href: "/menu", label: "Food", icon: CookingPot },
   { href: siteConfig.phoneHref, label: "Call", icon: Phone },
   { href: directionsUrl, label: "Directions", icon: MapPin },
   { href: "/order", label: "Cart", icon: ShoppingBag }

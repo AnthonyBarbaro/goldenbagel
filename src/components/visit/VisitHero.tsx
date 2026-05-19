@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { businessAddress, onlineOrderUrl, primaryLocation, siteConfig } from "@/config/site";
 import { getGoogleMapsDirectionsUrl } from "@/lib/maps";
 
-const storefrontSources = ["/goldenbagels/visit/storefront.jpg", "/goldenbagels/gallery/storefront.jpg", "/goldenbagels/hero/storefront.jpg"] as const;
+const storefrontSources = ["/goldenbagels/gallery/storefront.jpg", "/goldenbagels/hero/storefront.jpg"] as const;
 
 export function VisitHero() {
   const [imageIndex, setImageIndex] = useState(0);
