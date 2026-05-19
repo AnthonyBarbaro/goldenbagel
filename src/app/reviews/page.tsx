@@ -26,15 +26,13 @@ export default function ReviewsPage() {
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {reviews.map((review) => (
             <article key={review.id} className="rounded-[2rem] bg-white p-6 shadow-soft">
-              <div className="flex gap-1 text-honey" aria-label={`${review.rating} star ${review.source} review`}>
+              <div className="flex gap-1 text-honey" aria-label={`${review.rating} star review`}>
                 {Array.from({ length: review.rating }).map((_, index) => (
                   <Star key={index} aria-hidden="true" fill="currentColor" size={20} />
                 ))}
               </div>
               <blockquote className="mt-5 text-xl font-black leading-8 text-charcoal">&quot;{review.quote}&quot;</blockquote>
-              <p className="mt-4 text-sm font-bold uppercase tracking-[0.16em] text-espresso/58">
-                {review.author} - {review.source}
-              </p>
+              <p className="mt-4 text-sm font-bold uppercase tracking-[0.16em] text-espresso/58">{review.author}</p>
             </article>
           ))}
         </div>

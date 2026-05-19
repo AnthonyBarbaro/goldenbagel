@@ -79,8 +79,8 @@ export function VisitHero() {
               </div>
             )}
             {!imageFailed ? (
-              <div className="absolute bottom-4 left-4 right-4 rounded-[1.5rem] bg-charcoal/88 p-4 text-white shadow-soft backdrop-blur">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-honey">Easy pickup spot</p>
+              <div className="absolute bottom-4 left-4 right-4 rounded-[1.5rem] bg-black p-4 text-white shadow-soft ring-1 ring-white/10">
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-white">Voted #1 Bagel & Cafe in El Cajon</p>
                 <p className="mt-1 text-sm font-bold text-white/82">
                   Find us on {primaryLocation.shortName} in {primaryLocation.name}.
                 </p>

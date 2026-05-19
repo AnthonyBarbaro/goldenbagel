@@ -6,10 +6,10 @@ import { directionsUrl, siteConfig } from "@/config/site";
 import { useCart } from "@/lib/cart";
 
 const actions = [
-  { href: "/order", label: "Cart", icon: ShoppingBag },
+  { href: "/menu", label: "Menu", icon: Menu },
   { href: siteConfig.phoneHref, label: "Call", icon: Phone },
   { href: directionsUrl, label: "Directions", icon: MapPin },
-  { href: "/menu", label: "Menu", icon: Menu }
+  { href: "/order", label: "Cart", icon: ShoppingBag }
 ];
 
 export function MobileBottomBar() {
