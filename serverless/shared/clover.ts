@@ -124,7 +124,7 @@ type HostedCheckoutCartItem = {
   name: string;
   quantity: number;
   priceCents?: number;
-  modifiers?: Array<{ name: string; option: string }>;
+  modifiers?: Array<{ name: string; option: string; priceCents?: number }>;
   notes?: string;
 };
 
@@ -170,6 +170,19 @@ function buildLineItemNote(item: HostedCheckoutCartItem, payload: HostedCheckout
   return notes.join(" | ").slice(0, 500);
 }
 
+function getSiteUrl() {
+  return getEnv("NEXT_PUBLIC_SITE_URL", "https://goldenbagelcafe.com").replace(/\/$/, "");
+}
+
+function getCheckoutRedirectUrls() {
+  const siteUrl = getSiteUrl();
+
+  return {
+    success: getEnv("CLOVER_CHECKOUT_SUCCESS_URL") || `${siteUrl}/order?checkout=success&clearCart=1`,
+    failure: getEnv("CLOVER_CHECKOUT_FAILURE_URL") || `${siteUrl}/order?checkout=failure`
+  };
+}
+
 function buildHostedCheckoutPayload(payload: unknown) {
   if (!isCheckoutInput(payload)) {
     throw new Error("Invalid checkout payload.");
@@ -211,6 +224,7 @@ function buildHostedCheckoutPayload(payload: unknown) {
       email: payload.customer.email,
       phoneNumber: payload.customer.phone
     },
+    redirectUrls: getCheckoutRedirectUrls(),
     tips: {
       enabled: true
     },

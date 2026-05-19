@@ -18,7 +18,7 @@ export function MenuSearch({ value, onChange }: MenuSearchProps) {
         id="menu-search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder="Search bagels, wraps, smoothies..."
+        placeholder="Search menu"
         className="min-h-14 w-full rounded-full border border-charcoal/10 bg-white py-3 pl-12 pr-5 text-charcoal shadow-soft outline-none transition focus:border-honey"
       />
     </div>

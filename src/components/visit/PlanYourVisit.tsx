@@ -45,7 +45,6 @@ export function PlanYourVisit() {
         </div>
         <div className="mt-7 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <Button href={onlineOrderUrl} className="w-full sm:w-auto">Order Pickup</Button>
-          <Button href="/menu" variant="secondary" className="w-full sm:w-auto">View Menu</Button>
           <Button href={siteConfig.phoneHref} variant="secondary" className="w-full sm:w-auto">Call Now</Button>
           <Button href={getGoogleMapsDirectionsUrl(primaryLocation)} variant="secondary" className="w-full sm:w-auto">Directions</Button>
         </div>

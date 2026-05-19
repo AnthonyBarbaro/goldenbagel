@@ -71,7 +71,8 @@ export async function createOrder(input: CreateOrderInput): Promise<OrderRespons
   });
 
   if (!response.ok) {
-    throw new Error("Unable to create order. Please call the cafe.");
+    const data = (await response.json().catch(() => ({}))) as Partial<{ message: string }>;
+    throw new Error(data.message || "Unable to create order. Please call the cafe.");
   }
 
   return response.json() as Promise<OrderResponse>;

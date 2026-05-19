@@ -2,10 +2,20 @@ export type MenuCategory = string;
 
 export type MenuTag = "vegetarian" | "dairy-free" | "gluten-free available" | "popular";
 
-export type MenuModifier = {
+export type MenuModifierOption = {
+  id?: string;
   name: string;
-  options: string[];
+  priceCents?: number;
+  priceLabel?: string;
+};
+
+export type MenuModifier = {
+  id?: string;
+  name: string;
+  options: Array<string | MenuModifierOption>;
   required?: boolean;
+  minRequired?: number;
+  maxAllowed?: number;
 };
 
 export type MenuItem = {

@@ -6,6 +6,7 @@ import type { MenuCategory, MenuItem } from "@/data/liveMenu";
 export type CartModifier = {
   name: string;
   option: string;
+  priceCents?: number;
 };
 
 export type CartItem = {
@@ -75,7 +76,7 @@ function subscribeCart(callback: () => void) {
 }
 
 function makeCartId(item: MenuItem, modifiers: CartModifier[]) {
-  return `${item.id}:${modifiers.map((modifier) => `${modifier.name}=${modifier.option}`).join("|")}`;
+  return `${item.id}:${modifiers.map((modifier) => `${modifier.name}=${modifier.option}:${modifier.priceCents || 0}`).join("|")}`;
 }
 
 export function useCart() {

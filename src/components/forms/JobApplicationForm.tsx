@@ -101,7 +101,7 @@ export function JobApplicationForm() {
       <Input label="Email" type="email" autoComplete="email" error={errors.email?.message} {...register("email")} />
 
       <fieldset>
-        <legend className="text-sm font-bold text-charcoal">Days available, 7 AM to 3 PM</legend>
+        <legend className="text-sm font-bold text-charcoal">Days available, 6:30 AM to 3 PM</legend>
         <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
           {availabilityDays.map((day) => (
             <label key={day} className="cursor-pointer">

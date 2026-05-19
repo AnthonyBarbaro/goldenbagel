@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { MapPin, Menu, Phone, ShoppingBag } from "lucide-react";
 import { directionsUrl, siteConfig } from "@/config/site";
+import { useCart } from "@/lib/cart";
 
 const actions = [
   { href: "/order", label: "Cart", icon: ShoppingBag },
@@ -10,6 +13,9 @@ const actions = [
 ];
 
 export function MobileBottomBar() {
+  const { quantity } = useCart();
+  const cartQuantityLabel = quantity > 99 ? "99+" : String(quantity);
+
   return (
     <nav
       aria-label="Mobile quick actions"
@@ -20,9 +26,17 @@ export function MobileBottomBar() {
           <Link
             key={label}
             href={href}
+            aria-label={label === "Cart" && quantity > 0 ? `Cart with ${quantity} items` : label}
             className="flex min-h-14 flex-col items-center justify-center gap-1 rounded-2xl text-[0.62rem] font-black text-charcoal transition hover:bg-cream"
           >
-            <Icon aria-hidden="true" size={19} />
+            <span className="relative">
+              <Icon aria-hidden="true" size={19} />
+              {label === "Cart" && quantity > 0 && (
+                <span className="absolute -right-3 -top-2 flex min-h-5 min-w-5 items-center justify-center rounded-full bg-honey px-1 text-[0.65rem] font-black leading-none text-charcoal ring-2 ring-white">
+                  {cartQuantityLabel}
+                </span>
+              )}
+            </span>
             <span>{label}</span>
           </Link>
         ))}

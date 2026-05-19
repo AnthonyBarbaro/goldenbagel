@@ -24,7 +24,7 @@ export default function JobsPage() {
           <div className="mt-8 rounded-[2rem] bg-white p-6 shadow-soft">
             <h2 className="text-xl font-black text-charcoal">Quick interview form</h2>
             <p className="mt-3 text-espresso/72">
-              Share your contact info, the days you can work between 7 AM and 3 PM, and a short note. We will reach out to schedule an interview when there is a fit.
+              Share your contact info, the days you can work between 6:30 AM and 3 PM, and a short note. We will reach out to schedule an interview when there is a fit.
             </p>
           </div>
         </div>

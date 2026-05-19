@@ -10,13 +10,12 @@ export const metadata: Metadata = createPageMetadata(
 
 export default function OrderPage() {
   return (
-    <main className="bg-cream px-4 py-14 sm:px-6 lg:px-8">
+    <main className="bg-cream px-3 py-5 sm:px-6 sm:py-8 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-10 max-w-3xl">
-          <p className="text-sm font-black uppercase tracking-[0.26em] text-toast">Online ordering</p>
-          <h1 className="mt-4 font-serif text-5xl font-black tracking-tight text-charcoal sm:text-7xl">Build your Golden Bagel order.</h1>
-          <p className="mt-5 text-lg leading-8 text-espresso/74">
-            Add items here, choose pickup details, then continue to the secure payment page.
+        <div className="mb-4 max-w-2xl sm:mb-6">
+          <h1 className="font-serif text-3xl font-black tracking-tight text-charcoal sm:text-5xl">Checkout</h1>
+          <p className="mt-1 text-sm font-bold leading-6 text-espresso/70 sm:mt-2 sm:text-base sm:leading-7">
+            Review your cart, add pickup info, then pay securely.
           </p>
         </div>
         <CartPage />

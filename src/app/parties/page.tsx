@@ -25,9 +25,6 @@ export default function PartiesPage() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button href={primaryLocation.phoneHref}>Call the Cafe</Button>
-            <Button href="/menu" variant="secondary">
-              View Menu
-            </Button>
           </div>
         </div>
         <Image

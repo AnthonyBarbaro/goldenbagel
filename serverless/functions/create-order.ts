@@ -5,6 +5,7 @@ import { sendOwnerNotification } from "../shared/email.js";
 import { rateLimit } from "../shared/rateLimit.js";
 import { badRequest, serverError, success } from "../shared/response.js";
 import { safeLog } from "../shared/security.js";
+import { getNextPickupOpenMessage, isImmediatePickupTime, isPickupOpenNow } from "../shared/storeHours.js";
 import { createOrderSchema, validateBody } from "../shared/validate.js";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -21,6 +22,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     const result = validateBody(event, createOrderSchema);
     if (!result.ok) {
       return badRequest(event, result.honeypot ? "Invalid submission." : "Invalid order request.", "error" in result ? result.error : undefined);
+    }
+
+    if (isImmediatePickupTime(result.data.pickupTime) && !isPickupOpenNow()) {
+      return badRequest(event, `${getNextPickupOpenMessage()}. Choose a scheduled pickup time instead of ASAP.`);
     }
 
     const order = await createCloverOrder(result.data);

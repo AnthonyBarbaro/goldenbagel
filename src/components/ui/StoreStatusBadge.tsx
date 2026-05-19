@@ -36,7 +36,7 @@ export function StoreStatusBadge({ className, compact = false, location = primar
       aria-live="polite"
       suppressHydrationWarning
       className={classNames(
-        "inline-flex max-w-full items-center gap-2 rounded-full px-3 py-1 text-[0.66rem] font-black uppercase tracking-[0.13em] shadow-soft ring-1",
+        "inline-flex max-w-full min-w-0 items-center gap-2 rounded-full px-3 py-1 text-[0.66rem] font-black uppercase tracking-[0.13em] shadow-soft ring-1",
         status.openNow
           ? "bg-emerald-100 text-emerald-950 ring-emerald-500/25"
           : "bg-red-100 text-red-950 ring-red-500/25",
@@ -45,7 +45,7 @@ export function StoreStatusBadge({ className, compact = false, location = primar
       )}
     >
       <span className={classNames("h-2 w-2 shrink-0 rounded-full", status.openNow ? "bg-emerald-600" : "bg-red-600")} aria-hidden="true" />
-      <span className="truncate" suppressHydrationWarning>
+      <span className="min-w-0 truncate" suppressHydrationWarning>
         {status.message}
       </span>
     </span>

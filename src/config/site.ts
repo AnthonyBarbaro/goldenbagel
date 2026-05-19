@@ -1,6 +1,3 @@
-const defaultHostedOrderingUrl = "https://golden-bagel-el-cajon.cloveronline.com/";
-const hostedOrderingUrl = process.env.NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL?.trim() || defaultHostedOrderingUrl;
-
 export type StoreHour = {
   day: string;
   open: string;
@@ -28,7 +25,6 @@ export type StoreLocation = {
   phone: string;
   phoneHref: string;
   hours: readonly StoreHour[];
-  orderUrl: string;
   visitInfo: {
     parking: string;
     pickup: string;
@@ -68,7 +64,6 @@ const locations: readonly StoreLocation[] = [
     phone: "(619) 464-2243",
     phoneHref: "tel:+16194642243",
     hours: dailyHours,
-    orderUrl: hostedOrderingUrl,
     visitInfo: {
       parking: "Parking information coming soon.",
       pickup: "Order ahead and pick up at the cafe.",
@@ -97,7 +92,6 @@ export const siteConfig = {
   hours: locations[0].hours,
   logo: "/goldenbagels/logo.png",
   fallbackLogo: "/logo.png",
-  hostedOrderingUrl,
   visitInfo: locations[0].visitInfo,
   orderEnabled: process.env.NEXT_PUBLIC_ENABLE_ORDERING !== "false",
   mockOrdering: process.env.NEXT_PUBLIC_MOCK_ORDERING !== "false"
@@ -121,11 +115,7 @@ export const businessAddress = formatLocationAddress(primaryLocation);
 
 export const directionsUrl = getLocationDirectionsUrl(primaryLocation);
 
-export const hostedOnlineOrderingUrl = primaryLocation.orderUrl || siteConfig.hostedOrderingUrl;
-
-export const hasHostedOnlineOrdering = Boolean(hostedOnlineOrderingUrl);
-
-export const onlineOrderUrl = hostedOnlineOrderingUrl || "/order";
+export const onlineOrderUrl = "/menu";
 
 export const navItems = [
   { href: "/menu", label: "Menu" },

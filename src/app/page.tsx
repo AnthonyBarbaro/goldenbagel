@@ -1,7 +1,6 @@
 import { Hero } from "@/components/home/Hero";
+import { HomeGallery } from "@/components/home/HomeGallery";
 import { LocationSection } from "@/components/home/LocationSection";
-import { NewsletterSection } from "@/components/home/NewsletterSection";
-import { OrderSection } from "@/components/home/OrderSection";
 import { PopularMenu } from "@/components/home/PopularMenu";
 import { QuickActions } from "@/components/home/QuickActions";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
@@ -31,10 +30,9 @@ export default function Home() {
       <Hero />
       <QuickActions />
       <PopularMenu />
-      <OrderSection />
+      <HomeGallery />
       <LocationSection />
       <ReviewsSection />
-      <NewsletterSection />
     </main>
   );
 }

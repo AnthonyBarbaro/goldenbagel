@@ -57,7 +57,7 @@ const creamCheeseStyles: SelectOption[] = [
 ];
 
 const timePresets = [
-  { value: "07:00", label: "7:00 AM" },
+  { value: "06:30", label: "6:30 AM" },
   { value: "08:00", label: "8:00 AM" },
   { value: "09:00", label: "9:00 AM" },
   { value: "10:30", label: "10:30 AM" },

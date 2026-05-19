@@ -17,7 +17,7 @@ const cartItemSchema = z.object({
   category: z.string().optional(),
   image: z.string().optional(),
   quantity: z.number().int().positive(),
-  modifiers: z.array(z.object({ name: z.string(), option: z.string() })).default([]),
+  modifiers: z.array(z.object({ name: z.string(), option: z.string(), priceCents: z.number().int().nonnegative().optional() })).default([]),
   notes: z.string().optional()
 });
 

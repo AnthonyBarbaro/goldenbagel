@@ -1,27 +1,25 @@
 import Link from "next/link";
-import { MapPin, ShoppingBag, Utensils } from "lucide-react";
-import { Section } from "@/components/ui/Section";
-import { ThreeDCard } from "@/components/ui/ThreeDCard";
+import { ArrowRight, MapPin, Phone, ShoppingBag } from "lucide-react";
 import { directionsUrl, onlineOrderUrl, primaryLocation } from "@/config/site";
 
 const actions = [
   {
     title: "Order Online",
-    text: "Open Golden Bagel online ordering for pickup, payment, and order details.",
+    text: "Menu, pickup time, payment.",
     href: onlineOrderUrl,
     icon: ShoppingBag,
     label: "Open online ordering"
   },
   {
-    title: "Menu",
-    text: "Browse bagels, sandwiches, wraps, salads, smoothies, and cafe favorites.",
-    href: "/menu",
-    icon: Utensils,
-    label: "Open menu"
+    title: "Call",
+    text: primaryLocation.phone,
+    href: primaryLocation.phoneHref,
+    icon: Phone,
+    label: "Call Golden Bagel Cafe"
   },
   {
     title: "Directions",
-    text: `Open maps to our ${primaryLocation.shortName} cafe for quick pickup or a cafe stop.`,
+    text: primaryLocation.shortName,
     href: directionsUrl,
     icon: MapPin,
     label: "Open directions to Golden Bagel Cafe"
@@ -30,25 +28,28 @@ const actions = [
 
 export function QuickActions() {
   return (
-    <Section className="bg-white">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
+    <section className="bg-white px-4 py-5 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-7xl min-w-0 gap-3 sm:grid-cols-3">
         {actions.map(({ title, text, href, icon: Icon, label }) => (
           <Link
             key={title}
             href={href}
             aria-label={label}
-            className="group block rounded-[1.5rem] focus-visible:outline focus-visible:outline-4 focus-visible:outline-honey"
+            className="group flex min-h-20 min-w-0 items-center justify-between gap-3 overflow-hidden rounded-2xl border border-charcoal/10 bg-cream/60 px-4 py-3 shadow-sm transition hover:border-honey/70 hover:bg-white focus-visible:outline focus-visible:outline-4 focus-visible:outline-honey sm:gap-4"
           >
-            <ThreeDCard className="h-full p-4 sm:p-5">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-honey text-charcoal sm:h-12 sm:w-12">
+            <span className="flex min-w-0 items-center gap-3">
+              <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-honey text-charcoal">
                 <Icon aria-hidden="true" size={22} />
-              </div>
-              <h2 className="mt-4 text-lg font-black text-charcoal sm:mt-5 sm:text-xl">{title}</h2>
-              <p className="mt-2 text-[0.82rem] font-bold leading-5 text-espresso/72 sm:mt-3 sm:text-sm sm:leading-6">{text}</p>
-            </ThreeDCard>
+              </span>
+              <span className="min-w-0">
+                <span className="block text-base font-black text-charcoal">{title}</span>
+                <span className="mt-1 block truncate text-sm font-bold text-espresso/68">{text}</span>
+              </span>
+            </span>
+            <ArrowRight aria-hidden="true" className="shrink-0 text-toast transition group-hover:translate-x-1" size={20} />
           </Link>
         ))}
       </div>
-    </Section>
+    </section>
   );
 }

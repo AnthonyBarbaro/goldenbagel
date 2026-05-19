@@ -13,6 +13,13 @@ function timeToMinutes(time: string) {
   return hour * 60 + minute;
 }
 
+function minutesToTime(minutes: number) {
+  const hour = Math.floor(minutes / 60);
+  const minute = minutes % 60;
+
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+}
+
 function getZonedNow(timezone: string, now = new Date()) {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: timezone,
@@ -75,4 +82,45 @@ export function getNextOpenMessage(hours: readonly StoreHour[], timezone = "Amer
   }
 
   return "Hours unavailable";
+}
+
+function buildPickupOptions(label: string, hours: StoreHour) {
+  const firstPickupMinutes = timeToMinutes(hours.open);
+  const lastPickupMinutes = timeToMinutes(hours.close) - 15;
+  const options: string[] = [];
+
+  for (let minutes = firstPickupMinutes; minutes <= lastPickupMinutes; minutes += 15) {
+    options.push(`${label} at ${formatHour(minutesToTime(minutes))}`);
+  }
+
+  return options;
+}
+
+export function getNextOpenPickupOptions(hours: readonly StoreHour[], timezone = "America/Los_Angeles", now = new Date()) {
+  const current = getZonedNow(timezone, now);
+  const todayHours = getHourForDay(hours, current.weekday);
+  const openMinutes = timeToMinutes(todayHours.open);
+  const closeMinutes = timeToMinutes(todayHours.close);
+
+  if (current.minutes >= openMinutes && current.minutes < closeMinutes) {
+    return [];
+  }
+
+  if (current.minutes < openMinutes) {
+    return buildPickupOptions("Today", todayHours);
+  }
+
+  const todayIndex = dayNames.indexOf(current.weekday);
+
+  for (let offset = 1; offset <= 7; offset += 1) {
+    const day = dayNames[(todayIndex + offset) % dayNames.length];
+    const nextHours = getHourForDay(hours, day);
+
+    if (nextHours) {
+      const label = offset === 1 ? "Tomorrow" : day;
+      return buildPickupOptions(label, nextHours);
+    }
+  }
+
+  return [];
 }

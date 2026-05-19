@@ -7,7 +7,8 @@ const OUTPUT_PATH = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "
 const DEFAULT_IMAGE = "/goldenbagels/menu/order-online.png";
 
 function getMenuUrl() {
-  const configuredUrl = process.env.NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL?.trim() || DEFAULT_ORDERING_URL;
+  const configuredUrl =
+    process.env.CLOVER_ONLINE_ORDERING_URL?.trim() || process.env.NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL?.trim() || DEFAULT_ORDERING_URL;
   const url = new URL(configuredUrl);
 
   url.pathname = "/menu/all";
@@ -98,6 +99,47 @@ function readJsonArrayAt(text, start) {
   throw new Error("Could not find the end of the menu data array.");
 }
 
+function readJsonObjectAt(text, start) {
+  let depth = 0;
+  let escaped = false;
+  let inString = false;
+
+  for (let index = start; index < text.length; index += 1) {
+    const character = text[index];
+
+    if (inString) {
+      if (escaped) {
+        escaped = false;
+      } else if (character === "\\") {
+        escaped = true;
+      } else if (character === "\"") {
+        inString = false;
+      }
+
+      continue;
+    }
+
+    if (character === "\"") {
+      inString = true;
+      continue;
+    }
+
+    if (character === "{") {
+      depth += 1;
+    }
+
+    if (character === "}") {
+      depth -= 1;
+
+      if (depth === 0) {
+        return JSON.parse(text.slice(start, index + 1));
+      }
+    }
+  }
+
+  throw new Error("Could not find the end of the menu data object.");
+}
+
 function readJsonArrayAfter(text, marker) {
   const markerIndex = text.indexOf(marker);
 
@@ -114,6 +156,22 @@ function readJsonArrayAfter(text, marker) {
   return readJsonArrayAt(text, start);
 }
 
+function readJsonObjectAfter(text, marker) {
+  const markerIndex = text.indexOf(marker);
+
+  if (markerIndex === -1) {
+    throw new Error(`Could not find ${marker} in the online menu payload.`);
+  }
+
+  const start = text.indexOf("{", markerIndex);
+
+  if (start === -1) {
+    throw new Error(`Could not find object start for ${marker}.`);
+  }
+
+  return readJsonObjectAt(text, start);
+}
+
 function formatPriceLabel(priceCents) {
   if (!Number.isFinite(priceCents) || priceCents <= 0) {
     return "Options vary";
@@ -123,18 +181,6 @@ function formatPriceLabel(priceCents) {
     style: "currency",
     currency: "USD"
   }).format(priceCents / 100);
-}
-
-function normalizeUrl(itemUrl) {
-  if (!itemUrl || typeof itemUrl !== "string") {
-    return "";
-  }
-
-  if (/^https?:\/\//.test(itemUrl)) {
-    return itemUrl;
-  }
-
-  return `https://${itemUrl}`;
 }
 
 function cleanText(value) {
@@ -171,7 +217,39 @@ function tagsForItem(item) {
   return popularNames.some((popularName) => name.includes(popularName)) ? ["popular"] : [];
 }
 
-function toMenuItem(item, categoryName) {
+function buildModifiers(item, modifierGroups, modifiersByGroupId) {
+  return (item.modifierGroupIds || [])
+    .map((groupId) => {
+      const group = modifierGroups[groupId];
+      const options = (modifiersByGroupId.get(groupId) || [])
+        .filter((modifier) => modifier.available !== false && cleanText(modifier.name))
+        .sort((first, second) => (first.sortOrder ?? 0) - (second.sortOrder ?? 0))
+        .map((modifier) => ({
+          id: modifier.id,
+          name: cleanText(modifier.name),
+          priceCents: Number.isFinite(modifier.price) ? modifier.price : 0,
+          priceLabel: formatPriceLabel(modifier.price)
+        }));
+
+      if (!group || options.length === 0) {
+        return null;
+      }
+
+      return {
+        id: group.id,
+        name: cleanText(group.name),
+        required: Number(group.minRequired) > 0,
+        minRequired: Number.isFinite(group.minRequired) ? group.minRequired : 0,
+        maxAllowed: Number.isFinite(group.maxAllowed) ? group.maxAllowed : undefined,
+        options
+      };
+    })
+    .filter(Boolean);
+}
+
+function toMenuItem(item, categoryName, modifierGroups, modifiersByGroupId) {
+  const modifiers = buildModifiers(item, modifierGroups, modifiersByGroupId);
+
   return {
     id: `online-${item.id}`,
     name: cleanText(item.name),
@@ -179,17 +257,28 @@ function toMenuItem(item, categoryName) {
     category: categoryName,
     image: DEFAULT_IMAGE,
     tags: tagsForItem(item),
-    modifiers: [],
+    modifiers,
     available: Boolean(item.available),
     priceCents: Number.isFinite(item.price) ? item.price : undefined,
     priceLabel: formatPriceLabel(item.price),
-    orderUrl: normalizeUrl(item.itemUrl),
-    requiresOptions: item.price <= 0 || item.modifierGroupIds?.length > 0
+    requiresOptions: modifiers.length > 0
   };
 }
 
-function buildMenu(categories, items) {
+function buildMenu(categories, items, modifierGroups, modifiers) {
   const itemById = new Map(items.map((item) => [item.id, item]));
+  const modifiersByGroupId = new Map();
+
+  for (const modifier of modifiers) {
+    if (!modifier.groupId) {
+      continue;
+    }
+
+    const groupModifiers = modifiersByGroupId.get(modifier.groupId) || [];
+    groupModifiers.push(modifier);
+    modifiersByGroupId.set(modifier.groupId, groupModifiers);
+  }
+
   const sortedCategories = [...categories].sort((first, second) => (first.sortOrder ?? 999) - (second.sortOrder ?? 999));
   const seenItemIds = new Set();
   const outputCategories = [];
@@ -211,7 +300,7 @@ function buildMenu(categories, items) {
         continue;
       }
 
-      outputItems.push(toMenuItem(item, cleanText(category.name)));
+      outputItems.push(toMenuItem(item, cleanText(category.name), modifierGroups, modifiersByGroupId));
       seenItemIds.add(item.id);
     }
   }
@@ -222,7 +311,7 @@ function buildMenu(categories, items) {
     outputCategories.push("Other items");
 
     for (const item of uncategorizedItems) {
-      outputItems.push(toMenuItem(item, "Other items"));
+      outputItems.push(toMenuItem(item, "Other items", modifierGroups, modifiersByGroupId));
     }
   }
 
@@ -259,7 +348,9 @@ async function writeGeneratedMenu() {
   const flightText = extractNextFlightText(html);
   const categories = readJsonArrayAfter(flightText, "\"menu\":[");
   const items = readJsonArrayAfter(flightText, "\"items\":[{");
-  const menu = buildMenu(categories, items);
+  const modifierGroups = readJsonObjectAfter(flightText, "\"modifierGroups\":{");
+  const modifiers = readJsonArrayAfter(flightText, "\"modifiers\":[{");
+  const menu = buildMenu(categories, items, modifierGroups, modifiers);
 
   if (menu.items.length < 10 || menu.categories.length < 2) {
     throw new Error(`Online menu payload looked incomplete: ${menu.items.length} items, ${menu.categories.length} categories.`);

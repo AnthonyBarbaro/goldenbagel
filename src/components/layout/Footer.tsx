@@ -14,8 +14,8 @@ const footerLinks = [
 export function Footer() {
   return (
     <footer className="bg-charcoal px-4 pb-28 pt-14 text-white sm:px-6 sm:pb-10 lg:px-8">
-      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1.4fr_1fr_1fr]">
-        <div>
+      <div className="mx-auto grid max-w-7xl min-w-0 gap-10 lg:grid-cols-[1.4fr_1fr_1fr]">
+        <div className="min-w-0">
           <Image
             src={siteConfig.logo}
             alt="Golden Bagel Cafe logo"
@@ -26,25 +26,25 @@ export function Footer() {
           <p className="mt-5 max-w-md text-sm leading-7 text-white/72">{siteConfig.description}</p>
         </div>
 
-        <div className="space-y-4 text-sm text-white/78">
+        <div className="min-w-0 space-y-4 text-sm text-white/78">
           <a href={directionsUrl} className="flex gap-3 transition hover:text-white">
             <MapPin aria-hidden="true" className="mt-1 shrink-0" size={18} />
-            <span>
+            <span className="min-w-0">
               <span className="block font-black text-white">Easy directions to {primaryLocation.name}</span>
-              <span className="block">{businessAddress}</span>
+              <span className="block break-words">{businessAddress}</span>
             </span>
           </a>
           <a href={siteConfig.phoneHref} className="flex gap-3 transition hover:text-white">
             <Phone aria-hidden="true" className="mt-1 shrink-0" size={18} />
             <span>{siteConfig.phone}</span>
           </a>
-          <div className="flex gap-3">
+          <div className="flex min-w-0 gap-3">
             <Clock aria-hidden="true" className="mt-1 shrink-0" size={18} />
             <StoreStatusBadge compact />
           </div>
         </div>
 
-        <nav aria-label="Footer navigation" className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm font-bold text-white/78">
+        <nav aria-label="Footer navigation" className="grid min-w-0 grid-cols-2 gap-x-6 gap-y-3 text-sm font-bold text-white/78">
           {footerLinks.map((item) => (
             <Link key={item.href} href={item.href} className="transition hover:text-white">
               {item.label}
