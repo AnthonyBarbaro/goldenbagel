@@ -67,7 +67,7 @@ export function HomeGallery() {
         type="button"
         aria-label="Previous gallery photos"
         onClick={() => scrollGallery(-1)}
-        className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/15 bg-charcoal/72 text-white shadow-soft backdrop-blur transition hover:bg-charcoal/88 sm:left-6 sm:h-12 sm:w-12 lg:left-[max(1.5rem,calc((100vw-80rem)/2+1.5rem))]"
+        className="absolute left-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-charcoal/82 text-white shadow-soft backdrop-blur transition hover:bg-charcoal sm:left-6 sm:h-12 sm:w-12 lg:left-8"
       >
         <ArrowLeft aria-hidden="true" size={19} />
       </button>
@@ -75,7 +75,7 @@ export function HomeGallery() {
         type="button"
         aria-label="Next gallery photos"
         onClick={() => scrollGallery(1)}
-        className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-honey text-charcoal shadow-soft transition hover:bg-[#ffc85c] sm:right-6 sm:h-12 sm:w-12 lg:right-[max(1.5rem,calc((100vw-80rem)/2+1.5rem))]"
+        className="absolute right-3 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-honey text-charcoal shadow-soft ring-1 ring-charcoal/10 transition hover:bg-[#ffc85c] sm:right-6 sm:h-12 sm:w-12 lg:right-8"
       >
         <ArrowRight aria-hidden="true" size={19} />
       </button>
