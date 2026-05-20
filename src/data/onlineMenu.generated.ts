@@ -1,6 +1,6 @@
 import type { MenuCategory, MenuItem } from "./menu";
 
-export const onlineMenuGeneratedAt = "2026-05-18T21:24:47.430Z";
+export const onlineMenuGeneratedAt = "2026-05-20T00:28:25.375Z";
 
 export const onlineMenuCategories = [
   "Golden Deals",
