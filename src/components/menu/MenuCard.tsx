@@ -107,6 +107,7 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
   const canAddToCart = canOrderItem && Boolean(item.priceCents && item.priceCents > 0) && !hasOptions;
   const canCustomize = canOrderItem && hasOptions;
   const canOpenCustomizer = canCustomize && !inlineModifier;
+  const itemDescription = item.description.trim();
 
   const selectedModifiers = useMemo(
     () =>
@@ -218,6 +219,7 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
             </div>
             {cardPriceLabel && <p className="shrink-0 text-sm font-black text-charcoal sm:text-base">{cardPriceLabel}</p>}
           </div>
+          {itemDescription && <p className="mt-3 line-clamp-2 text-sm font-bold leading-6 text-espresso/70">{itemDescription}</p>}
 
           <div className="mt-4">
             {canAddToCart ? (
@@ -285,6 +287,7 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
                 <p className="text-xs font-black uppercase tracking-[0.16em] text-toast">{item.category}</p>
                 <h3 className="mt-2 text-2xl font-black text-charcoal">{item.name}</h3>
                 <p className="mt-1 text-sm font-bold text-espresso/70">{formatCurrency(totalPriceCents)}</p>
+                {itemDescription && <p className="mt-3 max-w-md text-sm font-bold leading-6 text-espresso/70">{itemDescription}</p>}
               </div>
               <button
                 type="button"

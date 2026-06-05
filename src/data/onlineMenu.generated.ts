@@ -1,6 +1,6 @@
 import type { MenuCategory, MenuItem } from "./menu";
 
-export const onlineMenuGeneratedAt = "2026-06-05T00:02:13.679Z";
+export const onlineMenuGeneratedAt = "2026-06-05T18:56:59.917Z";
 
 export const onlineMenuCategories = [
   "Golden Deals",
@@ -24,7 +24,7 @@ export const onlineMenuItems = [
   {
     "id": "online-V0ZMVYWNKV408",
     "name": "Bagel w/Cream Cheese",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [
@@ -691,7 +691,7 @@ export const onlineMenuItems = [
   {
     "id": "online-R2M80DHSHA1K2",
     "name": "Bagel w/Avocado",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -1281,7 +1281,7 @@ export const onlineMenuItems = [
   {
     "id": "online-3BZ0GSM5QA7P4",
     "name": "Bagel w/Hummus",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -1871,7 +1871,7 @@ export const onlineMenuItems = [
   {
     "id": "online-PXSZHP07YEX4E",
     "name": "Bagel w/Nutella",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -2461,7 +2461,7 @@ export const onlineMenuItems = [
   {
     "id": "online-2A2DF153D5N06",
     "name": "Bagel w/Jelly",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -3051,7 +3051,7 @@ export const onlineMenuItems = [
   {
     "id": "online-AK345Q9G4CAYE",
     "name": "Cream Cheese Tub (Flavor)",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -3134,7 +3134,7 @@ export const onlineMenuItems = [
   {
     "id": "online-GRNQBA9J7Q47E",
     "name": "Bagel w/Butter",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -3724,7 +3724,7 @@ export const onlineMenuItems = [
   {
     "id": "online-923FY915A5REE",
     "name": "Half Dozen Bagels",
-    "description": "A Golden Bagel Cafe favorite from the Golden Deals menu.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -3737,7 +3737,7 @@ export const onlineMenuItems = [
   {
     "id": "online-P9TXVC18SK38C",
     "name": "Bagel w/PB & Jelly",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -4327,7 +4327,7 @@ export const onlineMenuItems = [
   {
     "id": "online-EHQVSBWCKGXE6",
     "name": "Bagel w/Cinnamon",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -4917,7 +4917,7 @@ export const onlineMenuItems = [
   {
     "id": "online-EJ8TN77QZNJ7M",
     "name": "Bagel Nosh Box",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -5006,7 +5006,7 @@ export const onlineMenuItems = [
   {
     "id": "online-4ZG4TXZQZKR42",
     "name": "Cream Cheese Tub",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -5041,7 +5041,7 @@ export const onlineMenuItems = [
   {
     "id": "online-0GEFQQ1HNMA36",
     "name": "Bakers Dozen",
-    "description": "A Golden Bagel Cafe favorite from the Golden Deals menu.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -5054,7 +5054,7 @@ export const onlineMenuItems = [
   {
     "id": "online-PKZGPT0D6RWQW",
     "name": "Single Bagel",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Golden Deals",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -5554,7 +5554,7 @@ export const onlineMenuItems = [
   {
     "id": "online-Q396S464HRTQG",
     "name": "Golden Scramble",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "Choice of bagel, egg, cheese",
     "category": "Breakfast Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [
@@ -6227,7 +6227,7 @@ export const onlineMenuItems = [
   {
     "id": "online-XSQ2X6ZEQZMT8",
     "name": "Smoked Lox Scramble",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Breakfast Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -6898,7 +6898,7 @@ export const onlineMenuItems = [
   {
     "id": "online-A88QZA05HXMVY",
     "name": "Golden Works",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Breakfast Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [
@@ -7571,7 +7571,7 @@ export const onlineMenuItems = [
   {
     "id": "online-R5VH0XPC6FES8",
     "name": "Golden Scramble (Meat)",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Breakfast Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [
@@ -8277,7 +8277,7 @@ export const onlineMenuItems = [
   {
     "id": "online-779Q8VNK6V5WP",
     "name": "Pesto Scramble",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Breakfast Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -8948,7 +8948,7 @@ export const onlineMenuItems = [
   {
     "id": "online-6110BQ75Q56MW",
     "name": "South Veggie Scramble",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Breakfast Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -9619,7 +9619,7 @@ export const onlineMenuItems = [
   {
     "id": "online-CRGB4BFRZE2C8",
     "name": "Greek Scramble",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Breakfast Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -10290,7 +10290,7 @@ export const onlineMenuItems = [
   {
     "id": "online-PD6GH4PSMQ456",
     "name": "Traditional Wrap",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Breakfast Wraps",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -10778,7 +10778,7 @@ export const onlineMenuItems = [
   {
     "id": "online-09GWTYQS6Y1ZA",
     "name": "Greek Wrap",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Breakfast Wraps",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -11266,7 +11266,7 @@ export const onlineMenuItems = [
   {
     "id": "online-FYX1JG7VMS5RJ",
     "name": "Pesto Wrap",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Breakfast Wraps",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -11754,7 +11754,7 @@ export const onlineMenuItems = [
   {
     "id": "online-MG65CWN3FKNQJ",
     "name": "Southwest Roast Veggie Wrap",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Breakfast Wraps",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -12242,7 +12242,7 @@ export const onlineMenuItems = [
   {
     "id": "online-DCGKYSYCHNTZ8",
     "name": "Chicken Breast Sandwich",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Lunch Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -12934,7 +12934,7 @@ export const onlineMenuItems = [
   {
     "id": "online-2JF4G5HXB51RE",
     "name": "Classic BLT",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Lunch Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -13626,7 +13626,7 @@ export const onlineMenuItems = [
   {
     "id": "online-YVG5MQZBGRDV0",
     "name": "Golden Club",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Lunch Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [
@@ -14320,7 +14320,7 @@ export const onlineMenuItems = [
   {
     "id": "online-C2FT3HYQFGEGC",
     "name": "Turkey Sandwhich",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Lunch Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -15012,7 +15012,7 @@ export const onlineMenuItems = [
   {
     "id": "online-GHR56QFXVKGXR",
     "name": "Veggie Sandwich",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Lunch Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -15704,7 +15704,7 @@ export const onlineMenuItems = [
   {
     "id": "online-61AJTXW57R5W0",
     "name": "Ham Sandwich",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Lunch Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -16396,7 +16396,7 @@ export const onlineMenuItems = [
   {
     "id": "online-J59WZ06QC2VXM",
     "name": "Tuna Sandwich",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Lunch Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -17088,7 +17088,7 @@ export const onlineMenuItems = [
   {
     "id": "online-S5AKTV68HGAMG",
     "name": "Lox Bagel",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Lunch Bagels",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [
@@ -17803,7 +17803,7 @@ export const onlineMenuItems = [
   {
     "id": "online-7K05ZZDA292N4",
     "name": "Turkey Cobb Focaccia",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Focaccia Sandwiches",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -18324,7 +18324,7 @@ export const onlineMenuItems = [
   {
     "id": "online-8J95JVVS1JGGM",
     "name": "T.B.A.C Focaccia",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Focaccia Sandwiches",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -18845,7 +18845,7 @@ export const onlineMenuItems = [
   {
     "id": "online-M68KGZR32ZTBJ",
     "name": "French B.L.T Focaccia",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Focaccia Sandwiches",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -19366,7 +19366,7 @@ export const onlineMenuItems = [
   {
     "id": "online-0MD4G08X2B5PE",
     "name": "Tuna Boat Focaccia",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Focaccia Sandwiches",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -19887,7 +19887,7 @@ export const onlineMenuItems = [
   {
     "id": "online-XWNF82JH4P6BJ",
     "name": "Chicken Pesto Focaccia",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Focaccia Sandwiches",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -20408,7 +20408,7 @@ export const onlineMenuItems = [
   {
     "id": "online-HDXAMKE5CWMTC",
     "name": "Thai Chicken Wrap",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Gourmet Wraps",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [
@@ -21063,7 +21063,7 @@ export const onlineMenuItems = [
   {
     "id": "online-GDTQN7PBGEA5R",
     "name": "Turkey Club Wrap",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Gourmet Wraps",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -21716,7 +21716,7 @@ export const onlineMenuItems = [
   {
     "id": "online-YNAZD7DPSYT7C",
     "name": "Caesar Wrap",
-    "description": "A Golden Bagel Cafe favorite from the Gourmet Wraps menu.",
+    "description": "",
     "category": "Gourmet Wraps",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -21729,7 +21729,7 @@ export const onlineMenuItems = [
   {
     "id": "online-HFZ6F7CBWGZDG",
     "name": "Ceasar Salad",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Salads",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -22157,7 +22157,7 @@ export const onlineMenuItems = [
   {
     "id": "online-QG8SXA21H8XVW",
     "name": "Oriental Chicken Salad",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Salads",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -22585,7 +22585,7 @@ export const onlineMenuItems = [
   {
     "id": "online-RE9Q0ACJ2FQHE",
     "name": "Traditional Cobb Salad",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Salads",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [
@@ -23015,7 +23015,7 @@ export const onlineMenuItems = [
   {
     "id": "online-Q06D85K2G17D4",
     "name": "Greek Salad",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Salads",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -23443,7 +23443,7 @@ export const onlineMenuItems = [
   {
     "id": "online-XJGS75WB90SA2",
     "name": "Balsamic Chicken Salad",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Salads",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -23871,7 +23871,7 @@ export const onlineMenuItems = [
   {
     "id": "online-ACS8KGJJGV05R",
     "name": "Tomato Avocado Melt",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24605,7 +24605,7 @@ export const onlineMenuItems = [
   {
     "id": "online-WT4Z2MH9H2JS8",
     "name": "Acai Bowl",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "Granola, acai, blueberries, strawberries, banana, honey, shredded coconut, glazed pecans",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24739,7 +24739,7 @@ export const onlineMenuItems = [
   {
     "id": "online-8XKRQ4P5RHGE4",
     "name": "Yesterday's Bagels",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24752,7 +24752,7 @@ export const onlineMenuItems = [
   {
     "id": "online-6GHWR3PZQR4YM",
     "name": "Kettle Chips",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24765,7 +24765,7 @@ export const onlineMenuItems = [
   {
     "id": "online-7CZNG0JKRZB36",
     "name": "Gluten Free Bagel",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24778,7 +24778,7 @@ export const onlineMenuItems = [
   {
     "id": "online-464JZWHTK1FZW",
     "name": "Gluten Free Bagel With Cream Cheese",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24791,7 +24791,7 @@ export const onlineMenuItems = [
   {
     "id": "online-K8DNEEPAE6ZF0",
     "name": "Bon Appetit Danish/Cake/Muffin",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24804,7 +24804,7 @@ export const onlineMenuItems = [
   {
     "id": "online-6CZ5WKZPBCVGT",
     "name": "Add Cream Cheese",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24817,7 +24817,7 @@ export const onlineMenuItems = [
   {
     "id": "online-YXVYFJ9APDYTJ",
     "name": "Side Of Cream Cheese",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24830,7 +24830,7 @@ export const onlineMenuItems = [
   {
     "id": "online-7CNK33F76VDYY",
     "name": "Side Of Non Dairy Cream Cheese",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24843,7 +24843,7 @@ export const onlineMenuItems = [
   {
     "id": "online-MJ6G581CCYM8R",
     "name": "Extra Dressing Large",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24856,7 +24856,7 @@ export const onlineMenuItems = [
   {
     "id": "online-VQKG10VFM53XA",
     "name": "Extra Dressing Small",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -24869,7 +24869,7 @@ export const onlineMenuItems = [
   {
     "id": "online-RNN3MQBKPVHCR",
     "name": "Cream Cheese Melt",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -25603,7 +25603,7 @@ export const onlineMenuItems = [
   {
     "id": "online-MNBPXM6RZZSEW",
     "name": "Pepperoni Melt",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26337,7 +26337,7 @@ export const onlineMenuItems = [
   {
     "id": "online-61F8F4RED0B8R",
     "name": "Golden Bagels T-shirt",
-    "description": "A Golden Bagel Cafe favorite from the Off Menu menu.",
+    "description": "",
     "category": "Off Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26348,46 +26348,9 @@ export const onlineMenuItems = [
     "requiresOptions": false
   },
   {
-    "id": "online-KQ50739G1GZT0",
-    "name": "Triple Berry Sunrise Smoothie",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
-    "category": "Smoothies",
-    "image": "/goldenbagels/menu/order-online.png",
-    "tags": [
-      "popular"
-    ],
-    "modifiers": [
-      {
-        "id": "VEF9F4KT7SPHW",
-        "name": "Size Smoothies",
-        "required": true,
-        "minRequired": 1,
-        "maxAllowed": 1,
-        "options": [
-          {
-            "id": "A77W46WHSAXBT",
-            "name": "Small (16 oz)",
-            "priceCents": 979,
-            "priceLabel": "$9.79"
-          },
-          {
-            "id": "SQ3NQM2S2HFPP",
-            "name": "Large (24 oz)",
-            "priceCents": 1259,
-            "priceLabel": "$12.59"
-          }
-        ]
-      }
-    ],
-    "available": true,
-    "priceCents": 0,
-    "priceLabel": "Options vary",
-    "requiresOptions": true
-  },
-  {
-    "id": "online-T2D83SBM02CBT",
-    "name": "Purple Rain Smoothie",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "id": "online-AJ30ZTDHDPG1P",
+    "name": "Twin Tubro Berry Blast Smoothie",
+    "description": "Blueberries, raspberries, banana, cranberry, ice",
     "category": "Smoothies",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26415,14 +26378,14 @@ export const onlineMenuItems = [
       }
     ],
     "available": true,
-    "priceCents": 0,
-    "priceLabel": "Options vary",
+    "priceCents": 699,
+    "priceLabel": "$6.99",
     "requiresOptions": true
   },
   {
-    "id": "online-GJ2ZCBZ7FKVSR",
-    "name": "California Summer Medley Smoothie",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "id": "online-CTBZXH32FQC4M",
+    "name": "Strawberry Nitrous Drift Smoothie",
+    "description": "Strawberry, Banana, Apple, Ice",
     "category": "Smoothies",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26450,14 +26413,14 @@ export const onlineMenuItems = [
       }
     ],
     "available": true,
-    "priceCents": 0,
-    "priceLabel": "Options vary",
+    "priceCents": 699,
+    "priceLabel": "$6.99",
     "requiresOptions": true
   },
   {
-    "id": "online-N1Z17TFYXH2XP",
-    "name": "Raspberry Crush Smoothie",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "id": "online-N8MF0FYAD61GJ",
+    "name": "Midnight Burnout Smoothie",
+    "description": "Banana, Nutella, Peanut Butter, Ice",
     "category": "Smoothies",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26485,84 +26448,14 @@ export const onlineMenuItems = [
       }
     ],
     "available": true,
-    "priceCents": 0,
-    "priceLabel": "Options vary",
-    "requiresOptions": true
-  },
-  {
-    "id": "online-3H029MTNJTBKR",
-    "name": "Jamaican Dream Smoothie",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
-    "category": "Smoothies",
-    "image": "/goldenbagels/menu/order-online.png",
-    "tags": [],
-    "modifiers": [
-      {
-        "id": "VEF9F4KT7SPHW",
-        "name": "Size Smoothies",
-        "required": true,
-        "minRequired": 1,
-        "maxAllowed": 1,
-        "options": [
-          {
-            "id": "A77W46WHSAXBT",
-            "name": "Small (16 oz)",
-            "priceCents": 979,
-            "priceLabel": "$9.79"
-          },
-          {
-            "id": "SQ3NQM2S2HFPP",
-            "name": "Large (24 oz)",
-            "priceCents": 1259,
-            "priceLabel": "$12.59"
-          }
-        ]
-      }
-    ],
-    "available": true,
-    "priceCents": 0,
-    "priceLabel": "Options vary",
-    "requiresOptions": true
-  },
-  {
-    "id": "online-AJ8219ZR1CXMA",
-    "name": "Banana Berry Berry Good Smoothie",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
-    "category": "Smoothies",
-    "image": "/goldenbagels/menu/order-online.png",
-    "tags": [],
-    "modifiers": [
-      {
-        "id": "VEF9F4KT7SPHW",
-        "name": "Size Smoothies",
-        "required": true,
-        "minRequired": 1,
-        "maxAllowed": 1,
-        "options": [
-          {
-            "id": "A77W46WHSAXBT",
-            "name": "Small (16 oz)",
-            "priceCents": 979,
-            "priceLabel": "$9.79"
-          },
-          {
-            "id": "SQ3NQM2S2HFPP",
-            "name": "Large (24 oz)",
-            "priceCents": 1259,
-            "priceLabel": "$12.59"
-          }
-        ]
-      }
-    ],
-    "available": true,
-    "priceCents": 0,
-    "priceLabel": "Options vary",
+    "priceCents": 699,
+    "priceLabel": "$6.99",
     "requiresOptions": true
   },
   {
     "id": "online-33PQ5QQF6YG7R",
     "name": "Assorted Gourmet Teas",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Coffee & Tea",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26597,7 +26490,7 @@ export const onlineMenuItems = [
   {
     "id": "online-X516GB62D0ZHW",
     "name": "Hot Chai Tea Latte",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Coffee & Tea",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26632,7 +26525,7 @@ export const onlineMenuItems = [
   {
     "id": "online-RXJSMXKRDAS82",
     "name": "Iced Tea",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Coffee & Tea",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26667,7 +26560,7 @@ export const onlineMenuItems = [
   {
     "id": "online-JQDWG7W7MWR6P",
     "name": "Coffee",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Coffee & Tea",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26702,7 +26595,7 @@ export const onlineMenuItems = [
   {
     "id": "online-TR8EBGT9T6DXA",
     "name": "Coffee Refill",
-    "description": "A Golden Bagel Cafe favorite from the Coffee & Tea menu.",
+    "description": "",
     "category": "Coffee & Tea",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26715,7 +26608,7 @@ export const onlineMenuItems = [
   {
     "id": "online-HEG0T4E4Y5TCR",
     "name": "Iced Coffee",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Coffee & Tea",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26750,7 +26643,7 @@ export const onlineMenuItems = [
   {
     "id": "online-BY06513MCZ5F0",
     "name": "Blended Mochas",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Coffee & Tea",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26812,7 +26705,7 @@ export const onlineMenuItems = [
   {
     "id": "online-4BRB00AA1YMJG",
     "name": "Hot Mocha (20 oz)",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Coffee & Tea",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26853,7 +26746,7 @@ export const onlineMenuItems = [
   {
     "id": "online-ACR42B9NTAB1J",
     "name": "O",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26888,7 +26781,7 @@ export const onlineMenuItems = [
   {
     "id": "online-3V5Z9Q7MKWEMC",
     "name": "Yerba Mate",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26901,7 +26794,7 @@ export const onlineMenuItems = [
   {
     "id": "online-5Q472XYZVY2K0",
     "name": "Nesquik",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26914,7 +26807,7 @@ export const onlineMenuItems = [
   {
     "id": "online-P3KR30V2PY8S2",
     "name": "Celsius",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26927,7 +26820,7 @@ export const onlineMenuItems = [
   {
     "id": "online-591KHKAV1R4EA",
     "name": "Snapple",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26940,7 +26833,7 @@ export const onlineMenuItems = [
   {
     "id": "online-QAY2BVTDQKD42",
     "name": "Apple Juice",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26953,7 +26846,7 @@ export const onlineMenuItems = [
   {
     "id": "online-ZS5B1T23730NJ",
     "name": "Smart Water Small",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26966,7 +26859,7 @@ export const onlineMenuItems = [
   {
     "id": "online-9DJT82RK5VKTW",
     "name": "Perrier Water",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26979,7 +26872,7 @@ export const onlineMenuItems = [
   {
     "id": "online-AT75V1ZZ637XM",
     "name": "Vitamin Water 20 Oz",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -26992,7 +26885,7 @@ export const onlineMenuItems = [
   {
     "id": "online-8R0NQFFW2H4FC",
     "name": "Dite Coke Can 12 Oz",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27005,7 +26898,7 @@ export const onlineMenuItems = [
   {
     "id": "online-AMZ3HBHEC8JW8",
     "name": "Sprite Can 12 Oz",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27018,7 +26911,7 @@ export const onlineMenuItems = [
   {
     "id": "online-ZJM2ZGPDCF2YT",
     "name": "Evian Water",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27031,7 +26924,7 @@ export const onlineMenuItems = [
   {
     "id": "online-NQZ37QXRY7866",
     "name": "Dr Pepper 12 Oz Can",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27044,7 +26937,7 @@ export const onlineMenuItems = [
   {
     "id": "online-85QMD3NS2TE30",
     "name": "Coke Glass Bottle",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27057,7 +26950,7 @@ export const onlineMenuItems = [
   {
     "id": "online-M6EJY71GZ8M0C",
     "name": "Sprite Glass bottle",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27070,7 +26963,7 @@ export const onlineMenuItems = [
   {
     "id": "online-R949Y8SMA5J00",
     "name": "Fanta Glass Bottle",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27083,7 +26976,7 @@ export const onlineMenuItems = [
   {
     "id": "online-D8JS2KYW378GG",
     "name": "Electrolit 21oz",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27096,7 +26989,7 @@ export const onlineMenuItems = [
   {
     "id": "online-MC15MY0D9293R",
     "name": "Bodyarmor",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27109,7 +27002,7 @@ export const onlineMenuItems = [
   {
     "id": "online-VPD1NT91QA154",
     "name": "Kirkland Water",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
+    "description": "",
     "category": "Beverages",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27122,7 +27015,7 @@ export const onlineMenuItems = [
   {
     "id": "online-8XE3STRH2Z0B4",
     "name": "REWARD - 24oz Coffee",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Rewards",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27135,7 +27028,7 @@ export const onlineMenuItems = [
   {
     "id": "online-W549P15X5Q240",
     "name": "REWARD - Bagel w/Cream Cheese",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Rewards",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [
@@ -27150,7 +27043,7 @@ export const onlineMenuItems = [
   {
     "id": "online-BKG5JN8X6M7BJ",
     "name": "Scramble Delight",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Secret Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -27854,7 +27747,7 @@ export const onlineMenuItems = [
   {
     "id": "online-8PAD3MYAFNCPW",
     "name": "Sunny Side Breakfast",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Secret Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -28558,7 +28451,7 @@ export const onlineMenuItems = [
   {
     "id": "online-VFED5V3ARHS2G",
     "name": "All American Breakfast",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Secret Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -29262,7 +29155,7 @@ export const onlineMenuItems = [
   {
     "id": "online-5ETTYZDRVMGCR",
     "name": "Sunny SunShine",
-    "description": "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.",
+    "description": "",
     "category": "Secret Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -29966,7 +29859,7 @@ export const onlineMenuItems = [
   {
     "id": "online-SEVH1NT8NTC9T",
     "name": "Wham Spam Scramble Wrap",
-    "description": "A Golden Bagel Cafe favorite from the Secret Menu menu.",
+    "description": "",
     "category": "Secret Menu",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -29979,7 +29872,7 @@ export const onlineMenuItems = [
   {
     "id": "online-5VK01PDFHAAEC",
     "name": "Single Donut",
-    "description": "A Golden Bagel Cafe favorite from the Donuts menu.",
+    "description": "",
     "category": "Donuts",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -29992,7 +29885,7 @@ export const onlineMenuItems = [
   {
     "id": "online-YEJEAT08XB5K8",
     "name": "Half Dozen Donuts",
-    "description": "A Golden Bagel Cafe favorite from the Donuts menu.",
+    "description": "",
     "category": "Donuts",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -30005,7 +29898,7 @@ export const onlineMenuItems = [
   {
     "id": "online-1A9C38901WSH0",
     "name": "Dozen Donuts",
-    "description": "A Golden Bagel Cafe favorite from the Donuts menu.",
+    "description": "",
     "category": "Donuts",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],
@@ -30018,7 +29911,7 @@ export const onlineMenuItems = [
   {
     "id": "online-PJPXFVQKDJRBG",
     "name": "Red Bull 8oz",
-    "description": "A Golden Bagel Cafe favorite from the Other items menu.",
+    "description": "",
     "category": "Other items",
     "image": "/goldenbagels/menu/order-online.png",
     "tags": [],

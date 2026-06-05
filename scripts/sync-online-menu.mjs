@@ -187,18 +187,67 @@ function cleanText(value) {
   return typeof value === "string" ? value.trim().replace(/\s+/g, " ") : "";
 }
 
-function descriptionForItem(item, categoryName) {
-  const description = cleanText(item.description);
-
-  if (description) {
-    return description;
+function cleanDescription(value) {
+  if (typeof value !== "string") {
+    return "";
   }
 
-  if (item.price <= 0 || item.modifierGroupIds?.length > 0) {
-    return "Customize sizes, flavors, and add-ons through Golden Bagel online ordering.";
+  return value.replace(/<[^>]*>/g, " ").trim().replace(/\s+/g, " ");
+}
+
+function descriptionCandidates(value) {
+  if (!value) {
+    return [];
   }
 
-  return `A Golden Bagel Cafe favorite from the ${categoryName} menu.`;
+  if (typeof value === "string") {
+    return [value];
+  }
+
+  if (typeof value !== "object") {
+    return [];
+  }
+
+  return [
+    value.description,
+    value.shortDescription,
+    value.longDescription,
+    value.itemDescription,
+    value.displayDescription,
+    value.descriptionText,
+    value.descriptionHtml,
+    value.text,
+    value.plainText,
+    value.value,
+    value.html
+  ];
+}
+
+function pulledDescriptionForItem(item) {
+  const candidates = [
+    item.description,
+    item.shortDescription,
+    item.longDescription,
+    item.itemDescription,
+    item.displayDescription,
+    item.descriptionText,
+    item.descriptionHtml,
+    item.details
+  ].flatMap(descriptionCandidates);
+
+  for (const candidate of candidates) {
+    const description = cleanDescription(candidate);
+
+    if (description) {
+      return description;
+    }
+  }
+
+  return "";
+}
+
+function descriptionForItem(item) {
+  return pulledDescriptionForItem(item);
 }
 
 function tagsForItem(item) {
@@ -253,7 +302,7 @@ function toMenuItem(item, categoryName, modifierGroups, modifiersByGroupId) {
   return {
     id: `online-${item.id}`,
     name: cleanText(item.name),
-    description: descriptionForItem(item, categoryName),
+    description: descriptionForItem(item),
     category: categoryName,
     image: DEFAULT_IMAGE,
     tags: tagsForItem(item),
