@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --webpack",
     "sync:menu": "node scripts/sync-online-menu.mjs",
+    "prebuild": "npm run sync:menu",
     "build": "next build --webpack",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"

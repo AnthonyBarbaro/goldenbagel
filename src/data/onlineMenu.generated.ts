@@ -1,6 +1,6 @@
 import type { MenuCategory, MenuItem } from "./menu";
 
-export const onlineMenuGeneratedAt = "2026-05-20T00:28:25.375Z";
+export const onlineMenuGeneratedAt = "2026-06-05T00:02:13.679Z";
 
 export const onlineMenuCategories = [
   "Golden Deals",
@@ -27091,19 +27091,6 @@ export const onlineMenuItems = [
     "available": true,
     "priceCents": 522,
     "priceLabel": "$5.22",
-    "requiresOptions": false
-  },
-  {
-    "id": "online-X94S950GJMP4P",
-    "name": "Red Bull 8oz",
-    "description": "A Golden Bagel Cafe favorite from the Beverages menu.",
-    "category": "Beverages",
-    "image": "/goldenbagels/menu/order-online.png",
-    "tags": [],
-    "modifiers": [],
-    "available": true,
-    "priceCents": 494,
-    "priceLabel": "$4.94",
     "requiresOptions": false
   },
   {

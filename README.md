@@ -56,11 +56,10 @@ npm run build --prefix serverless
 ## 5. Production Build
 
 ```bash
-npm run sync:menu
 npm run build
 ```
 
-The app builds to `.next/` for Vercel. `vercel.json` runs menu sync before the build.
+The app builds to `.next/` for Vercel. `npm run build` runs the Clover online menu sync first through the `prebuild` hook, so every deploy build refreshes `src/data/onlineMenu.generated.ts`.
 
 ## 6. Environment Variables
 
@@ -143,7 +142,7 @@ Leave `NEXT_PUBLIC_API_BASE_URL` blank on Vercel so the frontend uses same-origi
 Connect the GitHub repo to Vercel and use the default Next.js settings. The included `vercel.json` runs:
 
 ```text
-npm run sync:menu && npm run build
+npm run build
 ```
 
 The app uses Next.js API routes:
