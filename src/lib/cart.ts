@@ -76,7 +76,14 @@ function subscribeCart(callback: () => void) {
 }
 
 function makeCartId(item: MenuItem, modifiers: CartModifier[]) {
-  return `${item.id}:${modifiers.map((modifier) => `${modifier.name}=${modifier.option}:${modifier.priceCents || 0}`).join("|")}`;
+  const stableModifiers = [...modifiers].sort((first, second) => {
+    const firstKey = `${first.name}=${first.option}:${first.priceCents || 0}`;
+    const secondKey = `${second.name}=${second.option}:${second.priceCents || 0}`;
+
+    return firstKey.localeCompare(secondKey);
+  });
+
+  return `${item.id}:${stableModifiers.map((modifier) => `${modifier.name}=${modifier.option}:${modifier.priceCents || 0}`).join("|")}`;
 }
 
 export function useCart() {
