@@ -13,6 +13,7 @@ The backend foundation still keeps reusable handler logic under `serverless/`, b
 - Mobile-first homepage
 - Menu browsing and everyday ordering
 - Hosted Clover online ordering link support
+- Live Clover inventory pricing for the order menu and HTML cafe menu board
 - Cart with localStorage persistence
 - Catering and big-party ordering survey
 - Job applications
@@ -79,6 +80,7 @@ ALLOWED_ORIGIN=https://goldenbagelcafe.com
 MOCK_CLOVER=false
 CLOVER_ENV=production
 CLOVER_MERCHANT_ID=6EE1NRRRY8KS1
+CLOVER_ACCESS_TOKEN=
 CLOVER_ECOMMERCE_PRIVATE_KEY=
 CLOVER_HOSTED_CHECKOUT_TAX_NAME=Sales tax
 CLOVER_HOSTED_CHECKOUT_TAX_RATE=
@@ -94,6 +96,10 @@ AWS_REGION=us-west-2
 ```
 
 `NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL` should be the hosted online ordering page URL from the Clover Dashboard. The menu sync uses this URL as its source of truth, and variable-price items can still link there until modifiers are fully mapped into the local cart.
+
+`CLOVER_ACCESS_TOKEN` is the server-only Platform API token used to overlay current Clover item and modifier prices on `/menu/` and `/menu-tv/`. It must have Read Inventory permission. Never prefix it with `NEXT_PUBLIC_` or expose it to browser code. The ecommerce private key remains checkout-only and cannot replace the inventory token.
+
+Production OAuth v2 access tokens expire and refresh tokens rotate. This site currently accepts an active access token but does not refresh it automatically; use Clover-approved durable token storage and rotation before relying on unattended long-term OAuth sync.
 
 ## 7. GitHub Setup
 
@@ -124,6 +130,7 @@ Configure these in Vercel Project Settings. Do not commit real secret values.
 - `MOCK_CLOVER`
 - `CLOVER_ENV`
 - `CLOVER_MERCHANT_ID`
+- `CLOVER_ACCESS_TOKEN`
 - `CLOVER_ECOMMERCE_PRIVATE_KEY`
 - `CLOVER_HOSTED_CHECKOUT_TAX_NAME`
 - `CLOVER_HOSTED_CHECKOUT_TAX_RATE`
@@ -155,6 +162,14 @@ The app uses Next.js API routes:
 - `/api/catering`
 - `/api/clover-webhook`
 
+The live cafe board is available at `/menu-tv/`. It is rendered as responsive HTML, makes a fresh server-side Clover request every five minutes, and falls back to the last generated menu when Clover is unavailable. Because it reads Clover at runtime, deploy this route to Vercel or another Next.js server runtime; a static S3 export cannot provide live pricing.
+
+Use one board URL per in-store TV so the selected menu fills the screen without scrolling:
+
+- TV 1: `/menu-tv/?board=1` — breakfast, Golden Deals, bagel packs, and cream cheese
+- TV 2: `/menu-tv/?board=2` — lunch bagels, focaccia sandwiches, and melts
+- TV 3: `/menu-tv/?board=3` — wraps, salads, smoothies, and açaí
+
 ## 11. Clover Integration
 
 Recommended hosted checkout path:
@@ -177,6 +192,7 @@ MOCK_CLOVER=false
 Before first live payment test:
 
 - Confirm `CLOVER_MERCHANT_ID`
+- Confirm `CLOVER_ACCESS_TOKEN` has Read Inventory permission
 - Confirm `CLOVER_ECOMMERCE_PRIVATE_KEY`
 - Confirm `CLOVER_HOSTED_CHECKOUT_TAX_RATE`
 - Never expose Clover secrets in the frontend

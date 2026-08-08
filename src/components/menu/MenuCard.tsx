@@ -75,6 +75,10 @@ function minimumRequired(modifier: RawModifier) {
     return modifier.minRequired;
   }
 
+  if (modifier.minRequired === 0 && modifier.name.toLowerCase().startsWith("add ")) {
+    return 0;
+  }
+
   if (isSingleChoiceGroup(modifier)) {
     return 1;
   }
@@ -92,7 +96,7 @@ function maximumAllowed(modifier: RawModifier) {
 
 function selectionInstruction(singleChoice: boolean, minimum: number, maxAllowed?: number) {
   if (singleChoice) {
-    return "Choose one";
+    return minimum > 0 ? "Choose one" : "Optional — choose one";
   }
 
   if (minimum > 0 && maxAllowed && minimum === maxAllowed) {

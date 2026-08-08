@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { MobileBottomBar } from "@/components/layout/MobileBottomBar";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { primaryLocation, siteConfig } from "@/config/site";
 import { absoluteUrl, restaurantSchema, websiteSchema } from "@/lib/seo";
@@ -60,10 +61,14 @@ export default function RootLayout({
       <body>
         <JsonLd data={restaurantSchema()} />
         <JsonLd data={websiteSchema()} />
-        <Header />
+        <SiteChrome>
+          <Header />
+        </SiteChrome>
         <div id="main-content">{children}</div>
-        <Footer />
-        <MobileBottomBar />
+        <SiteChrome>
+          <Footer />
+          <MobileBottomBar />
+        </SiteChrome>
       </body>
     </html>
   );

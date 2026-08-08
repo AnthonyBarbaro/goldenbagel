@@ -6,27 +6,19 @@ import { CategoryRail } from "@/components/menu/CategoryRail";
 import { MenuCard } from "@/components/menu/MenuCard";
 import { MenuFilters } from "@/components/menu/MenuFilters";
 import type { MenuCategory, MenuItem } from "@/data/liveMenu";
-import { menuCategories, menuItems } from "@/data/liveMenu";
+import { menuCategories as savedMenuCategories, menuItems as savedMenuItems } from "@/data/liveMenu";
 import { getCategoryLabel } from "@/lib/menuCategories";
 
 type MenuGridProps = {
   initialCategory?: MenuCategory | "All";
+  items?: MenuItem[];
+  categories?: MenuCategory[];
 };
 
 const hiddenMenuCategories = new Set<MenuCategory>(["Other items", "Secret Menu", "Off Menu"]);
 
-const customerMenuItems = menuItems.filter(
-  (item) =>
-    item.available &&
-    item.category !== "Flavors & Toppings" &&
-    !hiddenMenuCategories.has(item.category) &&
-    ((item.priceCents || 0) > 0 || item.modifiers.length > 0)
-);
-
-const customerMenuCategories = menuCategories.filter((category) => customerMenuItems.some((item) => item.category === category));
-
-function normalizeInitialCategory(category?: MenuCategory | "All") {
-  return category && (category === "All" || customerMenuCategories.includes(category)) ? category : "All";
+function normalizeInitialCategory(category: MenuCategory | "All" | undefined, categories: MenuCategory[]) {
+  return category && (category === "All" || categories.includes(category)) ? category : "All";
 }
 
 function itemMatchesSearch(item: MenuItem, query: string) {
@@ -66,19 +58,41 @@ function DesktopMenuSearch({ value, onChange }: DesktopMenuSearchProps) {
   );
 }
 
-export function MenuGrid({ initialCategory = "All" }: MenuGridProps) {
+export function MenuGrid({
+  initialCategory = "All",
+  items = savedMenuItems,
+  categories = savedMenuCategories
+}: MenuGridProps) {
   const [search, setSearch] = useState("");
-  const [activeCategory, setActiveCategory] = useState<MenuCategory | "All">(() => normalizeInitialCategory(initialCategory));
+  const customerMenuItems = useMemo(
+    () =>
+      items.filter(
+        (item) =>
+          item.available &&
+          item.category !== "Flavors & Toppings" &&
+          !hiddenMenuCategories.has(item.category) &&
+          ((item.priceCents || 0) > 0 || item.modifiers.length > 0)
+      ),
+    [items]
+  );
+  const customerMenuCategories = useMemo(
+    () => categories.filter((category) => customerMenuItems.some((item) => item.category === category)),
+    [categories, customerMenuItems]
+  );
+  const [activeCategory, setActiveCategory] = useState<MenuCategory | "All">(() =>
+    normalizeInitialCategory(initialCategory, customerMenuCategories)
+  );
+  const displayCategory = normalizeInitialCategory(activeCategory, customerMenuCategories);
 
   const searchMatchedItems = useMemo(() => {
     const query = search.trim().toLowerCase();
 
     return customerMenuItems.filter((item) => itemMatchesSearch(item, query));
-  }, [search]);
+  }, [customerMenuItems, search]);
 
   const visibleItems = useMemo(
-    () => searchMatchedItems.filter((item) => activeCategory === "All" || item.category === activeCategory),
-    [activeCategory, searchMatchedItems]
+    () => searchMatchedItems.filter((item) => displayCategory === "All" || item.category === displayCategory),
+    [displayCategory, searchMatchedItems]
   );
 
   const categoryRailItems = useMemo(
@@ -87,7 +101,7 @@ export function MenuGrid({ initialCategory = "All" }: MenuGridProps) {
         category,
         count: searchMatchedItems.filter((item) => item.category === category).length
       })),
-    [searchMatchedItems]
+    [customerMenuCategories, searchMatchedItems]
   );
 
   const groupedItems = useMemo(
@@ -98,10 +112,10 @@ export function MenuGrid({ initialCategory = "All" }: MenuGridProps) {
           items: visibleItems.filter((item) => item.category === category)
         }))
         .filter((group) => group.items.length > 0),
-    [visibleItems]
+    [customerMenuCategories, visibleItems]
   );
 
-  const showGroupedMenu = activeCategory === "All" && search.trim().length === 0;
+  const showGroupedMenu = displayCategory === "All" && search.trim().length === 0;
 
   const menuContent =
     visibleItems.length > 0 ? (
@@ -123,7 +137,7 @@ export function MenuGrid({ initialCategory = "All" }: MenuGridProps) {
       ) : (
         <div className="grid gap-3 xl:grid-cols-2">
           {visibleItems.map((item) => (
-            <MenuCard key={item.id} item={item} showCategory={activeCategory === "All"} />
+            <MenuCard key={item.id} item={item} showCategory={displayCategory === "All"} />
           ))}
         </div>
       )
@@ -141,7 +155,7 @@ export function MenuGrid({ initialCategory = "All" }: MenuGridProps) {
           categories={customerMenuCategories}
           search={search}
           onSearch={setSearch}
-          activeCategory={activeCategory}
+          activeCategory={displayCategory}
           onCategory={setActiveCategory}
         />
       </div>
@@ -150,7 +164,7 @@ export function MenuGrid({ initialCategory = "All" }: MenuGridProps) {
         <aside className="hidden lg:sticky lg:top-24 lg:block">
           <CategoryRail
             categories={categoryRailItems}
-            activeCategory={activeCategory}
+            activeCategory={displayCategory}
             totalCount={searchMatchedItems.length}
             onCategory={setActiveCategory}
           />

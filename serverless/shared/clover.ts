@@ -21,7 +21,7 @@ export function isMockClover() {
   return (
     process.env.MOCK_CLOVER !== "false" ||
     !process.env.CLOVER_MERCHANT_ID ||
-    (!process.env.CLOVER_ACCESS_TOKEN && !process.env.CLOVER_ECOMMERCE_PRIVATE_KEY)
+    !process.env.CLOVER_ECOMMERCE_PRIVATE_KEY
   );
 }
 
@@ -52,7 +52,7 @@ export function getCloverConfig(): CloverConfig {
 export async function cloverFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
   const config = getCloverConfig();
 
-  if (config.mock) {
+  if (process.env.MOCK_CLOVER !== "false" || !config.merchantId || !config.accessToken) {
     throw new Error("Clover live fetch attempted while MOCK_CLOVER is enabled or credentials are missing.");
   }
 
@@ -60,7 +60,9 @@ export async function cloverFetch<T>(path: string, init: RequestInit = {}): Prom
     ...init,
     headers: {
       Authorization: `Bearer ${requireServerSecret("CLOVER_ACCESS_TOKEN")}`,
+      Accept: "application/json",
       "Content-Type": "application/json",
+      "User-Agent": "GoldenBagelWebsite/1.0",
       ...(init.headers || {})
     }
   });
@@ -87,7 +89,7 @@ export async function createMockOrder() {
 export async function getMenuItems() {
   const config = getCloverConfig();
 
-  if (config.mock) {
+  if (process.env.MOCK_CLOVER !== "false" || !config.merchantId || !config.accessToken) {
     return {
       items: [],
       mock: true
@@ -282,7 +284,7 @@ export async function createCheckoutSession(payload: unknown) {
   }
 
   const checkoutPayload = buildHostedCheckoutPayload(payload);
-  const ecommerceToken = config.ecommercePrivateKey || config.accessToken;
+  const ecommerceToken = config.ecommercePrivateKey;
 
   if (!ecommerceToken) {
     throw new Error("Missing Clover Ecommerce private token.");
@@ -294,6 +296,7 @@ export async function createCheckoutSession(payload: unknown) {
       accept: "application/json",
       authorization: `Bearer ${ecommerceToken}`,
       "content-type": "application/json",
+      "User-Agent": "GoldenBagelWebsite/1.0",
       "X-Clover-Merchant-Id": config.merchantId
     },
     body: JSON.stringify(checkoutPayload)
