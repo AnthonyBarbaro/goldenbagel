@@ -29,9 +29,8 @@ export function PopularMenu() {
 
   return (
     <Section
-      eyebrow="Fresh favorites"
-      title="Start with a favorite, then pick a category."
-      intro="Eight quick picks from the online menu, plus every category when you want to browse."
+      title="Start with a quick pick or browse the counter."
+      intro="Jump into a category, then customize every item exactly how you want it."
       className="bg-cream"
     >
       <div className="space-y-3 sm:space-y-4">
@@ -48,7 +47,7 @@ export function PopularMenu() {
                 <Link
                   key={category}
                   href={categoryHref(category)}
-                  className="shrink-0 rounded-full bg-cream px-3 py-2 text-[0.68rem] font-black text-charcoal transition hover:bg-honey sm:px-3.5 sm:text-xs lg:px-4 lg:text-sm"
+                  className="shrink-0 rounded-full bg-cream px-3 py-2 text-xs font-black text-charcoal transition hover:bg-honey sm:px-3.5 lg:px-4 lg:text-sm"
                   aria-label={`Open ${category} menu category`}
                 >
                   {getCategoryLabel(category)}
@@ -61,19 +60,18 @@ export function PopularMenu() {
             href={onlineOrderUrl}
             className="group flex min-w-0 flex-col justify-between rounded-[1.25rem] bg-charcoal p-3 text-white shadow-soft transition hover:bg-espresso sm:rounded-[1.5rem] sm:p-4"
           >
-            <span className="text-[0.62rem] font-black uppercase tracking-[0.16em] text-honey sm:text-xs">More Menu</span>
-            <span className="mt-2 block text-2xl font-black sm:text-4xl">100+</span>
-            <span className="mt-1 flex items-center gap-1 text-xs font-black text-white/84 sm:text-sm">
-              All items
-              <ArrowRight aria-hidden="true" className="transition group-hover:translate-x-1" size={15} />
+            <span className="text-sm font-black leading-5 sm:text-lg sm:leading-6">See the full menu</span>
+            <span className="mt-4 flex h-9 w-9 items-center justify-center self-end rounded-full bg-honey text-charcoal sm:h-11 sm:w-11">
+              <ArrowRight aria-hidden="true" className="transition group-hover:translate-x-1" size={18} />
             </span>
+            <span className="mt-3 text-xs font-bold leading-4 text-white/68">Every item and option</span>
           </Link>
         </div>
 
         <div className="rounded-[1.25rem] border border-charcoal/10 bg-white p-3 shadow-soft sm:rounded-[1.5rem] sm:p-4">
           <div className="mb-3 flex items-center justify-between gap-3">
             <h3 className="text-lg font-black text-charcoal sm:text-xl">Quick Picks</h3>
-            <span className="rounded-full bg-honey/30 px-3 py-1 text-xs font-black text-toast">8 favorites</span>
+            <span className="text-xs font-black text-toast">{previewItems.length} picks</span>
           </div>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
             {previewItems.map((item) => (
@@ -85,7 +83,7 @@ export function PopularMenu() {
                 )}
               >
                 <span className="min-w-0">
-                  <span className="text-[0.62rem] font-black uppercase tracking-[0.13em] text-toast">{getCategoryLabel(item.category)}</span>
+                  <span className="text-xs font-black uppercase tracking-[0.1em] text-toast">{getCategoryLabel(item.category)}</span>
                   <span className="mt-1 block text-base font-black leading-5 text-charcoal sm:text-lg sm:leading-6">{item.name}</span>
                 </span>
                 <span className="shrink-0 text-right">

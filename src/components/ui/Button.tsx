@@ -12,7 +12,7 @@ const variants: Record<ButtonVariant, string> = {
 };
 
 const sizes = {
-  sm: "min-h-10 px-4 text-sm",
+  sm: "min-h-11 px-4 text-sm",
   md: "min-h-12 px-5 text-sm",
   lg: "min-h-14 px-7 text-base"
 };
@@ -26,6 +26,7 @@ type SharedProps = {
 
 type LinkButtonProps = SharedProps & {
   href: string;
+  onClick?: () => void;
 };
 
 type NativeButtonProps = SharedProps & ComponentPropsWithoutRef<"button"> & {
@@ -53,14 +54,14 @@ export function Button({
 
     if (isExternal) {
       return (
-        <a href={props.href} className={buttonClassName} target="_blank" rel="noreferrer">
+        <a href={props.href} className={buttonClassName} target="_blank" rel="noreferrer" onClick={props.onClick}>
           {children}
         </a>
       );
     }
 
     return (
-      <Link href={props.href} className={buttonClassName}>
+      <Link href={props.href} className={buttonClassName} onClick={props.onClick}>
         {children}
       </Link>
     );

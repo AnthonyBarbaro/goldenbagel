@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingBag, Utensils } from "lucide-react";
+import { CreditCard, MapPin, ShoppingBag, Utensils } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CartItem } from "@/components/order/CartItem";
 import { CheckoutForm } from "@/components/order/CheckoutForm";
@@ -17,7 +17,7 @@ function getCheckoutReturnFromUrl() {
   const params = new URLSearchParams(window.location.search);
   const checkoutStatus = params.get("checkout");
 
-  if (checkoutStatus === "success" && params.get("clearCart") === "1") {
+  if (checkoutStatus === "success") {
     return "success" as const;
   }
 
@@ -29,20 +29,25 @@ function getCheckoutReturnFromUrl() {
 }
 
 export function CartPage() {
-  const { items, subtotalCents, clearCart } = useCart();
+  const { items, quantity, subtotalCents, clearCart } = useCart();
   const [completedOrder, setCompletedOrder] = useState<OrderResponse | null>(null);
-  const [checkoutReturn, setCheckoutReturn] = useState<"success" | "failure" | null>(getCheckoutReturnFromUrl);
+  const [checkoutReturn, setCheckoutReturn] = useState<"success" | "failure" | null>(null);
+  const [checkoutReturnChecked, setCheckoutReturnChecked] = useState(false);
 
   useEffect(() => {
-    if (checkoutReturn === "success") {
-      clearCart();
+    const checkoutStatus = getCheckoutReturnFromUrl();
+
+    if (checkoutStatus) {
       window.history.replaceState(null, "", "/order");
     }
 
-    if (checkoutReturn === "failure") {
-      window.history.replaceState(null, "", "/order");
-    }
-  }, [checkoutReturn, clearCart]);
+    const updateTimer = window.setTimeout(() => {
+      setCheckoutReturn(checkoutStatus);
+      setCheckoutReturnChecked(true);
+    }, 0);
+
+    return () => window.clearTimeout(updateTimer);
+  }, []);
 
   function handleComplete(order: OrderResponse) {
     if (order.checkoutUrl && /^https?:\/\//.test(order.checkoutUrl)) {
@@ -50,8 +55,21 @@ export function CartPage() {
       return;
     }
 
+    if (!order.mock) {
+      throw new Error("Clover did not return a secure checkout link. Your cart is still saved; please try again.");
+    }
+
     clearCart();
     setCompletedOrder(order);
+  }
+
+  if (!checkoutReturnChecked) {
+    return (
+      <div role="status" className="rounded-[1.5rem] border border-charcoal/10 bg-white p-8 text-center shadow-soft">
+        <ShoppingBag aria-hidden="true" className="mx-auto animate-pulse text-toast" size={38} />
+        <p className="mt-4 text-sm font-black text-charcoal">Loading your saved cart…</p>
+      </div>
+    );
   }
 
   if (completedOrder) {
@@ -61,15 +79,28 @@ export function CartPage() {
   if (checkoutReturn === "success") {
     return (
       <div className="rounded-[1.5rem] border border-charcoal/10 bg-white p-8 text-center shadow-soft">
-        <ShoppingBag aria-hidden="true" className="mx-auto text-toast" size={38} />
-        <h2 className="mt-4 text-3xl font-black text-charcoal">Payment received</h2>
+        <CreditCard aria-hidden="true" className="mx-auto text-toast" size={38} />
+        <h2 className="mt-4 text-3xl font-black text-charcoal">Back from Clover</h2>
         <p className="mx-auto mt-2 max-w-lg text-sm font-bold leading-6 text-espresso/70">
-          Thanks. Your cart has been cleared and your Golden Bagel order was sent through Clover.
+          If Clover showed a payment confirmation, your checkout is complete. Check your Clover receipt for the final payment status.
         </p>
-        <div className="mt-6">
-          <Button href="/menu" className="w-full sm:w-auto">
+        <p className="mx-auto mt-2 max-w-lg text-xs font-bold leading-5 text-espresso/70">
+          We kept your cart on this device because this page cannot independently verify payment.
+        </p>
+        <div className="mt-6 flex flex-col justify-center gap-2 sm:flex-row">
+          <Button
+            type="button"
+            onClick={() => {
+              clearCart();
+              window.location.assign("/menu");
+            }}
+            className="w-full sm:w-auto"
+          >
             <Utensils aria-hidden="true" size={18} />
-            Order Again
+            Start a New Order
+          </Button>
+          <Button type="button" variant="secondary" onClick={() => setCheckoutReturn(null)} className="w-full sm:w-auto">
+            View Saved Cart
           </Button>
         </div>
       </div>
@@ -116,8 +147,11 @@ export function CartPage() {
           <div>
             <p className="text-xs font-black uppercase tracking-[0.16em] text-toast">Your Cart</p>
             <h2 className="mt-1 text-2xl font-black text-charcoal">
-              {items.length} item{items.length === 1 ? "" : "s"}
+              {quantity} item{quantity === 1 ? "" : "s"}
             </h2>
+            <p className="mt-1 flex items-center gap-1.5 text-xs font-bold text-espresso/70">
+              <MapPin aria-hidden="true" size={14} /> Pickup on Fletcher Parkway
+            </p>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center">
             <Button href="/menu" variant="secondary" size="sm" className="w-full sm:w-auto">

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChevronDown, Loader2 } from "lucide-react";
+import { ChevronDown, Clock3, Loader2, MapPin, ShieldCheck } from "lucide-react";
 import { useEffect, useState, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,14 +9,19 @@ import { Button } from "@/components/ui/Button";
 import { primaryLocation } from "@/config/site";
 import { createOrder, type FulfillmentType, type OrderResponse } from "@/lib/api";
 import type { CartItem } from "@/lib/cart";
-import { getNextOpenMessage, getNextOpenPickupOptions, isStoreOpenNow } from "@/lib/hours";
+import { getAvailableImmediatePickupOptions, getNextOpenMessage, getNextOpenPickupOptions, isStoreOpenNow } from "@/lib/hours";
+
+function phoneDigits(value: string) {
+  const digits = value.replace(/\D/g, "");
+  return digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
+}
 
 const checkoutSchema = z.object({
-  fulfillmentType: z.enum(["pickup", "delivery"]),
-  firstName: z.string().min(2, "Enter your first name."),
-  lastName: z.string().min(2, "Enter your last name."),
-  phone: z.string().min(7, "Enter a phone number."),
-  email: z.string().email("Enter a valid email."),
+  fulfillmentType: z.literal("pickup"),
+  firstName: z.string().trim().min(1, "Enter your first name.").max(80, "Keep your first name under 80 characters."),
+  lastName: z.string().trim().min(1, "Enter your last name.").max(80, "Keep your last name under 80 characters."),
+  phone: z.string().trim().refine((value) => phoneDigits(value).length === 10, "Enter a 10-digit phone number."),
+  email: z.string().trim().email("Enter a valid email.").max(254, "Enter a shorter email."),
   pickupTime: z.string().min(1, "Choose a pickup time."),
   notes: z.string().max(500).optional()
 });
@@ -30,15 +35,15 @@ type CheckoutFormProps = {
 };
 
 type PickupStoreStatus = {
-  openNow: boolean;
+  acceptingImmediatePickup: boolean;
   message: string;
+  immediatePickupOptions: string[];
   scheduledPickupOptions: string[];
 };
 
 type SavedCheckoutCustomer = Pick<CheckoutFormValues, "firstName" | "lastName" | "phone" | "email">;
 
 const SAVED_CHECKOUT_CUSTOMER_KEY = "goldenbagel.checkoutCustomer.v1";
-const immediatePickupOptions = ["ASAP", "15 minutes", "30 minutes", "45 minutes", "60 minutes"] as const;
 const emptyScheduledPickupOptions: string[] = [];
 
 function formatCurrency(cents: number) {
@@ -46,7 +51,8 @@ function formatCurrency(cents: number) {
 }
 
 function formatPhoneNumber(value: string) {
-  const digits = value.replace(/\D/g, "").slice(0, 10);
+  const rawDigits = value.replace(/\D/g, "");
+  const digits = (rawDigits.length > 10 && rawDigits.startsWith("1") ? rawDigits.slice(1) : rawDigits).slice(0, 10);
 
   if (digits.length <= 3) {
     return digits;
@@ -60,9 +66,18 @@ function formatPhoneNumber(value: string) {
 }
 
 function getPickupStoreStatus() {
+  const immediatePickupOptions = getAvailableImmediatePickupOptions(primaryLocation.hours, primaryLocation.timezone);
+  const storeOpen = isStoreOpenNow(primaryLocation.hours, primaryLocation.timezone);
+
   return {
-    openNow: isStoreOpenNow(primaryLocation.hours, primaryLocation.timezone),
-    message: getNextOpenMessage(primaryLocation.hours, primaryLocation.timezone),
+    acceptingImmediatePickup: immediatePickupOptions.length > 0,
+    message:
+      immediatePickupOptions.length > 0
+        ? getNextOpenMessage(primaryLocation.hours, primaryLocation.timezone)
+        : storeOpen
+          ? "Today’s pickup window is full"
+          : getNextOpenMessage(primaryLocation.hours, primaryLocation.timezone),
+    immediatePickupOptions,
     scheduledPickupOptions: getNextOpenPickupOptions(primaryLocation.hours, primaryLocation.timezone)
   };
 }
@@ -81,7 +96,12 @@ function readSavedCheckoutCustomer(): SavedCheckoutCustomer | null {
 
     const saved = JSON.parse(raw) as Partial<SavedCheckoutCustomer>;
 
-    if (!saved.firstName || !saved.lastName || !saved.phone || !saved.email) {
+    if (
+      typeof saved.firstName !== "string" ||
+      typeof saved.lastName !== "string" ||
+      typeof saved.phone !== "string" ||
+      typeof saved.email !== "string"
+    ) {
       return null;
     }
 
@@ -96,16 +116,26 @@ function readSavedCheckoutCustomer(): SavedCheckoutCustomer | null {
   }
 }
 
-function saveCheckoutCustomer(values: CheckoutFormValues) {
-  window.localStorage.setItem(
-    SAVED_CHECKOUT_CUSTOMER_KEY,
-    JSON.stringify({
-      firstName: values.firstName.trim(),
-      lastName: values.lastName.trim(),
-      phone: formatPhoneNumber(values.phone),
-      email: values.email.trim()
-    } satisfies SavedCheckoutCustomer)
-  );
+function updateSavedCheckoutCustomer(values: CheckoutFormValues, rememberCustomer: boolean) {
+  try {
+    if (!rememberCustomer) {
+      window.localStorage.removeItem(SAVED_CHECKOUT_CUSTOMER_KEY);
+      return true;
+    }
+
+    window.localStorage.setItem(
+      SAVED_CHECKOUT_CUSTOMER_KEY,
+      JSON.stringify({
+        firstName: values.firstName.trim(),
+        lastName: values.lastName.trim(),
+        phone: formatPhoneNumber(values.phone),
+        email: values.email.trim()
+      } satisfies SavedCheckoutCustomer)
+    );
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 const inputClassName =
@@ -113,8 +143,9 @@ const inputClassName =
 
 export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormProps) {
   const [error, setError] = useState("");
+  const [storageNotice, setStorageNotice] = useState("");
   const [storeStatus, setStoreStatus] = useState<PickupStoreStatus | null>(null);
-  const [rememberCustomer, setRememberCustomer] = useState(true);
+  const [rememberCustomer, setRememberCustomer] = useState(false);
   const {
     register,
     handleSubmit,
@@ -129,8 +160,9 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
     }
   });
   const pickupStatusKnown = storeStatus !== null;
-  const pickupOpen = storeStatus?.openNow ?? false;
+  const pickupOpen = storeStatus?.acceptingImmediatePickup ?? false;
   const pickupStatusMessage = storeStatus?.message || "Checking pickup hours...";
+  const immediatePickupOptions = storeStatus?.immediatePickupOptions || emptyScheduledPickupOptions;
   const scheduledPickupOptions = storeStatus?.scheduledPickupOptions || emptyScheduledPickupOptions;
   const firstScheduledPickupTime = scheduledPickupOptions[0] || "";
   const canSubmitOrder = pickupStatusKnown && (pickupOpen || scheduledPickupOptions.length > 0);
@@ -147,6 +179,9 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
     setValue("lastName", savedCustomer.lastName);
     setValue("phone", savedCustomer.phone);
     setValue("email", savedCustomer.email);
+    const rememberFrame = window.requestAnimationFrame(() => setRememberCustomer(true));
+
+    return () => window.cancelAnimationFrame(rememberFrame);
   }, [setValue]);
 
   useEffect(() => {
@@ -172,10 +207,10 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
       return;
     }
 
-    if (!immediatePickupOptions.includes(currentPickupTime as (typeof immediatePickupOptions)[number])) {
+    if (!immediatePickupOptions.includes(currentPickupTime)) {
       setValue("pickupTime", "ASAP", { shouldValidate: true });
     }
-  }, [firstScheduledPickupTime, getValues, pickupOpen, pickupStatusKnown, scheduledPickupOptions, setValue]);
+  }, [firstScheduledPickupTime, getValues, immediatePickupOptions, pickupOpen, pickupStatusKnown, scheduledPickupOptions, setValue]);
 
   function applyEmailDomain(domain: "@gmail.com" | "@yahoo.com") {
     const currentEmail = getValues("email").trim();
@@ -206,22 +241,20 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
     }
 
     try {
-      if (rememberCustomer) {
-        saveCheckoutCustomer(values);
-      } else {
-        window.localStorage.removeItem(SAVED_CHECKOUT_CUSTOMER_KEY);
+      if (!updateSavedCheckoutCustomer(values, rememberCustomer)) {
+        setStorageNotice("Your details could not be saved on this device, but you can still continue.");
       }
 
       const order = await createOrder({
         cartItems: items,
-      fulfillmentType: values.fulfillmentType as FulfillmentType,
-      customer: {
+        fulfillmentType: values.fulfillmentType as FulfillmentType,
+        customer: {
           name: `${values.firstName.trim()} ${values.lastName.trim()}`.trim(),
-          phone: values.phone,
-          email: values.email
+          phone: formatPhoneNumber(values.phone),
+          email: values.email.trim()
         },
-        pickupTime: values.pickupTime,
-        notes: values.notes
+        pickupTime: values.pickupTime.trim(),
+        notes: values.notes?.trim()
       });
       onComplete(order);
     } catch (caughtError) {
@@ -232,7 +265,8 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="space-y-4 rounded-[1.25rem] border border-charcoal/10 bg-white p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-soft sm:space-y-5 sm:rounded-[1.5rem] sm:p-5 lg:sticky lg:top-24"
+      aria-busy={isSubmitting}
+      className="space-y-4 rounded-[1.25rem] border border-charcoal/10 bg-white p-3 pb-[calc(6rem+env(safe-area-inset-bottom))] shadow-soft sm:space-y-5 sm:rounded-[1.5rem] sm:p-5 lg:sticky lg:top-24"
     >
       <input type="hidden" value="pickup" {...register("fulfillmentType")} />
 
@@ -248,19 +282,50 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
 
       <div>
         <h2 className="text-xl font-black text-charcoal sm:text-2xl">Pickup Details</h2>
-        <p className="mt-1 text-sm font-bold text-espresso/65">We will use this to confirm the order.</p>
+        <p className="mt-1 text-sm font-bold text-espresso/72">A few details, then Clover handles secure payment.</p>
+      </div>
+
+      <div className="grid gap-2 rounded-2xl border border-honey/35 bg-sesame/35 p-4 text-sm font-bold text-charcoal sm:grid-cols-2">
+        <span className="flex items-start gap-2">
+          <MapPin aria-hidden="true" className="mt-0.5 shrink-0 text-toast" size={17} />
+          2744 Fletcher Pkwy
+        </span>
+        <span className="flex items-start gap-2 sm:justify-end">
+          <Clock3 aria-hidden="true" className="mt-0.5 shrink-0 text-toast" size={17} />
+          {pickupStatusMessage}
+        </span>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="text-sm font-bold text-charcoal">
           First name
-          <input className={inputClassName} autoComplete="given-name" {...register("firstName")} />
-          {errors.firstName && <span className="mt-1 block text-xs text-red-700">{errors.firstName.message}</span>}
+          <input
+            className={inputClassName}
+            autoComplete="given-name"
+            aria-invalid={Boolean(errors.firstName)}
+            aria-describedby={errors.firstName ? "checkout-first-name-error" : undefined}
+            {...register("firstName")}
+          />
+          {errors.firstName && (
+            <span id="checkout-first-name-error" className="mt-1 block text-xs text-red-700">
+              {errors.firstName.message}
+            </span>
+          )}
         </label>
         <label className="text-sm font-bold text-charcoal">
           Last name
-          <input className={inputClassName} autoComplete="family-name" {...register("lastName")} />
-          {errors.lastName && <span className="mt-1 block text-xs text-red-700">{errors.lastName.message}</span>}
+          <input
+            className={inputClassName}
+            autoComplete="family-name"
+            aria-invalid={Boolean(errors.lastName)}
+            aria-describedby={errors.lastName ? "checkout-last-name-error" : undefined}
+            {...register("lastName")}
+          />
+          {errors.lastName && (
+            <span id="checkout-last-name-error" className="mt-1 block text-xs text-red-700">
+              {errors.lastName.message}
+            </span>
+          )}
         </label>
       </div>
 
@@ -272,11 +337,17 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
           className={inputClassName}
           autoComplete="tel"
           placeholder="619-464-2243"
-          maxLength={12}
+          maxLength={16}
+          aria-invalid={Boolean(errors.phone)}
+          aria-describedby={errors.phone ? "checkout-phone-error" : undefined}
           {...phoneInput}
           onChange={handlePhoneChange}
         />
-        {errors.phone && <span className="mt-1 block text-xs text-red-700">{errors.phone.message}</span>}
+        {errors.phone && (
+          <span id="checkout-phone-error" className="mt-1 block text-xs text-red-700">
+            {errors.phone.message}
+          </span>
+        )}
       </label>
 
       <div>
@@ -289,6 +360,8 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
           inputMode="email"
           className={inputClassName}
           autoComplete="email"
+          aria-invalid={Boolean(errors.email)}
+          aria-describedby={errors.email ? "checkout-email-error" : undefined}
           {...register("email")}
         />
         <div className="mt-2 grid grid-cols-2 gap-2">
@@ -297,13 +370,17 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
               key={domain}
               type="button"
               onClick={() => applyEmailDomain(domain)}
-              className="min-h-10 rounded-full border border-charcoal/10 bg-cream px-3 text-sm font-black text-charcoal transition hover:bg-sesame focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-honey"
+              className="min-h-11 rounded-full border border-charcoal/10 bg-cream px-3 text-sm font-black text-charcoal transition hover:bg-sesame focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-honey"
             >
               {domain}
             </button>
           ))}
         </div>
-        {errors.email && <span className="mt-1 block text-xs text-red-700">{errors.email.message}</span>}
+        {errors.email && (
+          <span id="checkout-email-error" className="mt-1 block text-xs text-red-700">
+            {errors.email.message}
+          </span>
+        )}
       </div>
 
       <label className="flex items-start gap-3 rounded-xl border border-charcoal/10 bg-cream/55 p-3 text-sm font-bold text-charcoal">
@@ -315,7 +392,7 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
         />
         <span>
           Remember my info
-          <span className="mt-1 block text-xs font-semibold leading-5 text-espresso/60">Saved on this device for faster checkout.</span>
+          <span className="mt-1 block text-xs font-semibold leading-5 text-espresso/70">Saved on this device for faster checkout.</span>
         </span>
       </label>
 
@@ -325,6 +402,8 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
           <select
             className={`${inputClassName} appearance-none pr-12`}
             disabled={!pickupStatusKnown}
+            aria-invalid={Boolean(errors.pickupTime)}
+            aria-describedby={errors.pickupTime ? "checkout-pickup-time-error" : undefined}
             {...register("pickupTime")}
           >
             {!pickupStatusKnown ? (
@@ -349,11 +428,15 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
           </select>
           <ChevronDown
             aria-hidden="true"
-            className="pointer-events-none absolute right-4 top-1/2 mt-1 -translate-y-1/2 text-espresso/55"
+            className="pointer-events-none absolute right-4 top-1/2 mt-1 -translate-y-1/2 text-espresso/70"
             size={20}
           />
         </span>
-        {errors.pickupTime && <span className="mt-1 block text-xs text-red-700">{errors.pickupTime.message}</span>}
+        {errors.pickupTime && (
+          <span id="checkout-pickup-time-error" className="mt-1 block text-xs text-red-700">
+            {errors.pickupTime.message}
+          </span>
+        )}
         {pickupStatusKnown && !pickupOpen && (
           <span className="mt-2 block text-xs font-bold text-toast">
             {pickupStatusMessage}. Pick a scheduled time for the next open day.
@@ -366,20 +449,27 @@ export function CheckoutForm({ items, subtotalCents, onComplete }: CheckoutFormP
         <textarea
           className="mt-2 min-h-24 w-full rounded-xl border border-charcoal/10 bg-white px-4 py-3 text-charcoal outline-none transition focus:border-honey focus:ring-4 focus:ring-honey/20"
           placeholder="Optional"
+          maxLength={500}
           {...register("notes")}
         />
       </label>
 
-      {error && <p className="rounded-2xl bg-red-50 p-3 text-sm font-bold text-red-800">{error}</p>}
+      {storageNotice && <p className="rounded-2xl bg-sesame/45 p-3 text-sm font-bold text-espresso/75">{storageNotice}</p>}
+      {error && (
+        <p role="alert" className="rounded-2xl bg-red-50 p-3 text-sm font-bold text-red-800">
+          {error}
+        </p>
+      )}
 
-      <div className="sticky bottom-0 -mx-3 bg-white/96 px-3 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:static sm:mx-0 sm:bg-transparent sm:p-0">
+      <p className="text-center text-xs font-bold text-espresso/70">Prices are rechecked, then you review and pay on Clover.</p>
+
+      <div className="fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 border-t border-charcoal/10 bg-white/96 px-4 py-3 shadow-[0_-12px_28px_rgba(32,24,20,0.10)] backdrop-blur-xl sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0 sm:shadow-none">
         <Button type="submit" disabled={isSubmitting || items.length === 0 || !canSubmitOrder} className="w-full">
           {isSubmitting && <Loader2 aria-hidden="true" className="animate-spin" size={18} />}
-          Pay Securely
+          {!isSubmitting && <ShieldCheck aria-hidden="true" size={18} />}
+          {isSubmitting ? "Preparing secure checkout…" : "Continue to Clover"}
         </Button>
       </div>
-
-      <p className="text-center text-xs font-bold text-espresso/55">You will review final payment details before paying.</p>
     </form>
   );
 }

@@ -1,18 +1,18 @@
 "use client";
 
-import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { RotateCcw, SearchX } from "lucide-react";
+import { useDeferredValue, useId, useMemo, useRef, useState } from "react";
 import { CategoryRail } from "@/components/menu/CategoryRail";
 import { MenuCard } from "@/components/menu/MenuCard";
 import { MenuFilters } from "@/components/menu/MenuFilters";
+import { MenuSearch } from "@/components/menu/MenuSearch";
 import type { MenuCategory, MenuItem } from "@/data/liveMenu";
-import { menuCategories as savedMenuCategories, menuItems as savedMenuItems } from "@/data/liveMenu";
 import { getCategoryLabel } from "@/lib/menuCategories";
 
 type MenuGridProps = {
   initialCategory?: MenuCategory | "All";
-  items?: MenuItem[];
-  categories?: MenuCategory[];
+  items: MenuItem[];
+  categories: MenuCategory[];
 };
 
 const hiddenMenuCategories = new Set<MenuCategory>(["Other items", "Secret Menu", "Off Menu"]);
@@ -35,35 +35,11 @@ function itemMatchesSearch(item: MenuItem, query: string) {
   );
 }
 
-type DesktopMenuSearchProps = {
-  value: string;
-  onChange: (value: string) => void;
-};
-
-function DesktopMenuSearch({ value, onChange }: DesktopMenuSearchProps) {
-  return (
-    <div className="relative">
-      <Search aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-espresso/45" size={20} />
-      <label htmlFor="menu-search-desktop" className="sr-only">
-        Search menu
-      </label>
-      <input
-        id="menu-search-desktop"
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        placeholder="Search menu"
-        className="min-h-14 w-full rounded-full border border-charcoal/10 bg-white py-3 pl-12 pr-5 text-charcoal shadow-soft outline-none transition focus:border-honey"
-      />
-    </div>
-  );
-}
-
-export function MenuGrid({
-  initialCategory = "All",
-  items = savedMenuItems,
-  categories = savedMenuCategories
-}: MenuGridProps) {
+export function MenuGrid({ initialCategory = "All", items, categories }: MenuGridProps) {
+  const resultsId = useId();
+  const resultsRef = useRef<HTMLDivElement>(null);
   const [search, setSearch] = useState("");
+  const deferredSearch = useDeferredValue(search);
   const customerMenuItems = useMemo(
     () =>
       items.filter(
@@ -85,10 +61,10 @@ export function MenuGrid({
   const displayCategory = normalizeInitialCategory(activeCategory, customerMenuCategories);
 
   const searchMatchedItems = useMemo(() => {
-    const query = search.trim().toLowerCase();
+    const query = deferredSearch.trim().toLowerCase();
 
     return customerMenuItems.filter((item) => itemMatchesSearch(item, query));
-  }, [customerMenuItems, search]);
+  }, [customerMenuItems, deferredSearch]);
 
   const visibleItems = useMemo(
     () => searchMatchedItems.filter((item) => displayCategory === "All" || item.category === displayCategory),
@@ -115,18 +91,40 @@ export function MenuGrid({
     [customerMenuCategories, visibleItems]
   );
 
-  const showGroupedMenu = displayCategory === "All" && search.trim().length === 0;
+  const showGroupedMenu = displayCategory === "All" && deferredSearch.trim().length === 0;
+  const hasActiveFilters = displayCategory !== "All" || deferredSearch.trim().length > 0;
+  const visibleResultLabel = `${visibleItems.length} ${visibleItems.length === 1 ? "item" : "items"}`;
+  const resultsTitle = deferredSearch.trim()
+    ? displayCategory === "All"
+      ? `Results for “${deferredSearch.trim()}”`
+      : `${getCategoryLabel(displayCategory)} matching “${deferredSearch.trim()}”`
+    : getCategoryLabel(displayCategory);
+
+  function clearFilters() {
+    setSearch("");
+    setActiveCategory("All");
+  }
+
+  function selectCategory(category: MenuCategory | "All") {
+    setActiveCategory(category);
+    window.requestAnimationFrame(() => resultsRef.current?.scrollIntoView({ block: "start" }));
+  }
 
   const menuContent =
     visibleItems.length > 0 ? (
       showGroupedMenu ? (
-        <div className="space-y-8">
+        <div className="space-y-10">
           {groupedItems.map((group) => (
             <section key={group.category} className="scroll-mt-40">
-              <h2 className="mb-3 border-b border-charcoal/10 pb-2 text-2xl font-black text-charcoal">
-                {getCategoryLabel(group.category)}
-              </h2>
-              <div className="grid gap-3 xl:grid-cols-2">
+              <div className="mb-4 flex items-end justify-between gap-4 border-b border-charcoal/15 pb-3">
+                <h2 className="font-serif text-2xl font-black tracking-tight text-charcoal sm:text-3xl">
+                  {getCategoryLabel(group.category)}
+                </h2>
+                <p className="shrink-0 pb-0.5 text-sm font-black text-espresso/75">
+                  {group.items.length} {group.items.length === 1 ? "item" : "items"}
+                </p>
+              </div>
+              <div className="grid gap-4 xl:grid-cols-2">
                 {group.items.map((item) => (
                   <MenuCard key={item.id} item={item} showCategory={false} />
                 ))}
@@ -135,16 +133,47 @@ export function MenuGrid({
           ))}
         </div>
       ) : (
-        <div className="grid gap-3 xl:grid-cols-2">
-          {visibleItems.map((item) => (
-            <MenuCard key={item.id} item={item} showCategory={displayCategory === "All"} />
-          ))}
+        <div>
+          <div className="mb-4 flex flex-col gap-2 border-b border-charcoal/15 pb-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="break-words font-serif text-2xl font-black tracking-tight text-charcoal sm:text-3xl">{resultsTitle}</h2>
+              <p className="mt-1 text-sm font-bold text-espresso/75">{visibleResultLabel}</p>
+            </div>
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={clearFilters}
+                className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full px-3 text-sm font-black text-toast transition hover:bg-white"
+              >
+                <RotateCcw aria-hidden="true" size={16} />
+                Show full menu
+              </button>
+            )}
+          </div>
+          <div className="grid gap-4 xl:grid-cols-2">
+            {visibleItems.map((item) => (
+              <MenuCard key={item.id} item={item} showCategory={displayCategory === "All"} />
+            ))}
+          </div>
         </div>
       )
     ) : (
-      <div className="rounded-[1.5rem] bg-white p-8 text-center shadow-soft">
-        <h2 className="text-2xl font-black text-charcoal">No menu items found</h2>
-        <p className="mt-2 text-espresso/72">Try a different search term or category.</p>
+      <div className="rounded-[1.5rem] border border-charcoal/10 bg-white px-5 py-12 text-center shadow-soft sm:px-8">
+        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-cream text-toast" aria-hidden="true">
+          <SearchX size={25} />
+        </span>
+        <h2 className="mt-5 font-serif text-2xl font-black tracking-tight text-charcoal">Nothing matched that order</h2>
+        <p className="mx-auto mt-2 max-w-md font-semibold leading-7 text-espresso/70">
+          Try a shorter search, choose another category, or return to the full menu.
+        </p>
+        <button
+          type="button"
+          onClick={clearFilters}
+          className="mt-5 inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-charcoal px-5 text-sm font-black text-white shadow-soft transition hover:bg-espresso"
+        >
+          <RotateCcw aria-hidden="true" size={17} />
+          Clear filters
+        </button>
       </div>
     );
 
@@ -156,7 +185,8 @@ export function MenuGrid({
           search={search}
           onSearch={setSearch}
           activeCategory={displayCategory}
-          onCategory={setActiveCategory}
+          onCategory={selectCategory}
+          resultsId={resultsId}
         />
       </div>
 
@@ -166,15 +196,22 @@ export function MenuGrid({
             categories={categoryRailItems}
             activeCategory={displayCategory}
             totalCount={searchMatchedItems.length}
-            onCategory={setActiveCategory}
+            onCategory={selectCategory}
           />
         </aside>
 
         <div className="min-w-0">
           <div className="hidden lg:mb-5 lg:block">
-            <DesktopMenuSearch value={search} onChange={setSearch} />
+            <MenuSearch id="menu-search-desktop" value={search} onChange={setSearch} resultsId={resultsId} />
           </div>
-          {menuContent}
+          <p className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+            {visibleItems.length === 0
+              ? "No menu items match the current search and category."
+              : `${visibleResultLabel} shown${displayCategory === "All" ? "" : ` in ${getCategoryLabel(displayCategory)}`}.`}
+          </p>
+          <div ref={resultsRef} id={resultsId} className="scroll-mt-28" aria-busy={search !== deferredSearch}>
+            {menuContent}
+          </div>
         </div>
       </div>
     </div>

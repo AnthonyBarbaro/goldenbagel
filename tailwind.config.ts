@@ -17,7 +17,7 @@ const config: Config = {
         charcoal: "#201814",
         cream: "#fff8ec",
         honey: "#f6b642",
-        toast: "#b8652b",
+        toast: "#a55325",
         sesame: "#f8df9f",
         espresso: "#4b2f22",
         sage: "#6f7f5f"

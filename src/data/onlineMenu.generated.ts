@@ -1,6 +1,6 @@
 import type { MenuCategory, MenuItem } from "./menu";
 
-export const onlineMenuGeneratedAt = "2026-06-05T18:56:59.917Z";
+export const onlineMenuGeneratedAt = "2026-08-10T17:54:28.541Z";
 
 export const onlineMenuCategories = [
   "Golden Deals",
@@ -26348,41 +26348,6 @@ export const onlineMenuItems = [
     "requiresOptions": false
   },
   {
-    "id": "online-AJ30ZTDHDPG1P",
-    "name": "Twin Tubro Berry Blast Smoothie",
-    "description": "Blueberries, raspberries, banana, cranberry, ice",
-    "category": "Smoothies",
-    "image": "/goldenbagels/menu/order-online.png",
-    "tags": [],
-    "modifiers": [
-      {
-        "id": "VEF9F4KT7SPHW",
-        "name": "Size Smoothies",
-        "required": true,
-        "minRequired": 1,
-        "maxAllowed": 1,
-        "options": [
-          {
-            "id": "A77W46WHSAXBT",
-            "name": "Small (16 oz)",
-            "priceCents": 979,
-            "priceLabel": "$9.79"
-          },
-          {
-            "id": "SQ3NQM2S2HFPP",
-            "name": "Large (24 oz)",
-            "priceCents": 1259,
-            "priceLabel": "$12.59"
-          }
-        ]
-      }
-    ],
-    "available": true,
-    "priceCents": 699,
-    "priceLabel": "$6.99",
-    "requiresOptions": true
-  },
-  {
     "id": "online-CTBZXH32FQC4M",
     "name": "Strawberry Nitrous Drift Smoothie",
     "description": "Strawberry, Banana, Apple, Ice",
@@ -26413,8 +26378,8 @@ export const onlineMenuItems = [
       }
     ],
     "available": true,
-    "priceCents": 699,
-    "priceLabel": "$6.99",
+    "priceCents": 0,
+    "priceLabel": "Options vary",
     "requiresOptions": true
   },
   {
@@ -26448,8 +26413,8 @@ export const onlineMenuItems = [
       }
     ],
     "available": true,
-    "priceCents": 699,
-    "priceLabel": "$6.99",
+    "priceCents": 0,
+    "priceLabel": "Options vary",
     "requiresOptions": true
   },
   {

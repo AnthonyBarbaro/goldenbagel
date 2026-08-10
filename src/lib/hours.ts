@@ -7,6 +7,9 @@ type StoreHour = {
 };
 
 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const pickupIntervalMinutes = 15;
+const finalPickupBufferMinutes = 15;
+const maximumImmediateWaitMinutes = 60;
 
 function timeToMinutes(time: string) {
   const [hour, minute] = time.split(":").map(Number);
@@ -86,11 +89,36 @@ export function getNextOpenMessage(hours: readonly StoreHour[], timezone = "Amer
 
 function buildPickupOptions(label: string, hours: StoreHour) {
   const firstPickupMinutes = timeToMinutes(hours.open);
-  const lastPickupMinutes = timeToMinutes(hours.close) - 15;
+  const lastPickupMinutes = timeToMinutes(hours.close) - finalPickupBufferMinutes;
   const options: string[] = [];
 
-  for (let minutes = firstPickupMinutes; minutes <= lastPickupMinutes; minutes += 15) {
+  for (let minutes = firstPickupMinutes; minutes <= lastPickupMinutes; minutes += pickupIntervalMinutes) {
     options.push(`${label} at ${formatHour(minutesToTime(minutes))}`);
+  }
+
+  return options;
+}
+
+export function getAvailableImmediatePickupOptions(
+  hours: readonly StoreHour[],
+  timezone = "America/Los_Angeles",
+  now = new Date()
+) {
+  const current = getZonedNow(timezone, now);
+  const todayHours = getHourForDay(hours, current.weekday);
+  const openMinutes = timeToMinutes(todayHours.open);
+  const finalPickupMinutes = timeToMinutes(todayHours.close) - finalPickupBufferMinutes;
+
+  if (current.minutes < openMinutes || current.minutes + pickupIntervalMinutes > finalPickupMinutes) {
+    return [];
+  }
+
+  const options = ["ASAP"];
+
+  for (let delay = pickupIntervalMinutes; delay <= maximumImmediateWaitMinutes; delay += pickupIntervalMinutes) {
+    if (current.minutes + delay <= finalPickupMinutes) {
+      options.push(`${delay} minutes`);
+    }
   }
 
   return options;
@@ -100,9 +128,8 @@ export function getNextOpenPickupOptions(hours: readonly StoreHour[], timezone =
   const current = getZonedNow(timezone, now);
   const todayHours = getHourForDay(hours, current.weekday);
   const openMinutes = timeToMinutes(todayHours.open);
-  const closeMinutes = timeToMinutes(todayHours.close);
 
-  if (current.minutes >= openMinutes && current.minutes < closeMinutes) {
+  if (getAvailableImmediatePickupOptions(hours, timezone, now).length > 0) {
     return [];
   }
 

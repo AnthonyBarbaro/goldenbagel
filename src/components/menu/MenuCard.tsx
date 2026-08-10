@@ -1,13 +1,14 @@
 "use client";
 
-import { Check, ChevronDown, Plus, SlidersHorizontal, X } from "lucide-react";
+import { Check, ChevronDown, Minus, Plus, SlidersHorizontal, X } from "lucide-react";
 import type { KeyboardEvent } from "react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import type { MenuItem } from "@/data/liveMenu";
 import type { CartModifier } from "@/lib/cart";
-import { useCart } from "@/lib/cart";
+import { MAX_CART_ITEM_QUANTITY, MAX_CART_MODIFIERS, useCart } from "@/lib/cart";
 import { classNames } from "@/lib/format";
+import { getCategoryLabel } from "@/lib/menuCategories";
 
 type MenuCardProps = {
   item: MenuItem;
@@ -144,7 +145,7 @@ function customizerActionLabel(item: MenuItem) {
     return "Choose size";
   }
 
-  if (itemText.includes("cream cheese tub") || hasModifierName(["flavor", "tea", "mocha"])) {
+  if (itemText.includes("cream cheese tub")) {
     return "Choose flavor";
   }
 
@@ -164,16 +165,24 @@ function customizerActionLabel(item: MenuItem) {
     return "Build bagel";
   }
 
+  if (hasModifierName(["flavor", "tea", "mocha"])) {
+    return "Choose flavor";
+  }
+
   return "Customize";
 }
 
 export function MenuCard({ item, showCategory = true }: MenuCardProps) {
   const titleId = useId();
   const descriptionId = useId();
+  const dialogId = useId();
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const addedTimerRef = useRef<number>();
   const [added, setAdded] = useState(false);
+  const [cartError, setCartError] = useState("");
   const [optionsOpen, setOptionsOpen] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState<SelectedOptions>({});
   const [expandedGroups, setExpandedGroups] = useState<ExpandedGroups>({});
   const { addItem } = useCart();
@@ -217,8 +226,14 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
     return selectedForGroup.length > 0 && isAbsolutePriceModifier(item, modifier);
   });
   const totalPriceCents = (hasAbsolutePriceSelection ? 0 : item.priceCents || 0) + selectedOptionCents;
-  const rawCardPriceLabel = inlineModifier ? (inlineSelectedOption ? formatCurrency(totalPriceCents) : "") : item.priceLabel;
-  const cardPriceLabel = rawCardPriceLabel === "Options vary" ? "" : rawCardPriceLabel;
+  const orderTotalCents = totalPriceCents * quantity;
+  const rawCardPriceLabel = inlineModifier && inlineSelectedOption ? formatCurrency(totalPriceCents) : item.priceLabel;
+  const cardPriceLabel =
+    rawCardPriceLabel === "Options vary"
+      ? item.priceCents && item.priceCents > 0
+        ? `From ${formatCurrency(item.priceCents)}`
+        : "Price varies"
+      : rawCardPriceLabel;
   const requiredGroupCount = item.modifiers.filter((modifier) => minimumRequired(modifier) > 0).length;
   const completedRequiredGroupCount = item.modifiers.filter((modifier, index) => {
     const minimum = minimumRequired(modifier);
@@ -245,21 +260,51 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
     const originalOverflow = document.body.style.overflow;
 
     document.body.style.overflow = "hidden";
-    window.setTimeout(() => closeButtonRef.current?.focus(), 0);
+    const focusTimer = window.setTimeout(() => closeButtonRef.current?.focus(), 0);
 
     return () => {
+      window.clearTimeout(focusTimer);
       document.body.style.overflow = originalOverflow;
       previousActiveElement?.focus();
     };
   }, [optionsOpen]);
 
+  useEffect(
+    () => () => {
+      if (addedTimerRef.current) {
+        window.clearTimeout(addedTimerRef.current);
+      }
+    },
+    []
+  );
+
   function flashAdded() {
+    if (addedTimerRef.current) {
+      window.clearTimeout(addedTimerRef.current);
+    }
+
+    setCartError("");
     setAdded(true);
-    window.setTimeout(() => setAdded(false), 1400);
+    addedTimerRef.current = window.setTimeout(() => setAdded(false), 1400);
+  }
+
+  function showCartError(message: string) {
+    if (addedTimerRef.current) {
+      window.clearTimeout(addedTimerRef.current);
+    }
+
+    setAdded(false);
+    setCartError(message);
   }
 
   function handleAddToCart() {
-    addItem(item);
+    const result = addItem(item);
+
+    if (!result.ok) {
+      showCartError(result.message);
+      return;
+    }
+
     flashAdded();
   }
 
@@ -268,16 +313,24 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
       return;
     }
 
-    addItem(
+    const result = addItem(
       {
         ...item,
         priceCents: totalPriceCents,
         priceLabel: formatCurrency(totalPriceCents),
         requiresOptions: false
       },
-      selectedModifiers
+      selectedModifiers,
+      quantity
     );
+
+    if (!result.ok) {
+      showCartError(result.message);
+      return;
+    }
+
     setOptionsOpen(false);
+    setQuantity(1);
     flashAdded();
   }
 
@@ -288,9 +341,16 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
     const maxAllowed = maximumAllowed(modifier);
 
     setSelectedOptions((current) => {
+      const existingOptions = current[key] || [];
+      const hasOption = existingOptions.some((selected) => selected.key === normalized.key);
+      const selectedCount = Object.values(current).reduce((total, options) => total + options.length, 0);
+      const addsSelection = !hasOption && (!singleChoice || existingOptions.length === 0);
+
+      if (addsSelection && selectedCount >= MAX_CART_MODIFIERS) {
+        return current;
+      }
+
       if (singleChoice) {
-        const existingOptions = current[key] || [];
-        const hasOption = existingOptions.some((selected) => selected.key === normalized.key);
 
         return {
           ...current,
@@ -298,8 +358,6 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
         };
       }
 
-      const existingOptions = current[key] || [];
-      const hasOption = existingOptions.some((selected) => selected.key === normalized.key);
       const nextOptions = hasOption
         ? existingOptions.filter((selected) => selected.key !== normalized.key)
         : maxAllowed && existingOptions.length >= maxAllowed
@@ -362,28 +420,36 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
 
   return (
     <>
-      <article className="flex h-full flex-col rounded-2xl border border-charcoal/10 bg-white p-4 shadow-sm transition duration-200 hover:border-honey/60">
+      <article className="flex h-full flex-col rounded-[1.25rem] border border-charcoal/10 bg-white p-5 shadow-sm transition duration-200 hover:border-honey/70 hover:shadow-[0_14px_34px_rgba(32,24,20,0.09)]">
         <div className="flex flex-1 flex-col">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
-              {showCategory && <p className="text-[0.68rem] font-black uppercase tracking-[0.14em] text-toast">{item.category}</p>}
-              <h2 className={classNames("break-words font-black text-charcoal", showCategory ? "mt-1 text-lg" : "text-lg")}>
+              {showCategory && (
+                <p className="text-xs font-black uppercase tracking-[0.14em] text-toast">
+                  {getCategoryLabel(item.category)}
+                </p>
+              )}
+              <h3 className={classNames("break-words text-lg font-black leading-snug text-charcoal", showCategory && "mt-1")}>
                 {item.name}
-              </h2>
+              </h3>
             </div>
-            {cardPriceLabel && <p className="shrink-0 text-sm font-black text-charcoal sm:text-base">{cardPriceLabel}</p>}
+            {cardPriceLabel && (
+              <p className="shrink-0 rounded-full bg-cream px-3 py-1.5 text-sm font-black text-charcoal ring-1 ring-charcoal/5">
+                {cardPriceLabel}
+              </p>
+            )}
           </div>
-          {itemDescription && <p className="mt-3 line-clamp-2 text-sm font-bold leading-6 text-espresso/70">{itemDescription}</p>}
+          {itemDescription && <p className="mt-3 line-clamp-3 text-sm font-semibold leading-6 text-espresso/72">{itemDescription}</p>}
 
-          <div className="mt-4">
+          <div className="mt-auto pt-5">
             {canAddToCart ? (
-              <Button type="button" onClick={handleAddToCart} size="sm">
+              <Button type="button" onClick={handleAddToCart} size="sm" className="w-full sm:w-auto">
                 {added ? <Check aria-hidden="true" size={16} /> : <Plus aria-hidden="true" size={16} />}
                 {added ? "Added" : "Add"}
               </Button>
             ) : inlineModifier ? (
               <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-2 gap-2" role="radiogroup" aria-label={inlinePrompt}>
                   {inlineOptions.map((option, optionIndex) => {
                     const selected = inlineSelectedOption?.key === option.key;
                     const absolutePriceModifier = isAbsolutePriceModifier(item, inlineModifier);
@@ -393,19 +459,23 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
                         : "";
 
                     return (
-                      <button
+                      <label
                         key={option.key}
-                        type="button"
-                        onClick={() => toggleOption(inlineModifier, 0, inlineModifier.options[optionIndex], optionIndex)}
-                        aria-pressed={selected}
                         className={classNames(
-                          "min-h-11 rounded-xl border px-3 py-2 text-left transition",
-                          selected ? "border-honey bg-sesame shadow-sm" : "border-charcoal/10 bg-cream/65 hover:bg-sesame/60"
+                          "flex min-h-11 cursor-pointer items-center justify-between gap-2 rounded-xl border px-3 py-2 text-left transition focus-within:ring-4 focus-within:ring-honey/30",
+                          selected ? "border-honey bg-sesame shadow-sm" : "border-charcoal/10 bg-cream/65 hover:border-honey hover:bg-sesame/60"
                         )}
                       >
-                        <span className="block text-sm font-black text-charcoal">{option.name}</span>
+                        <input
+                          className="sr-only"
+                          type="radio"
+                          name={`${item.id}-inline-choice`}
+                          checked={selected}
+                          onChange={() => toggleOption(inlineModifier, 0, inlineModifier.options[optionIndex], optionIndex)}
+                        />
+                        <span className="block min-w-0 text-sm font-black text-charcoal">{option.name}</span>
                         {optionPrice && <span className="mt-1 block text-xs font-black text-toast">{optionPrice}</span>}
-                      </button>
+                      </label>
                     );
                   })}
                 </div>
@@ -415,18 +485,38 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
                 </Button>
               </div>
             ) : canOpenCustomizer ? (
-              <Button type="button" variant="secondary" size="sm" onClick={() => setOptionsOpen(true)}>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                onClick={() => {
+                  setCartError("");
+                  setOptionsOpen(true);
+                }}
+                aria-haspopup="dialog"
+                aria-expanded={optionsOpen}
+                aria-controls={dialogId}
+                className="w-full sm:w-auto"
+              >
                 {added ? <Check aria-hidden="true" size={16} /> : <SlidersHorizontal aria-hidden="true" size={16} />}
                 {added ? "Added" : customizerLabel}
               </Button>
             ) : (
-              <Button type="button" size="sm" disabled>
+              <Button type="button" size="sm" disabled className="w-full sm:w-auto">
                 <Plus aria-hidden="true" size={16} />
                 Info Only
               </Button>
             )}
           </div>
         </div>
+        {cartError && !optionsOpen && (
+          <p role="alert" className="mt-3 rounded-xl bg-red-50 px-3 py-2 text-sm font-bold text-red-800">
+            {cartError}
+          </p>
+        )}
+        <span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+          {added ? `${item.name} added to cart.` : ""}
+        </span>
       </article>
 
       {optionsOpen && (
@@ -435,6 +525,7 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
           onClick={() => setOptionsOpen(false)}
         >
           <div
+            id={dialogId}
             ref={dialogRef}
             role="dialog"
             aria-modal="true"
@@ -448,7 +539,7 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
             <div className="border-b border-charcoal/10 bg-white px-5 py-5 sm:px-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="min-w-0">
-                  <p className="text-xs font-black uppercase tracking-[0.16em] text-toast">{item.category}</p>
+                  <p className="text-xs font-black uppercase tracking-[0.16em] text-toast">{getCategoryLabel(item.category)}</p>
                   <h3 id={titleId} className="mt-2 text-2xl font-black leading-tight text-charcoal sm:text-3xl">
                     {item.name}
                   </h3>
@@ -460,13 +551,13 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
                 </div>
                 <div className="flex shrink-0 items-start gap-2">
                   <div className="rounded-2xl bg-cream px-3 py-2 text-right ring-1 ring-charcoal/8">
-                    <p className="text-[0.65rem] font-black uppercase tracking-[0.14em] text-espresso/55">Total</p>
+                    <p className="text-xs font-black uppercase tracking-[0.14em] text-espresso/75">Each</p>
                     <p className="text-lg font-black text-charcoal">{formatCurrency(totalPriceCents)}</p>
                   </div>
                   <button
                     ref={closeButtonRef}
                     type="button"
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cream text-charcoal transition hover:bg-sesame"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-cream text-charcoal transition hover:bg-sesame"
                     onClick={() => setOptionsOpen(false)}
                     aria-label="Close customization"
                   >
@@ -476,7 +567,15 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
               </div>
 
               {requiredGroupCount > 0 && (
-                <div className="mt-4 h-2 overflow-hidden rounded-full bg-cream">
+                <div
+                  className="mt-4 h-2 overflow-hidden rounded-full bg-cream"
+                  role="progressbar"
+                  aria-label="Required choices completed"
+                  aria-valuemin={0}
+                  aria-valuemax={requiredGroupCount}
+                  aria-valuenow={completedRequiredGroupCount}
+                  aria-valuetext={`${completedRequiredGroupCount} of ${requiredGroupCount} required groups complete`}
+                >
                   <div
                     className="h-full rounded-full bg-honey transition-all"
                     style={{ width: `${(completedRequiredGroupCount / requiredGroupCount) * 100}%` }}
@@ -490,6 +589,7 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
                 {item.modifiers.map((modifier, modifierIndex) => {
                   const key = groupKey(modifier, modifierIndex);
                   const groupTitleId = `${item.id}-${modifierIndex}-modifier`;
+                  const groupPanelId = `${item.id}-${modifierIndex}-choices`;
                   const selectedForGroup = selectedOptions[key] || [];
                   const singleChoice = isSingleChoiceGroup(modifier);
                   const minimum = minimumRequired(modifier);
@@ -506,107 +606,121 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
                       : hasSelections
                         ? `${selectedForGroup.length} selected`
                         : "Optional";
-
-                  return (
-                    <section key={key} className="overflow-hidden rounded-2xl border border-charcoal/10 bg-white shadow-sm">
-                      <button
-                        type="button"
-                        className="flex w-full items-start justify-between gap-3 px-4 py-4 text-left transition hover:bg-cream/55 sm:px-5"
-                        onClick={() => {
-                          if (minimum === 0) {
-                            toggleGroup(key);
-                          }
-                        }}
-                        aria-expanded={expanded}
-                      >
-                        <div className="flex min-w-0 gap-3">
-                          <span
-                            className={classNames(
-                              "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-black",
-                              groupComplete ? "bg-honey text-charcoal" : "bg-cream text-toast"
-                            )}
-                          >
-                            {groupComplete ? <Check aria-hidden="true" size={16} /> : modifierIndex + 1}
-                          </span>
-                          <div className="min-w-0">
-                            <div className="flex flex-wrap items-center gap-2">
-                              <h4 id={groupTitleId} className="font-black text-charcoal">
-                                {modifier.name}
-                              </h4>
-                              <span
-                                className={classNames(
-                                  "rounded-full px-2.5 py-1 text-[0.65rem] font-black uppercase tracking-[0.1em]",
-                                  minimum > 0 ? "bg-toast/10 text-toast" : "bg-cream text-espresso/60"
-                                )}
-                              >
-                                {minimum > 0 ? "Required" : "Optional"}
-                              </span>
-                            </div>
-                            <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-espresso/55">
-                              {selectionInstruction(singleChoice, minimum, maxAllowed)}
-                            </p>
-                            {optionSummary && <p className="mt-1 truncate text-xs font-bold text-espresso/65">{optionSummary}</p>}
+                  const groupHeader = (
+                    <>
+                      <div className="flex min-w-0 gap-3">
+                        <span
+                          className={classNames(
+                            "mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-sm font-black",
+                            groupComplete ? "bg-honey text-charcoal" : "bg-cream text-toast"
+                          )}
+                          aria-hidden="true"
+                        >
+                          {groupComplete ? <Check size={16} /> : modifierIndex + 1}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <span id={groupTitleId} className="block font-black text-charcoal">
+                              {modifier.name}
+                            </span>
+                            <span
+                              className={classNames(
+                                "rounded-full px-2.5 py-1 text-xs font-black uppercase tracking-[0.1em]",
+                                minimum > 0 ? "bg-toast/10 text-toast" : "bg-cream text-espresso/75"
+                              )}
+                            >
+                              {minimum > 0 ? "Required" : "Optional"}
+                            </span>
                           </div>
+                          <p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-espresso/75">
+                            {selectionInstruction(singleChoice, minimum, maxAllowed)}
+                          </p>
+                          {optionSummary && <p className="mt-1 truncate text-xs font-bold text-espresso/75">{optionSummary}</p>}
                         </div>
-                        {minimum > 0 && selectedForGroup.length < minimum ? (
-                          <span className="shrink-0 rounded-full bg-toast/10 px-3 py-1 text-xs font-black text-toast">{statusLabel}</span>
-                        ) : (
-                          <span className="flex shrink-0 items-center gap-2">
-                            {hasSelections && (
-                              <span className="hidden rounded-full bg-cream px-3 py-1 text-xs font-black text-espresso/65 sm:inline-flex">
-                                {statusLabel}
-                              </span>
-                            )}
+                      </div>
+                      {minimum > 0 && selectedForGroup.length < minimum ? (
+                        <span className="shrink-0 rounded-full bg-toast/10 px-3 py-1 text-xs font-black text-toast">{statusLabel}</span>
+                      ) : (
+                        <span className="flex shrink-0 items-center gap-2">
+                          {hasSelections && (
+                            <span className="hidden rounded-full bg-cream px-3 py-1 text-xs font-black text-espresso/75 sm:inline-flex">
+                              {statusLabel}
+                            </span>
+                          )}
+                          {minimum === 0 && (
                             <ChevronDown
                               aria-hidden="true"
                               size={20}
-                              className={classNames(
-                                "mt-1 text-espresso/60 transition",
-                                expanded ? "rotate-180" : "rotate-0",
-                                minimum > 0 && "opacity-0"
-                              )}
+                              className={classNames("mt-1 text-espresso/75 transition", expanded ? "rotate-180" : "rotate-0")}
                             />
-                          </span>
-                        )}
-                      </button>
+                          )}
+                        </span>
+                      )}
+                    </>
+                  );
+
+                  return (
+                    <section key={key} className="overflow-hidden rounded-2xl border border-charcoal/10 bg-white shadow-sm">
+                      {minimum === 0 ? (
+                        <button
+                          type="button"
+                          className="flex min-h-16 w-full items-start justify-between gap-3 px-4 py-4 text-left transition hover:bg-cream/55 sm:px-5"
+                          onClick={() => toggleGroup(key)}
+                          aria-expanded={expanded}
+                          aria-controls={groupPanelId}
+                        >
+                          {groupHeader}
+                        </button>
+                      ) : (
+                        <div className="flex min-h-16 w-full items-start justify-between gap-3 px-4 py-4 sm:px-5">{groupHeader}</div>
+                      )}
 
                       {expanded && (
                         <div
-                          role={singleChoice ? "radiogroup" : "group"}
+                          id={groupPanelId}
+                          role={singleChoice && minimum > 0 ? "radiogroup" : "group"}
                           aria-labelledby={groupTitleId}
                           className="grid gap-2 border-t border-charcoal/8 bg-cream/45 p-3 sm:grid-cols-2 sm:p-4"
                         >
                           {modifier.options.map((option, optionIndex) => {
                             const normalized = normalizeOption(option, optionIndex);
                             const selected = selectedForGroup.some((selectedOption) => selectedOption.key === normalized.key);
+                            const inputType = singleChoice && minimum > 0 ? "radio" : "checkbox";
+                            const addsSelection = !selected && (!singleChoice || selectedForGroup.length === 0);
                             const limitReached = Boolean(
-                              !singleChoice && maxAllowed && selectedForGroup.length >= maxAllowed && !selected
+                              (!singleChoice && maxAllowed && selectedForGroup.length >= maxAllowed && !selected) ||
+                                (addsSelection && selectedModifiers.length >= MAX_CART_MODIFIERS)
                             );
 
                             return (
-                              <button
-                                type="button"
+                              <label
                                 key={normalized.key}
-                                onClick={() => toggleOption(modifier, modifierIndex, option, optionIndex)}
-                                disabled={limitReached}
-                                role={singleChoice ? "radio" : "checkbox"}
-                                aria-checked={selected}
                                 className={classNames(
-                                  "flex min-h-14 items-center justify-between gap-3 rounded-xl border px-3 py-2.5 text-left text-sm font-extrabold transition",
+                                  "flex min-h-14 cursor-pointer items-center justify-between gap-3 rounded-xl border px-3 py-2.5 text-left text-sm font-extrabold transition focus-within:ring-4 focus-within:ring-honey/30",
                                   selected
-                                    ? "border-honey bg-white text-charcoal shadow-sm ring-2 ring-honey/35"
+                                    ? "border-honey bg-white text-charcoal shadow-sm"
                                     : "border-charcoal/10 bg-white text-charcoal hover:border-honey/70 hover:bg-white",
                                   limitReached && "cursor-not-allowed opacity-50"
                                 )}
                               >
+                                <input
+                                  className="sr-only"
+                                  type={inputType}
+                                  name={inputType === "radio" ? groupTitleId : undefined}
+                                  checked={selected}
+                                  disabled={limitReached}
+                                  onChange={() => toggleOption(modifier, modifierIndex, option, optionIndex)}
+                                />
                                 <span className="flex min-w-0 items-center gap-2">
                                   <span
                                     className={classNames(
-                                      "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border",
+                                      "flex h-5 w-5 shrink-0 items-center justify-center border",
+                                      singleChoice ? "rounded-full" : "rounded-md",
                                       selected ? "border-charcoal bg-charcoal text-white" : "border-charcoal/20 bg-cream"
                                     )}
+                                    aria-hidden="true"
                                   >
-                                    {selected && <Check aria-hidden="true" size={13} />}
+                                    {selected && <Check size={13} />}
                                   </span>
                                   <span className="min-w-0 break-words">{normalized.name}</span>
                                 </span>
@@ -616,7 +730,7 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
                                     {formatCurrency(normalized.priceCents)}
                                   </span>
                                 )}
-                              </button>
+                              </label>
                             );
                           })}
                         </div>
@@ -628,24 +742,63 @@ export function MenuCard({ item, showCategory = true }: MenuCardProps) {
             </div>
 
             <div className="border-t border-charcoal/10 bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))] shadow-[0_-18px_38px_rgba(32,24,20,0.08)] sm:p-5">
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="grid grid-cols-[1fr_auto] items-center gap-3 sm:grid-cols-[auto_auto_minmax(11rem,1fr)]">
                 <div className="min-w-0">
-                  <p className="text-xs font-black uppercase tracking-[0.14em] text-espresso/55">
+                  <p className="text-xs font-black uppercase tracking-[0.14em] text-espresso/75">
                     {requiredGroupCount > 0 ? `${completedRequiredGroupCount}/${requiredGroupCount} required choices` : "Ready to add"}
                   </p>
-                  <p className="text-xl font-black text-charcoal">{formatCurrency(totalPriceCents)}</p>
+                  <p className="text-xl font-black text-charcoal">{formatCurrency(orderTotalCents)}</p>
+                </div>
+                <div
+                  className="flex w-fit items-center rounded-full border border-charcoal/10 bg-cream p-1"
+                  role="group"
+                  aria-label="Quantity"
+                >
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((current) => Math.max(1, current - 1))}
+                    disabled={quantity === 1}
+                    className="flex h-11 w-11 items-center justify-center rounded-full text-charcoal transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-35"
+                    aria-label="Decrease quantity"
+                  >
+                    <Minus aria-hidden="true" size={17} />
+                  </button>
+                  <output className="min-w-8 text-center text-sm font-black text-charcoal" aria-live="polite" aria-label={`Quantity ${quantity}`}>
+                    {quantity}
+                  </output>
+                  <button
+                    type="button"
+                    onClick={() => setQuantity((current) => Math.min(MAX_CART_ITEM_QUANTITY, current + 1))}
+                    disabled={quantity >= MAX_CART_ITEM_QUANTITY}
+                    className="flex h-11 w-11 items-center justify-center rounded-full text-charcoal transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-35"
+                    aria-label="Increase quantity"
+                  >
+                    <Plus aria-hidden="true" size={17} />
+                  </button>
                 </div>
                 <Button
                   type="button"
                   onClick={handleCustomizedAddToCart}
                   disabled={!canAddCustomizedItem}
-                  className="w-full sm:w-auto sm:min-w-44"
+                  className="col-span-2 w-full sm:col-span-1 sm:justify-self-end"
                 >
                   <Plus aria-hidden="true" size={18} />
-                  {canAddCustomizedItem ? `Add to cart • ${formatCurrency(totalPriceCents)}` : "Finish choices"}
+                  {canAddCustomizedItem
+                    ? `${quantity > 1 ? `Add ${quantity}` : "Add"} to cart • ${formatCurrency(orderTotalCents)}`
+                    : "Finish choices"}
                 </Button>
               </div>
+              {selectedModifiers.length >= MAX_CART_MODIFIERS && (
+                <p className="mt-2 text-xs font-bold text-espresso/75">
+                  Option limit reached. Remove a selection to choose another.
+                </p>
+              )}
               {missingRequired && <p className="mt-2 text-xs font-bold text-toast">Choose the required options to add this item.</p>}
+              {cartError && (
+                <p role="alert" className="mt-2 rounded-xl bg-red-50 px-3 py-2 text-sm font-bold text-red-800">
+                  {cartError}
+                </p>
+              )}
             </div>
           </div>
         </div>

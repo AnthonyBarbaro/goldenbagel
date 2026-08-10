@@ -56,7 +56,7 @@ export function VisitHero() {
             <MapPin aria-hidden="true" className="mt-1 shrink-0 text-toast" size={21} />
             <span>
               <span className="block text-lg font-black">{businessAddress}</span>
-              <span className="mt-1 block text-sm text-espresso/68">Tap for turn-by-turn directions.</span>
+              <span className="mt-1 block text-sm text-espresso/72">Tap for turn-by-turn directions.</span>
             </span>
           </a>
         </div>
@@ -80,7 +80,7 @@ export function VisitHero() {
             )}
             {!imageFailed ? (
               <div className="absolute bottom-4 left-4 right-4 rounded-[1.5rem] bg-black p-4 text-white shadow-soft ring-1 ring-white/10">
-                <p className="text-xs font-black uppercase tracking-[0.18em] text-white">Voted #1 Bagel & Cafe in El Cajon</p>
+                <p className="text-xs font-black uppercase tracking-[0.18em] text-white">Fresh bagels. Easy pickup.</p>
                 <p className="mt-1 text-sm font-bold text-white/82">
                   Find us on {primaryLocation.shortName} in {primaryLocation.name}.
                 </p>

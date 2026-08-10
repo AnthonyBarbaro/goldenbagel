@@ -2,37 +2,80 @@ import type { APIGatewayProxyEventV2 } from "aws-lambda";
 import { z } from "zod";
 import { hasHoneypot, sanitizeRecord } from "./security.js";
 
+const MAX_CART_ITEM_QUANTITY = 20;
+const MAX_CART_LINES = 40;
+const MAX_TOTAL_ITEM_QUANTITY = 100;
+
+function phoneDigits(value: string) {
+  const digits = value.replace(/\D/g, "");
+  return digits.length === 11 && digits.startsWith("1") ? digits.slice(1) : digits;
+}
+
+const phoneSchema = z
+  .string()
+  .trim()
+  .refine((value) => phoneDigits(value).length === 10, "Enter a 10-digit phone number.")
+  .transform((value) => `+1${phoneDigits(value)}`);
+
 export const customerSchema = z.object({
-  name: z.string().min(2),
-  phone: z.string().min(7),
-  email: z.string().email()
+  name: z.string().trim().min(2).max(160),
+  phone: phoneSchema,
+  email: z.string().trim().email().max(254).transform((value) => value.toLowerCase())
 });
 
 const cartItemSchema = z.object({
-  cartId: z.string().min(1),
-  id: z.string().min(1),
-  name: z.string().min(1),
-  priceCents: z.number().int().nonnegative().optional(),
-  priceLabel: z.string().optional(),
-  category: z.string().optional(),
-  image: z.string().optional(),
-  quantity: z.number().int().positive(),
-  modifiers: z.array(z.object({ name: z.string(), option: z.string(), priceCents: z.number().int().nonnegative().optional() })).default([]),
-  notes: z.string().optional()
+  cartId: z.string().trim().min(1).max(500),
+  id: z.string().trim().min(1).max(120),
+  cloverItemId: z.string().trim().min(1).max(80).regex(/^[A-Za-z0-9_-]+$/).optional(),
+  name: z.string().trim().min(1).max(160),
+  priceCents: z.number().int().positive().max(1_000_000).optional(),
+  priceLabel: z.string().trim().max(80).optional(),
+  category: z.string().trim().max(120).optional(),
+  image: z.string().trim().max(500).optional(),
+  quantity: z.number().int().positive().max(MAX_CART_ITEM_QUANTITY),
+  modifiers: z
+    .array(
+      z.object({
+        id: z.string().trim().min(1).max(80).regex(/^[A-Za-z0-9_-]+$/).optional(),
+        groupId: z.string().trim().min(1).max(80).regex(/^[A-Za-z0-9_-]+$/).optional(),
+        name: z.string().trim().min(1).max(120),
+        option: z.string().trim().min(1).max(120),
+        priceCents: z.number().int().nonnegative().max(1_000_000).optional()
+      })
+    )
+    .max(30)
+    .default([]),
+  notes: z.string().trim().max(500).optional()
 });
 
+const cartSchema = z
+  .array(cartItemSchema)
+  .min(1)
+  .max(MAX_CART_LINES)
+  .superRefine((items, context) => {
+    const quantity = items.reduce((total, item) => total + item.quantity, 0);
+
+    if (quantity > MAX_TOTAL_ITEM_QUANTITY) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Cart quantity cannot exceed ${MAX_TOTAL_ITEM_QUANTITY} items.`
+      });
+    }
+  });
+
 export const createOrderSchema = z.object({
-  cartItems: z.array(cartItemSchema).min(1),
-  fulfillmentType: z.enum(["pickup", "delivery"]),
+  cartItems: cartSchema,
+  fulfillmentType: z.literal("pickup"),
   customer: customerSchema,
-  pickupTime: z.string().min(1),
-  notes: z.string().max(500).optional()
+  pickupTime: z.string().trim().min(1).max(80),
+  notes: z.string().trim().max(500).optional()
 });
 
 export const checkoutSchema = z.object({
-  orderId: z.string().min(1),
-  cartItems: z.array(cartItemSchema).min(1),
-  customer: customerSchema
+  orderId: z.string().trim().min(1).max(120),
+  cartItems: cartSchema,
+  customer: customerSchema,
+  pickupTime: z.string().trim().min(1).max(80)
 });
 
 export const contactSchema = z.object({

@@ -1,9 +1,10 @@
-import { createCheckoutSession } from "../shared/clover.js";
+import { CloverCheckoutValidationError, createCheckoutSession } from "../shared/clover.js";
 import type { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import { optionsResponse } from "../shared/cors.js";
 import { rateLimit } from "../shared/rateLimit.js";
 import { badRequest, serverError, success } from "../shared/response.js";
 import { safeLog } from "../shared/security.js";
+import { getNextPickupOpenMessage, isValidPickupTime } from "../shared/storeHours.js";
 import { checkoutSchema, validateBody } from "../shared/validate.js";
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -22,10 +23,19 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       return badRequest(event, "Invalid checkout request.", "error" in result ? result.error : undefined);
     }
 
+    if (!isValidPickupTime(result.data.pickupTime)) {
+      return badRequest(event, `${getNextPickupOpenMessage()}. Choose one of the currently available pickup times.`);
+    }
+
     const checkout = await createCheckoutSession(result.data);
     return success(event, checkout);
   } catch (error) {
     safeLog("order:checkout:error", { message: error instanceof Error ? error.message : "unknown" });
+
+    if (error instanceof CloverCheckoutValidationError) {
+      return badRequest(event, error.message);
+    }
+
     return serverError(event);
   }
 };

@@ -3,27 +3,27 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import type { CartItem as CartItemType } from "@/lib/cart";
-import { useCart } from "@/lib/cart";
+import { MAX_CART_ITEM_QUANTITY, MAX_CART_TOTAL_QUANTITY, useCart } from "@/lib/cart";
 
 type CartItemProps = {
   item: CartItemType;
 };
 
 export function CartItem({ item }: CartItemProps) {
-  const { updateQuantity, removeItem } = useCart();
+  const { quantity: cartQuantity, updateQuantity, removeItem } = useCart();
   const lineTotal =
     item.priceCents !== undefined
       ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format((item.priceCents * item.quantity) / 100)
       : item.priceLabel;
 
   return (
-    <div className="rounded-2xl border border-charcoal/10 bg-cream/45 p-3 sm:p-4">
+    <article className="rounded-2xl border border-charcoal/10 bg-cream/55 p-3 shadow-sm sm:p-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
         <div className="min-w-0">
           <h3 className="font-black leading-6 text-charcoal">{item.name}</h3>
-          {item.priceLabel && <p className="mt-1 text-sm font-black text-toast">{item.priceLabel}</p>}
+          {item.priceLabel && <p className="mt-1 text-sm font-black text-toast">{item.priceLabel} each</p>}
           {item.modifiers.length > 0 && (
-            <p className="mt-2 text-xs font-semibold leading-5 text-espresso/64">
+            <p className="mt-2 text-xs font-semibold leading-5 text-espresso/70">
               {item.modifiers.map((modifier) => `${modifier.name}: ${modifier.option}`).join(", ")}
             </p>
           )}
@@ -35,18 +35,21 @@ export function CartItem({ item }: CartItemProps) {
         <div className="flex items-center rounded-full bg-white p-1 shadow-sm ring-1 ring-charcoal/10">
           <button
             type="button"
-            aria-label={`Decrease ${item.name} quantity`}
+            aria-label={item.quantity === 1 ? `Remove ${item.name} from cart` : `Decrease ${item.name} quantity`}
             onClick={() => updateQuantity(item.cartId, item.quantity - 1)}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-charcoal transition hover:bg-cream"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-charcoal transition hover:bg-cream focus-visible:outline focus-visible:outline-4 focus-visible:outline-honey"
           >
             <Minus aria-hidden="true" size={16} />
           </button>
-          <span className="w-10 text-center text-sm font-black">{item.quantity}</span>
+          <span aria-live="polite" className="w-10 text-center text-sm font-black">
+            {item.quantity}
+          </span>
           <button
             type="button"
             aria-label={`Increase ${item.name} quantity`}
             onClick={() => updateQuantity(item.cartId, item.quantity + 1)}
-            className="flex h-9 w-9 items-center justify-center rounded-full text-charcoal transition hover:bg-cream"
+            disabled={item.quantity >= MAX_CART_ITEM_QUANTITY || cartQuantity >= MAX_CART_TOTAL_QUANTITY}
+            className="flex h-11 w-11 items-center justify-center rounded-full text-charcoal transition hover:bg-cream focus-visible:outline focus-visible:outline-4 focus-visible:outline-honey disabled:cursor-not-allowed disabled:opacity-40"
           >
             <Plus aria-hidden="true" size={16} />
           </button>
@@ -55,6 +58,6 @@ export function CartItem({ item }: CartItemProps) {
           <Trash2 aria-hidden="true" size={17} />
         </Button>
       </div>
-    </div>
+    </article>
   );
 }

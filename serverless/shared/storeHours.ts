@@ -6,6 +6,9 @@ type StoreHour = {
 
 const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const timezone = "America/Los_Angeles";
+const pickupIntervalMinutes = 15;
+const finalPickupBufferMinutes = 15;
+const maximumImmediateWaitMinutes = 60;
 const pickupHours: readonly StoreHour[] = [
   { day: "Monday", open: "06:30", close: "15:00" },
   { day: "Tuesday", open: "06:30", close: "15:00" },
@@ -26,7 +29,14 @@ function formatHour(time: string) {
   const displayHour = hour % 12 || 12;
   const suffix = hour >= 12 ? "PM" : "AM";
 
-  return minute > 0 ? `${displayHour}:${String(minute).padStart(2, "0")} ${suffix}` : `${displayHour} ${suffix}`;
+  return `${displayHour}:${String(minute).padStart(2, "0")} ${suffix}`;
+}
+
+function minutesToTime(minutes: number) {
+  const hour = Math.floor(minutes / 60);
+  const minute = minutes % 60;
+
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
 }
 
 function getZonedNow(now = new Date()) {
@@ -88,4 +98,71 @@ export function getNextPickupOpenMessage(now = new Date()) {
 export function isImmediatePickupTime(pickupTime: string) {
   const normalized = pickupTime.trim().toLowerCase();
   return normalized === "asap" || /^\d+\s*minutes?$/.test(normalized);
+}
+
+function buildPickupOptions(label: string, hours: StoreHour) {
+  const firstPickupMinutes = timeToMinutes(hours.open);
+  const finalPickupMinutes = timeToMinutes(hours.close) - finalPickupBufferMinutes;
+  const options: string[] = [];
+
+  for (let minutes = firstPickupMinutes; minutes <= finalPickupMinutes; minutes += pickupIntervalMinutes) {
+    options.push(`${label} at ${formatHour(minutesToTime(minutes))}`);
+  }
+
+  return options;
+}
+
+export function getAvailableImmediatePickupTimes(now = new Date()) {
+  const current = getZonedNow(now);
+  const todayHours = getHourForDay(current.weekday);
+  const openMinutes = timeToMinutes(todayHours.open);
+  const finalPickupMinutes = timeToMinutes(todayHours.close) - finalPickupBufferMinutes;
+
+  if (current.minutes < openMinutes || current.minutes + pickupIntervalMinutes > finalPickupMinutes) {
+    return [];
+  }
+
+  const options = ["ASAP"];
+
+  for (let delay = pickupIntervalMinutes; delay <= maximumImmediateWaitMinutes; delay += pickupIntervalMinutes) {
+    if (current.minutes + delay <= finalPickupMinutes) {
+      options.push(`${delay} minutes`);
+    }
+  }
+
+  return options;
+}
+
+export function getNextOpenPickupTimes(now = new Date()) {
+  const current = getZonedNow(now);
+  const todayHours = getHourForDay(current.weekday);
+  const openMinutes = timeToMinutes(todayHours.open);
+
+  if (getAvailableImmediatePickupTimes(now).length > 0) {
+    return [];
+  }
+
+  if (current.minutes < openMinutes) {
+    return buildPickupOptions("Today", todayHours);
+  }
+
+  const todayIndex = dayNames.indexOf(current.weekday);
+
+  for (let offset = 1; offset <= 7; offset += 1) {
+    const day = dayNames[(todayIndex + offset) % dayNames.length];
+    const nextHours = getHourForDay(day);
+
+    if (nextHours) {
+      return buildPickupOptions(offset === 1 ? "Tomorrow" : day, nextHours);
+    }
+  }
+
+  return [];
+}
+
+export function isValidPickupTime(pickupTime: string, now = new Date()) {
+  const normalized = pickupTime.trim();
+  const validOptions = [...getAvailableImmediatePickupTimes(now), ...getNextOpenPickupTimes(now)];
+
+  return validOptions.includes(normalized);
 }
