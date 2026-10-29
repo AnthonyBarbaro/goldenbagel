@@ -5,6 +5,7 @@ import { useDeferredValue, useId, useMemo, useRef, useState } from "react";
 import { CategoryRail } from "@/components/menu/CategoryRail";
 import { MenuCard } from "@/components/menu/MenuCard";
 import { MenuFilters } from "@/components/menu/MenuFilters";
+import { MenuRefresh } from "@/components/menu/MenuRefresh";
 import { MenuSearch } from "@/components/menu/MenuSearch";
 import type { MenuCategory, MenuItem } from "@/data/liveMenu";
 import { getCategoryLabel } from "@/lib/menuCategories";
@@ -179,6 +180,7 @@ export function MenuGrid({ initialCategory = "All", items, categories }: MenuGri
 
   return (
     <div className="space-y-5 lg:space-y-0">
+      <MenuRefresh />
       <div className="lg:hidden">
         <MenuFilters
           categories={customerMenuCategories}

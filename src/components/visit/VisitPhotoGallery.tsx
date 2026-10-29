@@ -23,7 +23,7 @@ function PhotoCard({ photo, featured = false }: { photo: VisitPhoto; featured?: 
 
   return (
     <div className={classNames("overflow-hidden rounded-[1.5rem] bg-cream shadow-soft ring-1 ring-charcoal/8", featured && "lg:row-span-2")}>
-      <img src={src} alt={photo.alt} onError={handleError} className={classNames("h-full w-full object-cover", featured ? "min-h-[320px]" : "min-h-[180px]")} />
+      <img src={src} alt={photo.alt} loading="lazy" decoding="async" onError={handleError} className={classNames("h-full w-full object-cover", featured ? "min-h-[320px]" : "min-h-[180px]")} />
     </div>
   );
 }

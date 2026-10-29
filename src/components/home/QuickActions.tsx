@@ -1,13 +1,13 @@
 import Link from "next/link";
 import { ArrowRight, MapPin, Phone, ShoppingBag } from "lucide-react";
-import { directionsUrl, onlineOrderUrl, primaryLocation } from "@/config/site";
+import { directionsUrl, primaryLocation } from "@/config/site";
 import { classNames } from "@/lib/format";
 
 const actions = [
   {
     title: "Order Online",
     text: "Menu, pickup time, payment.",
-    href: onlineOrderUrl,
+    href: "#menu",
     icon: ShoppingBag,
     label: "Open online ordering",
     primary: true

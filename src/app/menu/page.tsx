@@ -73,7 +73,7 @@ export default async function MenuPage({ searchParams }: MenuPageProps) {
           </div>
         </section>
 
-        <div className="mt-6 sm:mt-8">
+        <div id="menu" className="mt-6 scroll-mt-24 sm:mt-8">
           <MenuGrid initialCategory={initialCategory} items={menu.items} categories={menu.categories} />
         </div>
       </div>

@@ -24,7 +24,7 @@ export function CartItem({ item }: CartItemProps) {
           {item.priceLabel && <p className="mt-1 text-sm font-black text-toast">{item.priceLabel} each</p>}
           {item.modifiers.length > 0 && (
             <p className="mt-2 text-xs font-semibold leading-5 text-espresso/70">
-              {item.modifiers.map((modifier) => `${modifier.name}: ${modifier.option}`).join(", ")}
+              {item.modifiers.map((modifier) => `${modifier.name}: ${(modifier.quantity || 1) > 1 ? `${modifier.quantity}× ` : ""}${modifier.option}`).join(", ")}
             </p>
           )}
         </div>

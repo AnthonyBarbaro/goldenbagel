@@ -107,8 +107,8 @@ export function formatLocationCityLine(location: StoreLocation = primaryLocation
   return `${location.address.city}, ${location.address.state} ${location.address.zip}`;
 }
 
-export function getLocationDirectionsUrl(location: StoreLocation = primaryLocation) {
-  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${siteConfig.name}, ${formatLocationAddress(location)}`)}`;
+export function getLocationDirectionsUrl(location: StoreLocation = primaryLocation): string {
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${siteConfig.name}, ${formatLocationAddress(location)}`)}&dir_action=navigate`;
 }
 
 export const businessAddress = formatLocationAddress(primaryLocation);
@@ -116,6 +116,10 @@ export const businessAddress = formatLocationAddress(primaryLocation);
 export const directionsUrl = getLocationDirectionsUrl(primaryLocation);
 
 export const onlineOrderUrl = "/menu";
+
+export function getMenuHref(pathname: string): string {
+  return pathname === "/" || /^\/menu\/?$/.test(pathname) ? "#menu" : onlineOrderUrl;
+}
 
 export const navItems = [
   { href: "/menu", label: "Menu" },

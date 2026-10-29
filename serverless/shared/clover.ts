@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import crypto from "node:crypto";
 import { getEnv, redactConfig, requireServerSecret } from "./secrets.js";
 import { safeLog } from "./security.js";
+import { isOnlineModifierGroup, isQuantityModifierGroup, MAX_MODIFIER_QUANTITY } from "./menuOptions.js";
 
 export type CloverEnv = "sandbox" | "production";
 
@@ -135,6 +136,7 @@ type HostedCheckoutCartItem = {
     name: string;
     option: string;
     priceCents?: number;
+    quantity?: number;
   }>;
   notes?: string;
 };
@@ -448,11 +450,25 @@ async function reconcileCheckoutInput(payload: unknown): Promise<HostedCheckoutI
         name:
           group.name?.trim() ||
           inventory.modifiersByGroupId.get(group.id)?.find((modifier) => modifier.modifierGroup?.name?.trim())?.modifierGroup?.name
-      }));
+      }))
+      .filter((group) => isOnlineModifierGroup(group.name));
     const itemGroupsById = new Map(itemGroups.map((group) => [group.id, group]));
-    const selectedModifiers = (cartItem.modifiers || []).map((selected) =>
-      resolveSelectedModifier(selected, itemGroupsById, inventory)
-    );
+    const selectedModifiers = (cartItem.modifiers || []).map((selected) => {
+      const quantity = selected.quantity ?? 1;
+
+      if (!Number.isInteger(quantity) || quantity < 1 || quantity > MAX_MODIFIER_QUANTITY) {
+        throw new CloverCheckoutValidationError("An item option has an invalid quantity. Return to the menu and customize it again.");
+      }
+
+      const modifier = resolveSelectedModifier(selected, itemGroupsById, inventory);
+      const group = itemGroupsById.get(modifier.modifierGroup!.id);
+
+      if (quantity > 1 && !isQuantityModifierGroup(group)) {
+        throw new CloverCheckoutValidationError("This item option cannot be repeated. Return to the menu and customize it again.");
+      }
+
+      return { ...modifier, quantity };
+    });
     const selectedModifierIds = new Set(selectedModifiers.map((modifier) => modifier.id));
 
     if (selectedModifierIds.size !== selectedModifiers.length) {
@@ -468,7 +484,7 @@ async function reconcileCheckoutInput(payload: unknown): Promise<HostedCheckoutI
         throw new CloverCheckoutValidationError("A cart option could not be verified. Return to the menu and add the item again.");
       }
 
-      selectedCountByGroup.set(groupId, (selectedCountByGroup.get(groupId) || 0) + 1);
+      selectedCountByGroup.set(groupId, (selectedCountByGroup.get(groupId) || 0) + modifier.quantity);
     }
 
     for (const group of itemGroups) {
@@ -501,7 +517,7 @@ async function reconcileCheckoutInput(payload: unknown): Promise<HostedCheckoutI
       return isAbsolutePriceGroup(basePriceCents, group, availableModifiers);
     });
     const modifierPriceCents = selectedModifiers.reduce(
-      (total, modifier) => total + (Number.isInteger(modifier.price) && Number(modifier.price) >= 0 ? Number(modifier.price) : 0),
+      (total, modifier) => total + (Number.isInteger(modifier.price) && Number(modifier.price) >= 0 ? Number(modifier.price) : 0) * modifier.quantity,
       0
     );
     const priceCents = (hasAbsolutePriceSelection ? 0 : basePriceCents) + modifierPriceCents;
@@ -527,6 +543,7 @@ async function reconcileCheckoutInput(payload: unknown): Promise<HostedCheckoutI
           groupId,
           name: group?.name?.trim() || modifier.modifierGroup?.name?.trim() || "Option",
           option: modifier.name?.trim() || "Selection",
+          ...(modifier.quantity > 1 ? { quantity: modifier.quantity } : {}),
           ...(Number.isInteger(modifier.price) && Number(modifier.price) > 0 ? { priceCents: Number(modifier.price) } : {})
         };
       }),
@@ -558,8 +575,16 @@ function splitCustomerName(name: string) {
 }
 
 function buildLineItemNote(item: HostedCheckoutCartItem, payload: HostedCheckoutInput) {
+  const modifierGroups = new Map<string, string[]>();
+
+  for (const modifier of item.modifiers || []) {
+    const options = modifierGroups.get(modifier.name) || [];
+    options.push(`${(modifier.quantity || 1) > 1 ? `${modifier.quantity}× ` : ""}${modifier.option}`);
+    modifierGroups.set(modifier.name, options);
+  }
+
   const notes = [
-    item.modifiers?.length ? item.modifiers.map((modifier) => `${modifier.name}: ${modifier.option}`).join(", ") : "",
+    [...modifierGroups].map(([name, options]) => `${name}: ${options.join(", ")}`).join("; "),
     item.notes,
     payload.pickupTime ? `Pickup: ${payload.pickupTime}` : "",
     payload.notes ? `Order notes: ${payload.notes}` : ""

@@ -4,13 +4,20 @@ import type {
   MenuBoardPriceDefinition,
   MenuBoardSectionDefinition
 } from "@/data/menuBoard";
-import { MENU_BOARD_REFRESH_SECONDS, menuBoards } from "@/data/menuBoard";
+import { menuBoards } from "@/data/menuBoard";
 import {
   liveMenuGeneratedAt,
   menuCategories as savedMenuCategories,
   menuItems as savedMenuItems
 } from "@/data/liveMenu";
 import type { MenuCategory, MenuItem, MenuModifier } from "@/data/menu";
+import { isOnlineModifierGroup } from "../../serverless/shared/menuOptions";
+import { MENU_PRICE_CACHE_SECONDS } from "@/config/menu";
+
+const menuBoardDescriptions = new Map(
+  menuBoards.flatMap((board) => board.columns.flatMap((column) => column.flatMap((section) => section.items)))
+    .map((item) => [item.cloverItemId, item.description])
+);
 
 type CloverCollection<T> = {
   elements?: T[];
@@ -51,6 +58,9 @@ type CloverInventorySnapshot = {
   modifiersLoaded: boolean;
   updatedAt: string;
 };
+
+let inventoryCache: { key: string; expiresAt: number; value: CloverInventorySnapshot | null } | null = null;
+let inventoryRequest: { key: string; value: Promise<CloverInventorySnapshot | null> } | null = null;
 
 export type CloverMenuSource = "clover" | "partial" | "saved";
 
@@ -103,8 +113,7 @@ function cloverApiBaseUrl() {
 async function fetchAllCloverElements<T>(
   resourcePath: string,
   accessToken: string,
-  query: Record<string, string> = {},
-  fresh = false
+  query: Record<string, string> = {}
 ): Promise<T[]> {
   const limit = 1000;
   const elements: T[] = [];
@@ -121,13 +130,7 @@ async function fetchAllCloverElements<T>(
     }
 
     const response = await fetch(url, {
-      ...(fresh
-        ? { cache: "no-store" as const }
-        : {
-            next: {
-              revalidate: MENU_BOARD_REFRESH_SECONDS
-            }
-          }),
+      cache: "no-store",
       headers: {
         Accept: "application/json",
         Authorization: `Bearer ${accessToken}`,
@@ -156,6 +159,36 @@ async function fetchAllCloverElements<T>(
 }
 
 async function fetchCloverInventory(fresh = false): Promise<CloverInventorySnapshot | null> {
+  const key = `${cloverApiBaseUrl()}/${process.env.CLOVER_MERCHANT_ID || ""}`;
+
+  if (process.env.MOCK_CLOVER !== "false" || !process.env.CLOVER_ACCESS_TOKEN?.trim() || !process.env.CLOVER_MERCHANT_ID?.trim()) {
+    return null;
+  }
+
+  if (!fresh && inventoryCache?.key === key && inventoryCache.expiresAt > Date.now()) {
+    return inventoryCache.value;
+  }
+
+  if (inventoryRequest?.key === key) {
+    return inventoryRequest.value;
+  }
+
+  const request = readCloverInventory().then((value) => {
+    inventoryCache = { key, value, expiresAt: Date.now() + (value ? MENU_PRICE_CACHE_SECONDS : 5) * 1000 };
+    return value;
+  });
+  inventoryRequest = { key, value: request };
+
+  try {
+    return await request;
+  } finally {
+    if (inventoryRequest?.value === request) {
+      inventoryRequest = null;
+    }
+  }
+}
+
+async function readCloverInventory(): Promise<CloverInventorySnapshot | null> {
   if (process.env.MOCK_CLOVER !== "false") {
     return null;
   }
@@ -173,14 +206,12 @@ async function fetchCloverInventory(fresh = false): Promise<CloverInventorySnaps
     const itemRequest = fetchAllCloverElements<CloverInventoryItem>(
       `${merchantPath}/items`,
       accessToken,
-      { expand: "modifierGroups" },
-      fresh
+      { expand: "modifierGroups" }
     );
     const modifierRequest = fetchAllCloverElements<CloverInventoryModifier>(
       `${merchantPath}/modifiers`,
       accessToken,
-      { expand: "modifierGroup" },
-      fresh
+      { expand: "modifierGroup" }
     );
     const [itemResult, modifierResult] = await Promise.allSettled([itemRequest, modifierRequest]);
 
@@ -320,12 +351,20 @@ function overlaySavedItem(item: MenuItem, inventory: CloverInventorySnapshot): M
   };
 }
 
+function onlineMenuItem(item: MenuItem): MenuItem {
+  return {
+    ...item,
+    description: item.description.trim() || menuBoardDescriptions.get(cloverItemIdFor(item)) || "",
+    modifiers: item.modifiers.filter((modifier) => isOnlineModifierGroup(modifier.name))
+  };
+}
+
 export async function getCloverLiveMenu(options: CloverLiveMenuOptions = {}): Promise<CloverLiveMenuData> {
   const inventory = await fetchCloverInventory(Boolean(options.fresh));
 
   if (!inventory) {
     return {
-      items: savedMenuItems,
+      items: savedMenuItems.map(onlineMenuItem),
       categories: savedMenuCategories,
       source: "saved",
       updatedAt: liveMenuGeneratedAt || null,
@@ -333,7 +372,7 @@ export async function getCloverLiveMenu(options: CloverLiveMenuOptions = {}): Pr
     };
   }
 
-  const items = savedMenuItems.map((item) => overlaySavedItem(item, inventory));
+  const items = savedMenuItems.map((item) => onlineMenuItem(overlaySavedItem(item, inventory)));
   const categories = savedMenuCategories.filter((category) =>
     items.some((item) => item.available && item.category === category)
   );

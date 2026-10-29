@@ -11,6 +11,7 @@ The backend foundation still keeps reusable handler logic under `serverless/`, b
 ## 2. Features
 
 - Mobile-first homepage
+- Mobile Food, Call, Directions, and Cart shortcuts; Food jumps to the existing menu on the homepage or menu page and opens the menu page elsewhere, Call uses the phone dialer, and Directions opens a Google Maps route in a new tab.
 - Menu browsing and everyday ordering
 - Hosted Clover online ordering link support
 - Live Clover inventory pricing for the order menu and HTML cafe menu board
@@ -98,6 +99,18 @@ AWS_REGION=us-west-2
 `NEXT_PUBLIC_CLOVER_ONLINE_ORDERING_URL` should be the hosted online ordering page URL from the Clover Dashboard. The menu sync uses this URL as its source of truth, and variable-price items can still link there until modifiers are fully mapped into the local cart.
 
 `CLOVER_ACCESS_TOKEN` is the server-only Platform API token used to overlay current Clover item and modifier prices on `/menu/` and `/menu-tv/`. It must have Read Inventory permission. Never prefix it with `NEXT_PUBLIC_` or expose it to browser code. The ecommerce private key remains checkout-only and cannot replace the inventory token.
+
+Manage item and option prices in Clover. The homepage ordering menu and `/menu/` share Clover inventory for at most 30 seconds, coalescing concurrent requests to avoid slowing down navigation. The homepage shell streams before live prices finish loading, and page transitions show loading feedback. The header Menu link jumps directly to the existing menu on the homepage. Open menu pages refresh every five minutes while visible and when customers return to the tab or window, preserving their search, category, and valid option selections. Checkout separately verifies item and option prices against Clover inventory cached for at most 30 seconds before creating the payment session. Price edits do not require a website rebuild. If Clover is unavailable, browsing falls back to the saved menu; live checkout still requires verified current prices.
+
+The hero keeps a short headline and order button over the video. Watch video opens an unobstructed player with native playback controls on any screen. Phones and reduced-motion visitors see the poster until they choose to watch; desktop background video starts after hydration when the browser is idle. Menu cards use cart actions without subscribing to every cart change, and below-the-fold visit photos load lazily.
+
+Online customization shows required groups first and preselects Plain in Choose Bagel and Toasted in Toast Level (or Style Toast). These choices remain expanded and editable. `serverless/shared/menuOptions.ts` excludes Remove Ingredients - General from both online menus and checkout validation. Product descriptions use the synced description when present, then an existing menu-board description matched by Clover item ID; products without either source need a description added to the menu data.
+
+Customization uses a centered desktop popup with shortcuts to required groups, a live selection summary, and a fixed total and action bar. On mobile, the choices scroll below the shortcuts while the action bar stays visible. When required choices are incomplete, the bottom button takes customers to the next missing group before anything is added to the cart.
+
+Bagel-with-spread items in Golden Deals open a required-choice popup from Add. Customers explicitly choose their bagel type before confirming; Toasted remains preselected. Optional extras are excluded from these quick orders.
+
+Fixed-size bagel groups, such as Choose Bagel 6x and Choose Bagel 13x, use per-flavor quantity controls. The quantities must total the pack size. Cart modifiers store each flavor once with an optional quantity (default 1); checkout validates those quantities against the current Clover group, multiplies per-bagel surcharges, and includes flavor counts in the payment-session notes. Bagel choices show Plain first and Everything second among included flavors, with extra-cost options grouped at the bottom under Extra charge.
 
 Production OAuth v2 access tokens expire and refresh tokens rotate. This site currently accepts an active access token but does not refresh it automatically; use Clover-approved durable token storage and rotation before relying on unattended long-term OAuth sync.
 

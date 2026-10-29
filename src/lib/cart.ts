@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useSyncExternalStore } from "react";
 import type { MenuCategory, MenuItem } from "@/data/liveMenu";
+import { MAX_MODIFIER_QUANTITY } from "../../serverless/shared/menuOptions";
 
 export type CartModifier = {
   id?: string;
@@ -9,6 +10,7 @@ export type CartModifier = {
   name: string;
   option: string;
   priceCents?: number;
+  quantity?: number;
 };
 
 export type CartItem = {
@@ -23,6 +25,19 @@ export type CartItem = {
   quantity: number;
   modifiers: CartModifier[];
   notes?: string;
+};
+
+type CartActions = {
+  addItem: (item: MenuItem, modifiers?: CartModifier[], quantity?: number) => { ok: true } | { ok: false; message: string };
+  updateQuantity: (cartId: string, quantity: number) => void;
+  removeItem: (cartId: string) => void;
+  clearCart: () => void;
+};
+
+type CartStore = CartActions & {
+  items: CartItem[];
+  quantity: number;
+  subtotalCents: number;
 };
 
 export const MAX_CART_ITEM_QUANTITY = 20;
@@ -53,7 +68,12 @@ function normalizeModifier(value: unknown): CartModifier | null {
 
   const modifier = value as Partial<CartModifier>;
 
-  if (!isNonEmptyString(modifier.name, 120) || !isNonEmptyString(modifier.option, 120)) {
+  if (
+    !isNonEmptyString(modifier.name, 120) ||
+    !isNonEmptyString(modifier.option, 120) ||
+    (modifier.quantity !== undefined &&
+      (!Number.isInteger(modifier.quantity) || modifier.quantity < 1 || modifier.quantity > MAX_MODIFIER_QUANTITY))
+  ) {
     return null;
   }
 
@@ -62,13 +82,14 @@ function normalizeModifier(value: unknown): CartModifier | null {
     ...(isNonEmptyString(modifier.groupId, 80) ? { groupId: modifier.groupId } : {}),
     name: modifier.name.trim(),
     option: modifier.option.trim(),
+    ...(modifier.quantity && modifier.quantity > 1 ? { quantity: modifier.quantity } : {}),
     ...(normalizePrice(modifier.priceCents) !== undefined ? { priceCents: normalizePrice(modifier.priceCents) } : {})
   };
 }
 
 function cartIdFor(itemId: string, modifiers: CartModifier[]) {
   const stableModifierKey = [...modifiers]
-    .map((modifier) => `${modifier.name}=${modifier.option}:${modifier.priceCents || 0}`)
+    .map((modifier) => `${modifier.name}=${modifier.option}:${modifier.priceCents || 0}${(modifier.quantity || 1) > 1 ? `x${modifier.quantity}` : ""}`)
     .sort()
     .join("|");
   let firstHash = 0x811c9dc5;
@@ -247,9 +268,7 @@ function enrichModifiers(menuItem: MenuItem, modifiers: CartModifier[]) {
   });
 }
 
-export function useCart() {
-  const items = useSyncExternalStore(subscribeCart, getCartSnapshot, () => EMPTY_CART);
-
+export function useCartActions(): CartActions {
   const save = useCallback((nextItems: CartItem[]) => {
     writeCart(nextItems);
   }, []);
@@ -330,6 +349,13 @@ export function useCart() {
 
   const clearCart = useCallback(() => save([]), [save]);
 
+  return { addItem, updateQuantity, removeItem, clearCart };
+}
+
+export function useCart(): CartStore {
+  const items = useSyncExternalStore(subscribeCart, getCartSnapshot, () => EMPTY_CART);
+  const actions = useCartActions();
+
   const summary = useMemo(() => {
     const quantity = items.reduce((total, item) => total + item.quantity, 0);
     const subtotalCents = items.reduce((total, item) => total + (item.priceCents || 0) * item.quantity, 0);
@@ -338,10 +364,7 @@ export function useCart() {
 
   return {
     items,
-    addItem,
-    updateQuantity,
-    removeItem,
-    clearCart,
+    ...actions,
     ...summary
   };
 }

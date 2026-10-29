@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, Phone, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { navItems, siteConfig } from "@/config/site";
+import { useEffect, useRef, useState, type ReactElement } from "react";
+import { getMenuHref, navItems, siteConfig } from "@/config/site";
 import { Button } from "@/components/ui/Button";
 import { CartButton } from "@/components/layout/CartButton";
 
@@ -15,22 +16,33 @@ const mobileMenuLinks = [
   { href: "/accessibility", label: "Accessibility" }
 ];
 
-export function Header() {
+export function Header(): ReactElement {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (!isOpen) return undefined;
 
-    function handleKeyDown(event: KeyboardEvent) {
+    function handleKeyDown(event: KeyboardEvent): void {
       if (event.key !== "Escape") return;
 
       setIsOpen(false);
       menuButtonRef.current?.focus();
     }
 
+    function handleLinkNavigation(event: MouseEvent): void {
+      if (event.target instanceof Element && event.target.closest("a[href]")) {
+        setIsOpen(false);
+      }
+    }
+
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("click", handleLinkNavigation);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("click", handleLinkNavigation);
+    };
   }, [isOpen]);
 
   return (
@@ -49,15 +61,21 @@ export function Header() {
           </Link>
 
           <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-full px-4 py-2 text-sm font-bold text-charcoal/80 transition hover:bg-white hover:text-charcoal"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {navItems.map((item) => {
+              const isMenuAnchor = item.href === "/menu" && getMenuHref(pathname) === "#menu";
+              const NavigationLink = isMenuAnchor ? "a" : Link;
+
+              return (
+                <NavigationLink
+                  key={item.href}
+                  href={isMenuAnchor ? "#menu" : item.href}
+                  aria-current={pathname.startsWith(item.href) ? "page" : undefined}
+                  className="rounded-full px-4 py-2 text-sm font-bold text-charcoal/80 transition hover:bg-white hover:text-charcoal"
+                >
+                  {item.label}
+                </NavigationLink>
+              );
+            })}
           </nav>
 
           <div className="hidden items-center gap-2 sm:flex">
@@ -84,16 +102,22 @@ export function Header() {
         {isOpen ? (
           <div id="site-menu" className="border-t border-charcoal/10 bg-charcoal text-white shadow-[0_18px_45px_rgba(32,24,20,0.22)] lg:hidden">
             <nav aria-label="Menu navigation" className="mx-auto grid max-w-7xl grid-cols-2 gap-1 px-4 py-3 sm:grid-cols-3 sm:px-6">
-              {mobileMenuLinks.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex min-h-12 items-center rounded-2xl px-3 py-3 text-sm font-black text-white transition hover:bg-white/10"
-                  onClick={() => setIsOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {mobileMenuLinks.map((item) => {
+                const isMenuAnchor = item.href === "/menu" && getMenuHref(pathname) === "#menu";
+                const NavigationLink = isMenuAnchor ? "a" : Link;
+
+                return (
+                  <NavigationLink
+                    key={item.href}
+                    href={isMenuAnchor ? "#menu" : item.href}
+                    aria-current={pathname.startsWith(item.href) ? "page" : undefined}
+                    className="flex min-h-12 items-center rounded-2xl px-3 py-3 text-sm font-black text-white transition hover:bg-white/10"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    {item.label}
+                  </NavigationLink>
+                );
+              })}
             </nav>
           </div>
         ) : null}

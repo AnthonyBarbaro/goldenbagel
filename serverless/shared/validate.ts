@@ -1,6 +1,7 @@
 import type { APIGatewayProxyEventV2 } from "aws-lambda";
 import { z } from "zod";
 import { hasHoneypot, sanitizeRecord } from "./security.js";
+import { MAX_MODIFIER_QUANTITY } from "./menuOptions.js";
 
 const MAX_CART_ITEM_QUANTITY = 20;
 const MAX_CART_LINES = 40;
@@ -40,7 +41,8 @@ const cartItemSchema = z.object({
         groupId: z.string().trim().min(1).max(80).regex(/^[A-Za-z0-9_-]+$/).optional(),
         name: z.string().trim().min(1).max(120),
         option: z.string().trim().min(1).max(120),
-        priceCents: z.number().int().nonnegative().max(1_000_000).optional()
+        priceCents: z.number().int().nonnegative().max(1_000_000).optional(),
+        quantity: z.number().int().positive().max(MAX_MODIFIER_QUANTITY).optional()
       })
     )
     .max(30)

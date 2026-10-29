@@ -1,0 +1,2 @@
+export const MENU_REFRESH_SECONDS = 300;
+export const MENU_PRICE_CACHE_SECONDS = 30;
