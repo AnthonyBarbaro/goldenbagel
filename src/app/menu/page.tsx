@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Link from "next/link";
 import { Clock3, MapPin, MonitorUp } from "lucide-react";
-import { MenuGrid } from "@/components/menu/MenuGrid";
+import { LiveMenu } from "@/components/menu/LiveMenu";
+import { MenuLoading } from "@/components/menu/MenuLoading";
 import { JsonLd } from "@/components/seo/JsonLd";
-import type { MenuCategory } from "@/data/liveMenu";
-import { getCloverLiveMenu } from "@/lib/cloverLiveMenu";
 import { breadcrumbSchema, createPageMetadata, menuSchema } from "@/lib/seo";
-
-export const revalidate = 300;
 
 export const metadata: Metadata = createPageMetadata(
   "Menu & Ordering",
@@ -15,31 +13,7 @@ export const metadata: Metadata = createPageMetadata(
   "/menu/"
 );
 
-type MenuPageProps = {
-  searchParams?: Promise<{
-    category?: string;
-  }>;
-};
-
-function getInitialCategory(category: string | undefined, categories: MenuCategory[]): MenuCategory | "All" {
-  if (!category) return "All";
-
-  let decodedCategory: string;
-
-  try {
-    decodedCategory = decodeURIComponent(category);
-  } catch {
-    return "All";
-  }
-
-  return categories.includes(decodedCategory as MenuCategory) ? (decodedCategory as MenuCategory) : "All";
-}
-
-export default async function MenuPage({ searchParams }: MenuPageProps) {
-  const resolvedSearchParams = await searchParams;
-  const menu = await getCloverLiveMenu();
-  const initialCategory = getInitialCategory(resolvedSearchParams?.category, menu.categories);
-
+export default function MenuPage() {
   return (
     <main className="min-h-screen bg-cream px-4 pb-24 pt-8 sm:px-6 sm:pt-10 lg:px-8 lg:pb-20">
       <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Menu", path: "/menu/" }])} />
@@ -74,7 +48,9 @@ export default async function MenuPage({ searchParams }: MenuPageProps) {
         </section>
 
         <div id="menu" className="mt-6 scroll-mt-24 sm:mt-8">
-          <MenuGrid initialCategory={initialCategory} items={menu.items} categories={menu.categories} />
+          <Suspense fallback={<MenuLoading />}>
+            <LiveMenu />
+          </Suspense>
         </div>
       </div>
     </main>

@@ -1,12 +1,10 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { MENU_REFRESH_SECONDS } from "@/config/menu";
+import { refreshPublicMenu } from "@/lib/publicMenuClient";
 
 export function MenuRefresh(): null {
-  const router = useRouter();
-
   useEffect(() => {
     let lastRefreshAt = Date.now();
 
@@ -16,8 +14,9 @@ export function MenuRefresh(): null {
       }
 
       lastRefreshAt = Date.now();
-      router.refresh();
+      void refreshPublicMenu();
     };
+    void refreshPublicMenu();
     const intervalId = window.setInterval(refresh, MENU_REFRESH_SECONDS * 1000);
 
     window.addEventListener("focus", refresh);
@@ -28,7 +27,7 @@ export function MenuRefresh(): null {
       window.removeEventListener("focus", refresh);
       document.removeEventListener("visibilitychange", refresh);
     };
-  }, [router]);
+  }, []);
 
   return null;
 }

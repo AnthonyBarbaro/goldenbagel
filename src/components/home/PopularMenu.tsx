@@ -1,14 +1,12 @@
-import type { ReactElement } from "react";
+import { Suspense, type ReactElement } from "react";
 import { MapPin } from "lucide-react";
 import { CartButton } from "@/components/layout/CartButton";
-import { MenuGrid } from "@/components/menu/MenuGrid";
+import { LiveMenu } from "@/components/menu/LiveMenu";
+import { MenuLoading } from "@/components/menu/MenuLoading";
 import { Section } from "@/components/ui/Section";
 import { primaryLocation } from "@/config/site";
-import { getCloverLiveMenu } from "@/lib/cloverLiveMenu";
 
-export async function PopularMenu(): Promise<ReactElement> {
-  const menu = await getCloverLiveMenu();
-
+export function PopularMenu(): ReactElement {
   return (
     <Section
       title="Our full menu, ready to order."
@@ -22,7 +20,9 @@ export async function PopularMenu(): Promise<ReactElement> {
         </p>
         <CartButton />
       </div>
-      <MenuGrid items={menu.items} categories={menu.categories} />
+      <Suspense fallback={<MenuLoading />}>
+        <LiveMenu deferUntilVisible />
+      </Suspense>
     </Section>
   );
 }

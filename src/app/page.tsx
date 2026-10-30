@@ -1,15 +1,11 @@
-import { Suspense } from "react";
 import { Hero } from "@/components/home/Hero";
 import { HomeGallery } from "@/components/home/HomeGallery";
 import { LocationSection } from "@/components/home/LocationSection";
 import { PopularMenu } from "@/components/home/PopularMenu";
 import { QuickActions } from "@/components/home/QuickActions";
-import { MenuLoading } from "@/components/menu/MenuLoading";
 import { ReviewsSection } from "@/components/home/ReviewsSection";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { breadcrumbSchema, homepageMenuPreviewSchema } from "@/lib/seo";
-
-export const dynamic = "force-dynamic";
 
 export default function Home() {
   return (
@@ -19,9 +15,7 @@ export default function Home() {
       <Hero />
       <QuickActions />
       <div id="menu" className="scroll-mt-24">
-        <Suspense fallback={<MenuLoading />}>
-          <PopularMenu />
-        </Suspense>
+        <PopularMenu />
       </div>
       <HomeGallery />
       <LocationSection />
